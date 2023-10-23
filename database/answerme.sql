@@ -160,5 +160,15 @@ CREATE TABLE IF NOT EXISTS User (
     nationality TEXT, 
     type CHAR NOT NULL);
 
+-- Performance Indexes
+
+CREATE INDEX tagged_tag ON Tagged USING hash (id_tag);
+
+CREATE INDEX comment_post ON Comment_question USING btree (id_question);
+CLUSTER Comment_question USING comment_post;
+
+CREATE INDEX question_answer ON Answer USING btree(answered_question);
+CLUSTER Answer USING question_answer;
+
 COMMIT TRANSACTION;
 PRAGMA foreign_keys = on;
