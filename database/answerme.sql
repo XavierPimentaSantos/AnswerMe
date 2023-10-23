@@ -170,5 +170,34 @@ CLUSTER Comment_question USING comment_post;
 CREATE INDEX question_answer ON Answer USING btree(answered_question);
 CLUSTER Answer USING question_answer;
 
+-- FTS Index
+
+ALTER TABLE Question ADD COLUMN tsvectors TSVECTOR;
+
+CREATE FUNCTION question_search_update() RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        NEW.tsvectors = (
+            setweight(to_tsvector('english', NEW.title), 'A') ||
+            setweight(to_tsvector('english', NEW.body), 'B')
+        );
+    END IF;
+    IF TG_OP = 'UPDATE' THEN
+        IF (NEW.title <> OLD.title || NEW.body <> OLD.body) THEN
+            NEW.tsvectors = (
+                setweight(to_tsvector('english', NEW.title), 'A') ||
+                setweight(to_tsvector('english', NEW.body), 'B')
+            );
+        END IF;
+    END IF;
+    RETURN NEW;
+END $$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER question_search_update
+    BEFORE INSERT OR UPDATE ON question
+    FOR EACH ROW
+    EXECUTE PROCEDURE question_search_update();
+
 COMMIT TRANSACTION;
 PRAGMA foreign_keys = on;
