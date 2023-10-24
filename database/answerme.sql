@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS Notification_Vote (
 DROP TABLE IF EXISTS Post_Vote;
 CREATE TABLE Post_Vote (
     user_id INTEGER REFERENCES User (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    post_id INTEGER,
+    post_id INTEGER REFERENCES Post (id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (user_id, post_id));
 
 -- Table: Post
