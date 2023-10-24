@@ -164,8 +164,11 @@ CREATE TABLE IF NOT EXISTS User (
 
 CREATE INDEX tagged_tag ON Tagged USING hash (id_tag);
 
-CREATE INDEX comment_post ON Comment_question USING btree (id_question);
-CLUSTER Comment_question USING comment_post;
+CREATE INDEX comment_question ON Comment_question USING btree (id_question);
+CLUSTER Comment_question USING comment_question;
+
+CREATE INDEX comment_answer ON Comment_answer USING btree (id_answer);
+CLUSTER comment_answer USING comment_answer;
 
 CREATE INDEX question_answer ON Answer USING btree(answered_question);
 CLUSTER Answer USING question_answer;
