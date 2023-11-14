@@ -208,7 +208,172 @@ CREATE TRIGGER question_search_update
     FOR EACH ROW
     EXECUTE PROCEDURE question_search_update();
 
+CREATE OR REPLACE FUNCTION prevent_self_follow()
+RETURNS TRIGGER AS
+$BODY$
+BEGIN
+	IF NEW.user_id = NEW.followed_user_id THEN
+    	RAISE EXCEPTION 'Users cannot follow themselves.';
+	END IF;
+	RETURN NEW;
+END;
+$BODY$
+LANGUAGE plpgsql;
+CREATE TRIGGER prevent_self_follow
+BEFORE INSERT ON Following_User
+FOR EACH ROW
+EXECUTE FUNCTION prevent_self_follow();
+
+CREATE FUNCTION allow_comment() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+	IF NEW.post_id IN (SELECT post_id FROM Question UNION SELECT post_id FROM Answer) THEN
+		RETURN NEW; -- Comment is allowed on a question or an answer
+	ELSE
+		RAISE EXCEPTION 'Commenting is only allowed under questions and
+answers.';
+	END IF;
+END
+$BODY$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER allow_comment
+	BEFORE INSERT ON Comment
+	FOR EACH ROW
+EXECUTE FUNCTION allow_comment();
+
+CREATE FUNCTION check_unique_email() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+	IF NEW.email IS NOT NULL AND EXISTS (SELECT 1 FROM User WHERE email = NEW.email AND id <> NEW.id) THEN
+   	RAISE EXCEPTION 'An AnswerMe! account with this email address already exists.';
+	END IF;
+	RETURN NEW;
+END
+$BODY$
+LANGUAGE plpgsql;
+CREATE TRIGGER check_unique_email
+BEFORE INSERT OR UPDATE ON User
+FOR EACH ROW
+EXECUTE FUNCTION check_unique_email();
+
+CREATE OR REPLACE FUNCTION mark_edited_post()
+RETURNS TRIGGER AS
+$BODY$
+BEGIN
+	IF OLD.body IS DISTINCT FROM NEW.body THEN
+    	NEW.edited := TRUE;
+	END IF;
+	RETURN NEW;
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER mark_edited_question
+AFTER UPDATE ON Question
+FOR EACH ROW
+WHEN (OLD.body IS DISTINCT FROM NEW.body)
+EXECUTE FUNCTION mark_edited_post();
+CREATE TRIGGER mark_edited_answer
+AFTER UPDATE ON Answer
+FOR EACH ROW
+WHEN (OLD.body IS DISTINCT FROM NEW.body)
+EXECUTE FUNCTION mark_edited_post();
+CREATE TRIGGER mark_edited_comment
+AFTER UPDATE ON Comment
+FOR EACH ROW
+WHEN (OLD.body IS DISTINCT FROM NEW.body)
+EXECUTE FUNCTION mark_edited_post();
+
+CREATE FUNCTION prevent_self_votes() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+        IF NEW.user_id = (SELECT user_id FROM Question WHERE post_id = NEW.post_id) THEN 
+            RAISE EXCEPTION 'Users cannot vote on their own posts.';
+        END IF;
+        RETURN NEW;
+END
+$BODY$
+LANGUAGE plpgsql;
+
+ CREATE TRIGGER prevent_self_votes
+        BEFORE INSERT
+        ON Post_Vote
+        FOR EACH ROW        
+ EXECUTE PROCEDURE prevent_self_votes();
+
+CREATE OR REPLACE FUNCTION enforce_unique_username()
+RETURNS TRIGGER AS
+$BODY$
+BEGIN
+	IF NEW.username IS NOT NULL AND EXISTS (
+    	SELECT 1 FROM User WHERE username = NEW.username AND id <> NEW.id
+	) THEN
+    	RAISE EXCEPTION 'Username "%", is already in use by another user.', NEW.username;
+	END IF;
+	RETURN NEW;
+END;
+$BODY$
+LANGUAGE plpgsql;
+CREATE TRIGGER enforce_unique_username
+BEFORE INSERT OR UPDATE ON User
+FOR EACH ROW
+EXECUTE FUNCTION enforce_unique_username();
+
 COMMIT TRANSACTION;
+
+BEGIN TRANSACTION;
+
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+
+INSERT INTO Post (creation_date, edited, user_id)
+VALUES (CURRENT_DATE, 0, $user_id);
+
+INSERT INTO Question (title, body, score, post_id)
+VALUES ($question_title, $question_body, 0, currval('post_id_seq'));
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+
+INSERT INTO Post (creation_date, edited, user_id)
+VALUES (CURRENT_DATE, 0, $user_id);
+
+INSERT INTO Answer (title, body, correct, score, answered_question, post_id)
+VALUES ($answer_title, $answer_body, 0, 0, $question_id, currval('post_id_seq'));
+
+INSERT INTO Notification (name) VALUES ('Your question has been answered');
+SELECT currval('notification_id_seq') INTO :notification_id;
+INSERT INTO Notification_Question (id_notification, question_id) VALUES (:notification_id, $question_id);
+INSERT INTO Notifies (id_notification, id_user) VALUES (:notification_id, $user_id);
+
+-- Commit the transaction
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+
+INSERT INTO Post (creation_date, edited, user_id)
+VALUES (CURRENT_DATE, 0, $user_id);
+
+SELECT currval('comment_id_seq') INTO :comment_id;
+
+INSERT INTO Comment (body, post_id)
+VALUES ($comment_body, currval('post_id_seq'));
+
+-- Insert a notification for the user of the post
+INSERT INTO Notification (name) VALUES ('New comment on your post');
+SELECT currval('notification_id_seq') INTO :notification_id;
+INSERT INTO Notification_Comment (id_notification, comment_id) VALUES (:notification_id, :comment_id);
+INSERT INTO Notifies (id_notification, id_user) VALUES (:notification_id, $user_id);
+
+-- Commit the transaction
+COMMIT;
+
 
 -- DATABASE POPULATION 
 
