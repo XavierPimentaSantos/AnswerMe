@@ -3,8 +3,8 @@ BEGIN TRANSACTION;
 -- Table: Answer
 DROP TABLE IF EXISTS Answer;
 CREATE TABLE IF NOT EXISTS Answer (
-    title TEXT NOT NULL, 
-    body TEXT NOT NULL, 
+    title VARCHAR NOT NULL, 
+    body VARCHAR NOT NULL, 
     correct BOOLEAN NOT NULL, 
     score INTEGER DEFAULT (0) NOT NULL,
     answered_question INTEGER REFERENCES Question (post_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS Answer (
 -- Table: Comment
 DROP TABLE IF EXISTS Comment;
 CREATE TABLE IF NOT EXISTS Comment (
-    body TEXT NOT NULL,
+    body VARCHAR NOT NULL,
     post_id INTEGER REFERENCES Post (id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (post_id));
 
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS Following_User (
 DROP TABLE IF EXISTS Notification;
 CREATE TABLE IF NOT EXISTS Notification (
     id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL);
+    name VARCHAR NOT NULL);
 
 -- Table: Notifies
 DROP TABLE IF EXISTS Notifies;
@@ -116,15 +116,15 @@ CREATE TABLE Post_Vote (
 DROP TABLE IF EXISTS Post;
 CREATE TABLE IF NOT EXISTS Post (
     id SERIAL PRIMARY KEY, 
-    creation_date DATE DEFAULT GETDATE() NOT NULL, 
+    creation_date DATE DEFAULT GETDATE() NOT NULL,
     edited BOOLEAN NOT NULL, 
     user_id REFERENCES User (id) ON DELETE SET NULL ON UPDATE CASCADE);
 
 -- Table: Question
 DROP TABLE IF EXISTS Question;
 CREATE TABLE IF NOT EXISTS Question (
-    title TEXT NOT NULL, 
-    body TEXT NOT NULL, 
+    title VARCHAR NOT NULL, 
+    body VARCHAR NOT NULL, 
     score INTEGER DEFAULT (0) NOT NULL,
     post_id INTEGER REFERENCES Post (id) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL
     PRIMARY KEY (post_id));
@@ -144,7 +144,7 @@ CREATE TABLE IF NOT EXISTS Settings (
 DROP TABLE IF EXISTS Tag;
 CREATE TABLE IF NOT EXISTS Tag (
     id SERIAL PRIMARY KEY,
-    name TEXT UNIQUE NOT NULL);
+    name VARCHAR UNIQUE NOT NULL);
 
 -- Table: Tagged
 DROP TABLE IF EXISTS Tagged;
@@ -157,12 +157,13 @@ CREATE TABLE IF NOT EXISTS Tagged (
 DROP TABLE IF EXISTS User;
 CREATE TABLE IF NOT EXISTS User (
     id SERIAL PRIMARY KEY, 
-    name TEXT NOT NULL, 
-    username TEXT UNIQUE NOT NULL, 
-    email TEXT UNIQUE NOT NULL, 
-    bio TEXT, 
+    name VARCHAR NOT NULL, 
+    username VARCHAR UNIQUE NOT NULL,
+    password VARCHAR NOT NULL,
+    email VARCHAR UNIQUE NOT NULL, 
+    bio VARCHAR, 
     birth_date DATE, 
-    nationality TEXT,
+    nationality VARCHAR,
     user_settings UNIQUE REFERENCES Settings (id) ON DELETE CASCADE ON UPDATE CASCADE,
     type CHAR NOT NULL);
 
