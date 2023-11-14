@@ -1,4 +1,3 @@
-PRAGMA foreign_keys = off;
 BEGIN TRANSACTION;
 
 -- Table: Answer
@@ -133,13 +132,13 @@ CREATE TABLE IF NOT EXISTS Question (
 -- Table: Settings
 DROP TABLE IF EXISTS Settings;
 CREATE TABLE IF NOT EXISTS Settings (
+    id SERIAL PRIMARY KEY,
     dark_mode BOOLEAN NOT NULL, 
     hide_nation BOOLEAN NOT NULL, 
     hide_birth_date BOOLEAN NOT NULL, 
     hide_email BOOLEAN NOT NULL, 
     hide_name BOOLEAN NOT NULL,
-    language BOOLEAN NOT NULL,
-    user_id UNIQUE REFERENCES User (id) ON DELETE CASCADE ON UPDATE CASCADE);
+    language BOOLEAN NOT NULL);
 
 -- Table: Tag
 DROP TABLE IF EXISTS Tag;
@@ -163,7 +162,8 @@ CREATE TABLE IF NOT EXISTS User (
     email TEXT UNIQUE NOT NULL, 
     bio TEXT, 
     birth_date DATE, 
-    nationality TEXT, 
+    nationality TEXT,
+    user_settings UNIQUE REFERENCES Settings (id) ON DELETE CASCADE ON UPDATE CASCADE,
     type CHAR NOT NULL);
 
 -- Performance Indexes
@@ -209,7 +209,8 @@ CREATE TRIGGER question_search_update
     EXECUTE PROCEDURE question_search_update();
 
 COMMIT TRANSACTION;
-PRAGMA foreign_keys = on;
+
+-- DATABASE POPULATION 
 
 -- 10 users
 INSERT INTO User (name, username, email, short_bio, birthdate, nationality, number)
