@@ -187,14 +187,14 @@ CREATE FUNCTION question_search_update() RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'INSERT' THEN
         NEW.tsvectors = (
-            setweight(to_tsvector('english', NEW.title), 'A') ||
+            setweight(to_tsvector('english', NEW.title), 'A') OR
             setweight(to_tsvector('english', NEW.body), 'B')
         );
     END IF;
     IF TG_OP = 'UPDATE' THEN
-        IF (NEW.title <> OLD.title || NEW.body <> OLD.body) THEN
+        IF (NEW.title <> OLD.title OR NEW.body <> OLD.body) THEN
             NEW.tsvectors = (
-                setweight(to_tsvector('english', NEW.title), 'A') ||
+                setweight(to_tsvector('english', NEW.title), 'A') OR
                 setweight(to_tsvector('english', NEW.body), 'B')
             );
         END IF;
