@@ -1,0 +1,967 @@
+openapi: 3.0.0
+
+info:
+  version: '1.0'
+  title: 'LBAW AnswerMe Web API'
+  description: 'Web Resources Specification (A7) for AnswerMe'
+
+servers:
+  - url: http://lbaw.fe.up.pt
+    description: Production server
+
+tags:
+  - name: 'M01: Authentication and Individual Profile'
+  - name: 'M02: User interactions'
+  - name: 'M03: Questions'
+  - name: 'M04: Answers'
+  - name: 'M05: Comments'
+  - name: 'M06: Search'
+  - name: 'M07: Notifications'
+  - name: 'M08: System Administration and Static Pages'
+
+paths:
+  /login:
+    get:
+      operationId: R101
+      summary: 'R101: Login Form'
+      description: 'Provide login form. Access: PUB'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+      responses:
+        '200':
+          description: 'OK. Show Log-in UI'
+
+    post:
+      operationId: R102
+      summary: 'R102: Login Action'
+      description: 'Processes the login form submission. Access: PUB'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+
+      responses:
+        '302':
+          description: 'Redirect after processing the login credentials.'
+          headers:
+            Location:
+              schema:
+                type: string
+              examples:
+                302Success:
+                  description: 'Successful authentication. Redirect to user profile.'
+                  value: '/users/{id}'
+                302Error:
+                  description: 'Failed authentication. Redirect to login form.'
+                  value: '/login'
+
+  /logout:
+    post:
+      operationId: R103
+      summary: 'R103: Logout'
+      description: 'Log out the currently authenticated user. Access: USR'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+      responses:
+        '204':
+          description: 'No Content. User successfully logged out.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+
+  /recover-credentials:
+    post:
+      operationId: R105
+      summary: 'R105: Credential Recovery'
+      description: 'Recover user credentials. Access: PUB'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+              required:
+                - email
+
+      responses:
+        '200':
+          description: 'OK. Recovery instructions sent to the user.'
+        '404':
+          description: 'Not Found. Email address not registered.'
+
+  /users/{user_id}:
+    get:
+      operationId: R106
+      summary: 'R106: View User Profile'
+      description: 'View a user profile. Access: PUB'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+      parameters:
+        - name: user_id
+          in: path
+          description: 'User ID to view'
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: 'OK. Show user profile.'
+        '404':
+          description: 'Not Found. User not found.'
+
+  /users/{user_id}/edit:
+    put:
+      operationId: R107
+      summary: 'R107: Edit User Profile'
+      description: 'Edit the user profile. Access: USR'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+      parameters:
+        - name: user_id
+          in: path
+          description: 'User ID to edit'
+          required: true
+          schema:
+            type: integer
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+              required:
+                - username
+                - email
+
+      responses:
+        '200':
+          description: 'OK. User profile updated.'
+        '400':
+          description: 'Bad Request. Profile update failed.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. User not found.'
+
+  /questions/{question_id}/follow:
+    post:
+      operationId: R201
+      summary: 'R201: Follow Question'
+      description: 'Follow a question. Access: USR'
+      tags:
+        - 'M02: User interactions'
+      parameters:
+        - name: question_id
+          in: path
+          description: 'Question ID to follow'
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: 'OK. Question followed.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. Question not found.'
+
+  /questions/{question_id}/unfollow:
+    post:
+      operationId: R202
+      summary: 'R202: Unfollow Question'
+      description: 'Unfollow a question. Access: USR'
+      tags:
+        - 'M02: User interactions'
+      parameters:
+        - name: question_id
+          in: path
+          description: 'Question ID to unfollow'
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: 'OK. Question unfollowed.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. Question not found.'
+
+  /users/{target_user_id}/follow:
+    post:
+      operationId: R203
+      summary: 'R203: Follow User'
+      description: 'Follow a user. Access: USR'
+      tags:
+        - 'M02: User interactions'
+      parameters:
+        - name: target_user_id
+          in: path
+          description: 'User ID to follow'
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: 'OK. User followed.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. User not found.'
+
+  /users/{target_user_id}/unfollow:
+    post:
+      operationId: R204
+      summary: 'R204: Unfollow User'
+      description: 'Unfollow a user. Access: USR'
+      tags:
+        - 'M02: User interactions'
+      parameters:
+        - name: target_user_id
+          in: path
+          description: 'User ID to unfollow'
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: 'OK. User unfollowed.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. User not found.'
+
+  /tags/{tag_id}/follow:
+    post:
+      operationId: R205
+      summary: 'R205: Follow Tag'
+      description: 'Follow a tag. Access: USR'
+      tags:
+        - 'M02: User interactions'
+      parameters:
+        - name: tag_id
+          in: path
+          description: 'Tag ID to follow'
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: 'OK. Tag followed.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. Tag not found.'
+
+  /tags/{tag_id}/unfollow:
+    post:
+      operationId: R206
+      summary: 'R206: Unfollow Tag'
+      description: 'Unfollow a tag. Access: USR'
+      tags:
+        - 'M02: User interactions'
+      parameters:
+        - name: tag_id
+          in: path
+          description: 'Tag ID to unfollow'
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: 'OK. Tag unfollowed.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. Tag not found.'
+
+  /questions/{question_id}/vote:
+    post:
+      operationId: R207
+      summary: 'R207: Vote on Question'
+      description: 'Vote on a question. Access: USR'
+      tags:
+        - 'M02: User interactions'
+      parameters:
+        - name: question_id
+          in: path
+          description: 'Question ID to vote on'
+          required: true
+          schema:
+            type: integer
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                vote:
+                  type: integer
+                  description: 'Vote value (+1 for upvote, -1 for downvote)'
+              required:
+                - vote
+
+      responses:
+        '200':
+          description: 'OK. Question voted successfully.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. Question not found.'
+        '400':
+          description: 'Bad Request. Invalid vote value.'
+
+  /questions:
+    post:
+      operationId: R301
+      summary: 'R301: Post Question'
+      description: 'Post a new question. Access: USR'
+      tags:
+        - 'M03: Questions'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                tags:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - title
+                - content
+
+      responses:
+        '201':
+          description: 'Created. Question posted successfully.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+
+  /questions/{question_id}:
+    put:
+      operationId: R302
+      summary: 'R302: Edit Question'
+      description: 'Edit an existing question. Access: AUTH'
+      tags:
+        - 'M03: Questions'
+      parameters:
+        - name: question_id
+          in: path
+          description: 'Question ID to edit'
+          required: true
+          schema:
+            type: integer
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                tags:
+                  type: array
+                  items:
+                    type: string
+
+      responses:
+        '200':
+          description: 'OK. Question edited successfully.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. Question not found.'
+
+    delete:
+      operationId: R303
+      summary: 'R303: Delete Question'
+      description: 'Delete an existing question. Access: AUTH'
+      tags:
+        - 'M03: Questions'
+      parameters:
+        - name: question_id
+          in: path
+          description: 'Question ID to delete'
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '204':
+          description: 'No Content. Question deleted successfully.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. Question not found.'
+
+    patch:
+      operationId: R304
+      summary: 'R304: Edit Question Tags'
+      description: 'Edit tags of an existing question. Access: AUTH'
+      tags:
+        - 'M03: Questions'
+      parameters:
+        - name: question_id
+          in: path
+          description: 'Question ID to edit tags'
+          required: true
+          schema:
+            type: integer
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+
+      responses:
+        '200':
+          description: 'OK. Question tags edited successfully.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. Question not found.'
+
+  /questions/{question_id}/answers:
+    post:
+      operationId: R401
+      summary: 'R401: Post Answer'
+      description: 'Post a new answer to a question. Access: USR'
+      tags:
+        - 'M04: Answers'
+      parameters:
+        - name: question_id
+          in: path
+          description: 'Question ID to answer'
+          required: true
+          schema:
+            type: integer
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+              required:
+                - content
+
+      responses:
+        '201':
+          description: 'Created. Answer posted successfully.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. Question not found.'
+
+  /questions/{question_id}/answers/{answer_id}:
+    put:
+      operationId: R402
+      summary: 'R402: Edit Answer'
+      description: 'Edit an existing answer. Access: AUTH'
+      tags:
+        - 'M04: Answers'
+      parameters:
+        - name: question_id
+          in: path
+          description: 'Question ID of the answer'
+          required: true
+          schema:
+            type: integer
+        - name: answer_id
+          in: path
+          description: 'Answer ID to edit'
+          required: true
+          schema:
+            type: integer
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+
+      responses:
+        '200':
+          description: 'OK. Answer edited successfully.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. Answer not found.'
+
+    delete:
+      operationId: R403
+      summary: 'R403: Delete Answer'
+      description: 'Delete an existing answer. Access: AUTH'
+      tags:
+        - 'M04: Answers'
+      parameters:
+        - name: question_id
+          in: path
+          description: 'Question ID of the answer'
+          required: true
+          schema:
+            type: integer
+        - name: answer_id
+          in: path
+          description: 'Answer ID to delete'
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '204':
+          description: 'No Content. Answer deleted successfully.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. Answer not found.'
+
+    patch:
+      operationId: R404
+      summary: 'R404: Validate Answer'
+      description: 'Validate an answer as correct. Access: AUTH'
+      tags:
+        - 'M04: Answers'
+      parameters:
+        - name: question_id
+          in: path
+          description: 'Question ID of the answer'
+          required: true
+          schema:
+            type: integer
+        - name: answer_id
+          in: path
+          description: 'Answer ID to validate'
+          required: true
+          schema:
+            type: integer
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                validate:
+                  type: boolean
+              required:
+                - validate
+
+      responses:
+        '200':
+          description: 'OK. Answer validated successfully.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. Answer not found.'
+
+  /questions/{question_id}/comments:
+    post:
+      operationId: R501
+      summary: 'R501: Post Comment on Question'
+      description: 'Post a new comment on a question. Access: USR'
+      tags:
+        - 'M05: Comments'
+      parameters:
+        - name: question_id
+          in: path
+          description: 'Question ID to comment on'
+          required: true
+          schema:
+            type: integer
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+              required:
+                - content
+
+      responses:
+        '201':
+          description: 'Created. Comment posted successfully.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. Question not found.'
+
+  /questions/{question_id}/answers/{answer_id}/comments:
+    post:
+      operationId: R502
+      summary: 'R502: Post Comment on Answer'
+      description: 'Post a new comment on an answer. Access: USR'
+      tags:
+        - 'M05: Comments'
+      parameters:
+        - name: question_id
+          in: path
+          description: 'Question ID of the answer'
+          required: true
+          schema:
+            type: integer
+        - name: answer_id
+          in: path
+          description: 'Answer ID to comment on'
+          required: true
+          schema:
+            type: integer
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+              required:
+                - content
+
+      responses:
+        '201':
+          description: 'Created. Comment posted successfully.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. Answer not found.'
+
+  /questions/{question_id}/comments/{comment_id}:
+    put:
+      operationId: R503
+      summary: 'R503: Edit Comment on Question'
+      description: 'Edit an existing comment on a question. Access: AUTH'
+      tags:
+        - 'M05: Comments'
+      parameters:
+        - name: question_id
+          in: path
+          description: 'Question ID of the comment'
+          required: true
+          schema:
+            type: integer
+        - name: comment_id
+          in: path
+          description: 'Comment ID to edit'
+          required: true
+          schema:
+            type: integer
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+
+      responses:
+        '200':
+          description: 'OK. Comment edited successfully.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. Comment not found.'
+
+    delete:
+      operationId: R504
+      summary: 'R504: Delete Comment on Question'
+      description: 'Delete an existing comment on a question. Access: AUTH'
+      tags:
+        - 'M05: Comments'
+      parameters:
+        - name: question_id
+          in: path
+          description: 'Question ID of the comment'
+          required: true
+          schema:
+            type: integer
+        - name: comment_id
+          in: path
+          description: 'Comment ID to delete'
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '204':
+          description: 'No Content. Comment deleted successfully.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. Comment not found.'
+
+  /questions/{question_id}/answers/{answer_id}/comments/{comment_id}:
+    put:
+      operationId: R505
+      summary: 'R505: Edit Comment on Answer'
+      description: 'Edit an existing comment on an answer. Access: AUTH'
+      tags:
+        - 'M05: Comments'
+      parameters:
+        - name: question_id
+          in: path
+          description: 'Question ID of the answer'
+          required: true
+          schema:
+            type: integer
+        - name: answer_id
+          in: path
+          description: 'Answer ID of the comment'
+          required: true
+          schema:
+            type: integer
+        - name: comment_id
+          in: path
+          description: 'Comment ID to edit'
+          required: true
+          schema:
+            type: integer
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+
+      responses:
+        '200':
+          description: 'OK. Comment edited successfully.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. Comment not found.'
+
+    delete:
+      operationId: R506
+      summary: 'R506: Delete Comment on Answer'
+      description: 'Delete an existing comment on an answer. Access: AUTH'
+      tags:
+        - 'M05: Comments'
+      parameters:
+        - name: question_id
+          in: path
+          description: 'Question ID
+
+  /search:
+    get:
+      operationId: R601
+      summary: 'R601: Search'
+      description: 'Search for questions. Access: PUB'
+      tags:
+        - 'M06: Search'
+      parameters:
+        - name: q
+          in: query
+          description: 'Full-text search query'
+          schema:
+            type: string
+
+        - name: tags
+          in: query
+          description: 'Comma-separated list of tags to filter by'
+          schema:
+            type: array
+            items:
+              type: string
+
+        - name: from_date
+          in: query
+          description: 'Filter questions by date (ISO 8601 format)'
+          schema:
+            type: string
+            format: date-time
+
+        - name: order_by_date
+          in: query
+          description: 'Order results by date (asc or desc)'
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+
+        - name: order_by_score
+          in: query
+          description: 'Order results by score (asc or desc)'
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+
+      responses:
+        '200':
+          description: 'OK. Search results retrieved successfully.'
+
+  /notifications:
+    get:
+      operationId: R701
+      summary: 'R701: Get Notifications'
+      description: 'Get a user\'s notifications. Access: USR'
+      tags:
+        - 'M07: Notifications'
+
+      responses:
+        '200':
+          description: 'OK. Notifications retrieved successfully.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+
+  /notifications/new-follower:
+    post:
+      operationId: R702
+      summary: 'R702: New Follower Notification'
+      description: 'Send a notification for a new follower. Access: USR'
+      tags:
+        - 'M07: Notifications'
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                follower_id:
+                  type: integer
+                  description: 'ID of the new follower'
+              required:
+                - follower_id
+
+      responses:
+        '201':
+          description: 'Created. Notification sent successfully.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. Follower not found.'
+
+  /notifications/new-comment:
+    post:
+      operationId: R703
+      summary: 'R703: New Comment Notification'
+      description: 'Send a notification for a new comment. Access: USR'
+      tags:
+        - 'M07: Notifications'
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment_id:
+                  type: integer
+                  description: 'ID of the new comment'
+              required:
+                - comment_id
+
+      responses:
+        '201':
+          description: 'Created. Notification sent successfully.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. Comment not found.'
+
+  /notifications/new-vote:
+    post:
+      operationId: R704
+      summary: 'R704: New Vote Notification'
+      description: 'Send a notification for a new vote. Access: USR'
+      tags:
+        - 'M07: Notifications'
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                vote_id:
+                  type: integer
+                  description: 'ID of the new vote'
+              required:
+                - vote_id
+
+      responses:
+        '201':
+          description: 'Created. Notification sent successfully.'
+        '401':
+          description: 'Unauthorized. User not authenticated.'
+        '404':
+          description: 'Not Found. Vote not found.'
+
+  /notifications/post-deleted:
+    post:
+      operationId: R705
+      summary: 'R705: Post Deleted Notification'
+      description
