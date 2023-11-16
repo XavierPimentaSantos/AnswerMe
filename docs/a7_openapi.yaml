@@ -806,7 +806,7 @@ paths:
       parameters:
         - name: question_id
           in: path
-          description: 'Question ID
+          description: 'Question ID'
 
   /search:
     get:
@@ -863,7 +863,7 @@ paths:
     get:
       operationId: R701
       summary: 'R701: Get Notifications'
-      description: 'Get a user\'s notifications. Access: USR'
+      description: 'Get the notifications of a user. Access: USR'
       tags:
         - 'M07: Notifications'
 
@@ -964,4 +964,4 @@ paths:
     post:
       operationId: R705
       summary: 'R705: Post Deleted Notification'
-      description
+      description: 'Notification received upon having a post deleted by a moderator.'
