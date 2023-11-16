@@ -965,3 +965,18 @@ paths:
       operationId: R705
       summary: 'R705: Post Deleted Notification'
       description: 'Notification received upon having a post deleted by a moderator.'
+      tags:
+        - 'M07: Notifications'
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                vote_id:
+                  type: integer
+                  description: 'ID of the new notification'
+              required:
+                - post_id
