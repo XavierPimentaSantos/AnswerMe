@@ -1,188 +1,251 @@
 BEGIN TRANSACTION;
 
--- Table: Answer
-DROP TABLE IF EXISTS Answer;
-CREATE TABLE IF NOT EXISTS Answer (
+-- Table: answers
+DROP TABLE IF EXISTS answers;
+CREATE TABLE IF NOT EXISTS answers (
+    answered_question INTEGER NOT NULL,
+    post_id INTEGER NOT NULL,
     title VARCHAR NOT NULL, 
     body VARCHAR NOT NULL, 
     correct BOOLEAN NOT NULL, 
     score INTEGER DEFAULT (0) NOT NULL,
-    answered_question INTEGER REFERENCES Question (post_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    post_id INTEGER REFERENCES Post (id) ON DELETE CASCADE ON UPDATE CASCADE
-    PRIMARY KEY (post_id));
+    PRIMARY KEY (post_id),
+    FOREIGN KEY (answered_question) REFERENCES questions(post_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
--- Table: Comment
-DROP TABLE IF EXISTS Comment;
-CREATE TABLE IF NOT EXISTS Comment (
+-- Table: comments
+DROP TABLE IF EXISTS comments;
+CREATE TABLE IF NOT EXISTS comments (
+    post_id INTEGER NOT NULL,
     body VARCHAR NOT NULL,
-    post_id INTEGER REFERENCES Post (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY (post_id));
+    PRIMARY KEY (post_id),
+    FOREIGN KEY (post_id)REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
--- Table: Comment_question
-DROP TABLE IF EXISTS Comment_question;
-CREATE TABLE IF NOT EXISTS Comment_question (
-    id_comment INTEGER REFERENCES Comment (post_id),
-    id_question INTEGER REFERENCES Question (post_id),
-    PRIMARY KEY (id_comment));
+-- Table: comment_questions
+DROP TABLE IF EXISTS comment_questions;
+CREATE TABLE IF NOT EXISTS comment_questions (
+    id_comment INTEGER NOT NULL,
+    id_question INTEGER NOT NULL,
+    PRIMARY KEY (id_comment),
+    FOREIGN KEY (id_comment) REFERENCES comments(post_id),
+    FOREIGN KEY (id_question) REFERENCES questions(post_id)
+);
 
--- Table: Comment_answer
-DROP TABLE IF EXISTS Comment_answer;
-CREATE TABLE IF NOT EXISTS Comment_answer (
-    id_comment INTEGER REFERENCES Comment (post_id),
-    id_answer INTEGER REFERENCES Answer (post_id),
-    PRIMARY KEY (id_comment));
+-- Table: comment_answers
+DROP TABLE IF EXISTS comment_answers;
+CREATE TABLE IF NOT EXISTS comment_answers (
+    id_comment INTEGER NOT NULL,
+    id_answer INTEGER NOT NULL,
+    PRIMARY KEY (id_comment),
+    FOREIGN KEY (id_comment) REFERENCES comments(post_id),
+    FOREIGN KEY (id_answer) REFERENCES answers(post_id)
+);
 
--- Table: Following_Question
-DROP TABLE IF EXISTS Following_Question;
-CREATE TABLE IF NOT EXISTS Following_Question (
-    user_id INTEGER REFERENCES User (id) ON DELETE CASCADE ON UPDATE CASCADE, 
-    question_id INTEGER REFERENCES Question (post_id) ON DELETE CASCADE ON UPDATE CASCADE);
+-- Table: following_questions
+DROP TABLE IF EXISTS following_questions;
+CREATE TABLE IF NOT EXISTS following_questions (
+    user_id INTEGER NOT NULL,
+    question_id INTEGER NOT NULL,
+    PRIMARY KEY (user_id, question_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE, 
+    FOREIGN KEY (question_id) REFERENCES questions(post_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
--- Table: Following_Tag
-DROP TABLE IF EXISTS Following_Tag;
-CREATE TABLE IF NOT EXISTS Following_Tag (
-    user_id INTEGER REFERENCES User (id) ON DELETE SET NULL ON UPDATE CASCADE, 
-    tag_id INTEGER REFERENCES Tag (id) ON DELETE CASCADE ON UPDATE CASCADE);
+-- Table: following_tags
+DROP TABLE IF EXISTS following_tags;
+CREATE TABLE IF NOT EXISTS following_tags (
+    user_id INTEGER NOT NULL,
+    tag_id INTEGER NOT NULL,
+    PRIMARY KEY (user_id, tag_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE, 
+    FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
--- Table: Following_User
-DROP TABLE IF EXISTS Following_User;
-CREATE TABLE IF NOT EXISTS Following_User (
-    user_id INTEGER REFERENCES User (id) ON DELETE CASCADE ON UPDATE CASCADE, 
-    followed_user_id INTEGER REFERENCES User (id) ON DELETE CASCADE ON UPDATE CASCADE);
+-- Table: following_users
+DROP TABLE IF EXISTS following_users;
+CREATE TABLE IF NOT EXISTS following_users (
+    user_id INTEGER NOT NULL,
+    followed_user_id INTEGER NOT NULL,
+    PRIMARY KEY (user_id, followed_user_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE, 
+    FOREIGN KEY (followed_user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
--- Table: Notification
-DROP TABLE IF EXISTS Notification;
-CREATE TABLE IF NOT EXISTS Notification (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR NOT NULL);
+-- Table: notifications
+DROP TABLE IF EXISTS notifications;
+CREATE TABLE IF NOT EXISTS notifications (
+    id SERIAL,
+    name VARCHAR NOT NULL,
+    PRIMARY KEY (id)
+);
 
--- Table: Notifies
-DROP TABLE IF EXISTS Notifies;
-CREATE TABLE IF NOT EXISTS Notifies (
-    id_notification INTEGER REFERENCES Notification (id),
-    id_user INTEGER REFERENCES User (id),
-    PRIMARY KEY (id_notification, id_user));
+-- Table: notifies
+DROP TABLE IF EXISTS notifies;
+CREATE TABLE IF NOT EXISTS notifies (
+    id_notification INTEGER NOT NULL,
+    id_user INTEGER NOT NULL,
+    PRIMARY KEY (id_notification, id_user),
+    FOREIGN KEY (id_notification) REFERENCES notifications(id),
+    FOREIGN KEY (id_user) REFERENCES users(id)
+);
 
--- Table: Notification_Answer
-DROP TABLE IF EXISTS Notification_Answer;
-CREATE TABLE IF NOT EXISTS Notification_Answer (
-    id_notification INTEGER REFERENCES Notification (id),
-    answer_id INTEGER REFERENCES Answer (post_id) ON DELETE SET NULL ON UPDATE CASCADE, 
-    PRIMARY KEY (id_notification));
+-- Table: notification_answers
+DROP TABLE IF EXISTS notification_answers;
+CREATE TABLE IF NOT EXISTS notification_answers (
+    id_notification INTEGER NOT NULL,
+    answer_id INTEGER NOT NULL,
+    PRIMARY KEY (id_notification, answer_id),
+    FOREIGN KEY (id_notification) REFERENCES notifications(id),
+    FOREIGN KEY (answer_id) REFERENCES answers(post_id) ON DELETE SET NULL ON UPDATE CASCADE
+);
 
--- Table: Notification_Comment
-DROP TABLE IF EXISTS Notification_Comment;
-CREATE TABLE IF NOT EXISTS Notification_Comment (
-    id_notification INTEGER REFERENCES Notification (id),
-    comment_id INTEGER REFERENCES Comment (post_id) ON DELETE SET NULL ON UPDATE CASCADE, 
-    PRIMARY KEY (id_notification));
+-- Table: notification_comments
+DROP TABLE IF EXISTS notification_comments;
+CREATE TABLE IF NOT EXISTS notification_comments (
+    id_notification INTEGER NOT NULL,
+    comment_id INTEGER NOT NULL,
+    PRIMARY KEY (id_notification, comment_id),
+    FOREIGN KEY (id_notification) REFERENCES notifications(id),
+    FOREIGN KEY (comment_id) REFERENCES comments(post_id) ON DELETE SET NULL ON UPDATE CASCADE
+);
 
--- Table: Notification_Delete
-DROP TABLE IF EXISTS Notification_Delete;
-CREATE TABLE IF NOT EXISTS Notification_Delete (
-    id_notification INTEGER REFERENCES Notification (id),
-    post_id INTEGER REFERENCES Post (id) ON DELETE NO ACTION
-    PRIMARY KEY (id_notification));
+-- Table: notification_deletes
+DROP TABLE IF EXISTS notification_deletes;
+CREATE TABLE IF NOT EXISTS notification_deletes (
+    id_notification INTEGER NOT NULL,
+    post_id INTEGER NOT NULL,
+    PRIMARY KEY (id_notification, post_id),
+    FOREIGN KEY (id_notification) REFERENCES notifications(id),
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE NO ACTION
+);
 
--- Table: Notification_Question
-DROP TABLE IF EXISTS Notification_Question;
-CREATE TABLE IF NOT EXISTS Notification_Question (
-    id_notification INTEGER REFERENCES Notification (id), 
-    question_id INTEGER REFERENCES Question (post_id) ON DELETE SET NULL ON UPDATE CASCADE,
-    PRIMARY KEY (id_notification));
+-- Table: notification_questions
+DROP TABLE IF EXISTS notification_questions;
+CREATE TABLE IF NOT EXISTS notification_questions (
+    id_notification INTEGER NOT NULL,
+    question_id INTEGER NOT NULL,
+    PRIMARY KEY (id_notification, question_id),
+    FOREIGN KEY (id_notification) REFERENCES notifications(id), 
+    FOREIGN KEY (question_id) REFERENCES questions(post_id) ON DELETE SET NULL ON UPDATE CASCADE
+);
 
--- Table: Notification_User
-DROP TABLE IF EXISTS Notification_User;
-CREATE TABLE IF NOT EXISTS Notification_User (
-    id_notification INTEGER REFERENCES Notification (id),
-    following_user_id INTEGER REFERENCES Following_User (followed_user_id) ON DELETE SET NULL ON UPDATE CASCADE,
-    PRIMARY KEY (id_notification));
+-- Table: notification_users
+DROP TABLE IF EXISTS notification_users;
+CREATE TABLE IF NOT EXISTS notification_users (
+    id_notification INTEGER NOT NULL,
+    following_user_id INTEGER NOT NULL,
+    PRIMARY KEY (id_notification, following_user_id),
+    FOREIGN KEY (id_notification) REFERENCES notifications(id),
+    FOREIGN KEY (following_user_id) REFERENCES following_users(followed_user_id) ON DELETE SET NULL ON UPDATE CASCADE
+);
 
--- Table: Notification_Vote
-DROP TABLE IF EXISTS Notification_Vote;
-CREATE TABLE IF NOT EXISTS Notification_Vote (
-    id_notification INTEGER REFERENCES Notification (id),
-    post_id INTEGER REFERENCES Post (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY (id_notification));
+-- Table: notification_votes
+DROP TABLE IF EXISTS notification_votes;
+CREATE TABLE IF NOT EXISTS notification_votes (
+    id_notification INTEGER NOT NULL,
+    post_id INTEGER NOT NULL,
+    PRIMARY KEY (id_notification, post_id),
+    FOREIGN KEY (id_notification) REFERENCES notifications(id),
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
--- Table: Post_Vote
-DROP TABLE IF EXISTS Post_Vote;
-CREATE TABLE Post_Vote (
-    user_id INTEGER REFERENCES User (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    post_id INTEGER REFERENCES Post (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY (user_id, post_id));
+-- Table: post_votes
+DROP TABLE IF EXISTS post_votes;
+CREATE TABLE post_votes (
+    user_id INTEGER NOT NULL,
+    post_id INTEGER NOT NULL,
+    PRIMARY KEY (user_id, post_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
--- Table: Post
-DROP TABLE IF EXISTS Post;
-CREATE TABLE IF NOT EXISTS Post (
-    id SERIAL PRIMARY KEY, 
+-- Table: posts
+DROP TABLE IF EXISTS posts;
+CREATE TABLE IF NOT EXISTS posts (
+    id SERIAL NOT NULL,
     creation_date TIME DEFAULT NOW() NOT NULL,
-    edited BOOLEAN NOT NULL, 
-    user_id REFERENCES User (id) ON DELETE SET NULL ON UPDATE CASCADE);
+    edited BOOLEAN NOT NULL,
+    user_id INTEGER NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE);
 
--- Table: Question
-DROP TABLE IF EXISTS Question;
-CREATE TABLE IF NOT EXISTS Question (
-    title VARCHAR NOT NULL, 
+-- Table: questions
+DROP TABLE IF EXISTS questions;
+CREATE TABLE IF NOT EXISTS questions (
+    post_id INTEGER NOT NULL,
+    title VARCHAR NOT NULL,
     body VARCHAR NOT NULL, 
     score INTEGER DEFAULT (0) NOT NULL,
-    post_id INTEGER REFERENCES Post (id) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL
-    PRIMARY KEY (post_id));
+    PRIMARY KEY (post_id),
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL
+);
 
--- Table: Settings
-DROP TABLE IF EXISTS Settings;
-CREATE TABLE IF NOT EXISTS Settings (
-    id SERIAL PRIMARY KEY,
+-- Table: settings
+DROP TABLE IF EXISTS settings;
+CREATE TABLE IF NOT EXISTS settings (
+    id SERIAL,
     dark_mode BOOLEAN NOT NULL, 
     hide_nation BOOLEAN NOT NULL, 
     hide_birth_date BOOLEAN NOT NULL, 
     hide_email BOOLEAN NOT NULL, 
     hide_name BOOLEAN NOT NULL,
-    language BOOLEAN NOT NULL);
+    language BOOLEAN NOT NULL,
+    PRIMARY KEY (id),
+);
 
--- Table: Tag
-DROP TABLE IF EXISTS Tag;
-CREATE TABLE IF NOT EXISTS Tag (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR UNIQUE NOT NULL);
+-- Table: tags
+DROP TABLE IF EXISTS tags;
+CREATE TABLE IF NOT EXISTS tags (
+    id SERIAL,
+    name VARCHAR UNIQUE NOT NULL,
+    PRIMARY KEY (id)
+);
 
--- Table: Tagged
-DROP TABLE IF EXISTS Tagged;
-CREATE TABLE IF NOT EXISTS Tagged (
-    id_tag INTEGER REFERENCES Tag (id),
-    id_post INTEGER REFERENCES Post (id),
-    PRIMARY KEY (id_tag, id_post));
+-- Table: tagged
+DROP TABLE IF EXISTS tagged;
+CREATE TABLE IF NOT EXISTS tagged (
+    id_tag INTEGER,
+    id_post INTEGER,
+    PRIMARY KEY (id_tag, id_post),
+    FOREIGN KEY (id_tag) REFERENCES tags(id),
+    FOREIGN KEY (id_post) REFERENCES posts(id)
+);
 
--- Table: User
-DROP TABLE IF EXISTS User;
-CREATE TABLE IF NOT EXISTS User (
-    id SERIAL PRIMARY KEY, 
-    name VARCHAR NOT NULL, 
+-- Table: users
+DROP TABLE IF EXISTS users;
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL NOT NULL,
+    name VARCHAR NOT NULL,
     username VARCHAR UNIQUE NOT NULL,
     password VARCHAR NOT NULL,
-    email VARCHAR UNIQUE NOT NULL, 
-    bio VARCHAR, 
-    birth_date DATE, 
+    email VARCHAR UNIQUE NOT NULL,
+    bio VARCHAR,
+    birth_date DATE,
     nationality VARCHAR,
-    user_settings UNIQUE REFERENCES Settings (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    type CHAR NOT NULL);
+    type CHAR NOT NULL,
+    user_settings INTEGER,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_settings) REFERENCES settings(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 -- Performance Indexes
 
-CREATE INDEX tagged_tag ON Tagged USING hash (id_tag);
+CREATE INDEX tagged_tag ON tagged USING hash (id_tag);
 
-CREATE INDEX comment_question ON Comment_question USING btree (id_question);
-CLUSTER Comment_question USING comment_question;
+CREATE INDEX comment_question ON comment_questions USING btree (id_question);
+CLUSTER comment_questions USING comment_question;
 
-CREATE INDEX comment_answer ON Comment_answer USING btree (id_answer);
+CREATE INDEX comment_answer ON comment_answers USING btree (id_answer);
 CLUSTER comment_answer USING comment_answer;
 
-CREATE INDEX question_answer ON Answer USING btree(answered_question);
-CLUSTER Answer USING question_answer;
+CREATE INDEX question_answer ON answers USING btree(answered_question);
+CLUSTER answers USING question_answer;
 
 -- FTS Index
 
-ALTER TABLE Question ADD COLUMN tsvectors TSVECTOR;
+ALTER TABLE questions ADD COLUMN tsvectors TSVECTOR;
 
 CREATE FUNCTION question_search_update() RETURNS TRIGGER AS $$
 BEGIN
@@ -221,14 +284,14 @@ END;
 $BODY$
 LANGUAGE plpgsql;
 CREATE TRIGGER prevent_self_follow
-BEFORE INSERT ON Following_User
+BEFORE INSERT ON following_users
 FOR EACH ROW
 EXECUTE FUNCTION prevent_self_follow();
 
 CREATE FUNCTION allow_comment() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-	IF NEW.post_id IN (SELECT post_id FROM Question UNION SELECT post_id FROM Answer) THEN
+	IF NEW.post_id IN (SELECT post_id FROM questions UNION SELECT post_id FROM answers) THEN
 		RETURN NEW; -- Comment is allowed on a question or an answer
 	ELSE
 		RAISE EXCEPTION 'Commenting is only allowed under questions and
@@ -239,14 +302,14 @@ $BODY$
 LANGUAGE plpgsql;
 
 CREATE TRIGGER allow_comment
-	BEFORE INSERT ON Comment
+	BEFORE INSERT ON comments
 	FOR EACH ROW
 EXECUTE FUNCTION allow_comment();
 
 CREATE FUNCTION check_unique_email() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-	IF NEW.email IS NOT NULL AND EXISTS (SELECT 1 FROM User WHERE email = NEW.email AND id <> NEW.id) THEN
+	IF NEW.email IS NOT NULL AND EXISTS (SELECT 1 FROM users WHERE email = NEW.email AND id <> NEW.id) THEN
    	RAISE EXCEPTION 'An AnswerMe! account with this email address already exists.';
 	END IF;
 	RETURN NEW;
@@ -254,7 +317,7 @@ END
 $BODY$
 LANGUAGE plpgsql;
 CREATE TRIGGER check_unique_email
-BEFORE INSERT OR UPDATE ON User
+BEFORE INSERT OR UPDATE ON users
 FOR EACH ROW
 EXECUTE FUNCTION check_unique_email();
 
@@ -271,17 +334,17 @@ $BODY$
 LANGUAGE plpgsql;
 
 CREATE TRIGGER mark_edited_question
-AFTER UPDATE ON Question
+AFTER UPDATE ON questions
 FOR EACH ROW
 WHEN (OLD.body IS DISTINCT FROM NEW.body)
 EXECUTE FUNCTION mark_edited_post();
 CREATE TRIGGER mark_edited_answer
-AFTER UPDATE ON Answer
+AFTER UPDATE ON answers
 FOR EACH ROW
 WHEN (OLD.body IS DISTINCT FROM NEW.body)
 EXECUTE FUNCTION mark_edited_post();
 CREATE TRIGGER mark_edited_comment
-AFTER UPDATE ON Comment
+AFTER UPDATE ON comments
 FOR EACH ROW
 WHEN (OLD.body IS DISTINCT FROM NEW.body)
 EXECUTE FUNCTION mark_edited_post();
@@ -289,7 +352,7 @@ EXECUTE FUNCTION mark_edited_post();
 CREATE FUNCTION prevent_self_votes() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-        IF NEW.user_id = (SELECT user_id FROM Question WHERE post_id = NEW.post_id) THEN 
+        IF NEW.user_id = (SELECT user_id FROM questions WHERE post_id = NEW.post_id) THEN 
             RAISE EXCEPTION 'Users cannot vote on their own posts.';
         END IF;
         RETURN NEW;
@@ -299,7 +362,7 @@ LANGUAGE plpgsql;
 
  CREATE TRIGGER prevent_self_votes
         BEFORE INSERT
-        ON Post_Vote
+        ON post_votes
         FOR EACH ROW        
  EXECUTE PROCEDURE prevent_self_votes();
 
@@ -308,7 +371,7 @@ RETURNS TRIGGER AS
 $BODY$
 BEGIN
 	IF NEW.username IS NOT NULL AND EXISTS (
-    	SELECT 1 FROM User WHERE username = NEW.username AND id <> NEW.id
+    	SELECT 1 FROM users WHERE username = NEW.username AND id <> NEW.id
 	) THEN
     	RAISE EXCEPTION 'Username "%", is already in use by another user.', NEW.username;
 	END IF;
@@ -317,7 +380,7 @@ END;
 $BODY$
 LANGUAGE plpgsql;
 CREATE TRIGGER enforce_unique_username
-BEFORE INSERT OR UPDATE ON User
+BEFORE INSERT OR UPDATE ON users
 FOR EACH ROW
 EXECUTE FUNCTION enforce_unique_username();
 
@@ -327,10 +390,10 @@ BEGIN TRANSACTION;
 
 SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 
-INSERT INTO Post (creation_date, edited, user_id)
+INSERT INTO posts (creation_date, edited, user_id)
 VALUES (CURRENT_DATE, 0, $user_id);
 
-INSERT INTO Question (title, body, score, post_id)
+INSERT INTO questions (title, body, score, post_id)
 VALUES ($question_title, $question_body, 0, currval('post_id_seq'));
 
 COMMIT;
@@ -339,16 +402,16 @@ BEGIN TRANSACTION;
 
 SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 
-INSERT INTO Post (creation_date, edited, user_id)
+INSERT INTO posts (creation_date, edited, user_id)
 VALUES (CURRENT_DATE, 0, $user_id);
 
-INSERT INTO Answer (title, body, correct, score, answered_question, post_id)
+INSERT INTO answers (title, body, correct, score, answered_question, post_id)
 VALUES ($answer_title, $answer_body, 0, 0, $question_id, currval('post_id_seq'));
 
-INSERT INTO Notification (name) VALUES ('Your question has been answered');
+INSERT INTO notifications (name) VALUES ('Your question has been answered');
 SELECT currval('notification_id_seq') INTO :notification_id;
-INSERT INTO Notification_Question (id_notification, question_id) VALUES (:notification_id, $question_id);
-INSERT INTO Notifies (id_notification, id_user) VALUES (:notification_id, $user_id);
+INSERT INTO notification_questions (id_notification, question_id) VALUES (:notification_id, $question_id);
+INSERT INTO notifies (id_notification, id_user) VALUES (:notification_id, $user_id);
 
 -- Commit the transaction
 
@@ -358,19 +421,19 @@ BEGIN TRANSACTION;
 
 SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 
-INSERT INTO Post (creation_date, edited, user_id)
+INSERT INTO posts (creation_date, edited, user_id)
 VALUES (CURRENT_DATE, 0, $user_id);
 
 SELECT currval('comment_id_seq') INTO :comment_id;
 
-INSERT INTO Comment (body, post_id)
+INSERT INTO comments (body, post_id)
 VALUES ($comment_body, currval('post_id_seq'));
 
 -- Insert a notification for the user of the post
-INSERT INTO Notification (name) VALUES ('New comment on your post');
+INSERT INTO notifications (name) VALUES ('New comment on your post');
 SELECT currval('notification_id_seq') INTO :notification_id;
-INSERT INTO Notification_Comment (id_notification, comment_id) VALUES (:notification_id, :comment_id);
-INSERT INTO Notifies (id_notification, id_user) VALUES (:notification_id, $user_id);
+INSERT INTO notification_comments (id_notification, comment_id) VALUES (:notification_id, :comment_id);
+INSERT INTO notifies (id_notification, id_user) VALUES (:notification_id, $user_id);
 
 -- Commit the transaction
 COMMIT;
@@ -379,7 +442,7 @@ COMMIT;
 -- DATABASE POPULATION 
 
 -- 10 users
-INSERT INTO User (name, username, email, short_bio, birthdate, nationality, number)
+INSERT INTO users (name, username, email, short_bio, birthdate, nationality, number)
 VALUES
     ('John Doe', 'johndoe123', 'johndoe@example.com', 'I''m a passionate tech enthusiast who loves to explore the latest gadgets and emerging technologies. I''m always on the lookout for innovative solutions to everyday problems. I''m also an avid gamer and a coffee connoisseur.', '1990-05-15', 'USA', 2),
     ('Alice Smith', 'alicesmith456', 'alice@example.com', 'I''m an experienced software developer with a passion for coding and problem-solving. I enjoy contributing to open-source projects and mentoring junior developers. I also love to hike and explore the beauty of Canadian landscapes.', '1985-12-10', 'CAN', 3),
@@ -393,7 +456,7 @@ VALUES
     ('Daniel Davis', 'danield', 'daniel@example.com', 'I''m a dedicated hiker and nature enthusiast, and I love exploring breathtaking trails and pristine wilderness. I find peace and inspiration in the great outdoors. I''m a proud American with a deep connection to the land.', '1994-04-02', 'USA', 1);
 
 -- 6 tags
-INSERT INTO Tag (name) VALUES
+INSERT INTO tags (name) VALUES
     ('Technology'),
     ('Travel'),
     ('Food'),
@@ -401,8 +464,8 @@ INSERT INTO Tag (name) VALUES
     ('Art'),
     ('Literature');
 
--- 10 Settings
-INSERT INTO Settings (dark_mode, hide_nation, hide_birth_date, hide_email, hide_name, language, user_id)
+-- 10 settings
+INSERT INTO settings (dark_mode, hide_nation, hide_birth_date, hide_email, hide_name, language, user_id)
 VALUES
     (TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, 1),
     (FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, 2),
@@ -416,7 +479,7 @@ VALUES
     (TRUE, TRUE, TRUE, FALSE, FALSE, TRUE, 10);
 
 -- 16 Posts
-INSERT INTO Post (creation_date, edited, user_id)
+INSERT INTO posts (creation_date, edited, user_id)
 VALUES
     ('2023-10-15', TRUE, 5),
     ('2023-11-20', FALSE, 3),
@@ -436,7 +499,7 @@ VALUES
     ('2024-09-22', TRUE, 7);
 
 -- 6 Questions
-INSERT INTO Question (title, body, score, post_id)
+INSERT INTO questions (title, body, score, post_id)
 VALUES
     ('How to optimize database performance?', 'I am looking for tips and strategies to improve the performance of my database system. What are the best practices to follow?', 5, 1),
     ('How to learn a new programming language?', 'I want to learn a new programming language, but I''m not sure where to start. Any recommendations or resources?', -2, 2),
@@ -446,7 +509,7 @@ VALUES
     ('How to create a budget for personal finance?', 'I want to manage my finances better and create a budget. Any tips on how to get started and stick to a budget plan?', 1, 6);
 
 -- 6 Answers
-INSERT INTO Answer (title, body, correct, score, answered_question, post_id)
+INSERT INTO answers (title, body, correct, score, answered_question, post_id)
 VALUES
     ('Answer for How to optimize database performance?', 'You can optimize database performance by following these steps...', TRUE, 8, 1, 7),
     ('Answer for How to learn a new programming language?', 'Learning a new programming language can be a rewarding experience...', FALSE, 2, 2, 8),
@@ -463,18 +526,18 @@ VALUES
     ('This is an interesting topic. I enjoyed reading your article.', 15),
     ('Thanks for sharing your insights. I learned a lot from this.', 16);
 
-INSERT INTO Comment_question (id_comment, id_question)
+INSERT INTO comment_questions (id_comment, id_question)
 VALUES 
     (4, 14),
     (1, 15);
 
-INSERT INTO Comment_answer (id_comment, id_answer)
+INSERT INTO comment_answers (id_comment, id_answer)
 VALUES
     (7, 13),
     (9, 16);
 
 -- Tagging the questions
-INSERT INTO Tagged (id_tag, id_post)
+INSERT INTO tagged (id_tag, id_post)
 VALUES
     (3, 5),
     (1, 5),
