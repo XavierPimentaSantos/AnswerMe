@@ -68,36 +68,17 @@ CREATE TABLE IF NOT EXISTS answers (
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-
-
 -- Table: comments
 DROP TABLE IF EXISTS comments;
 CREATE TABLE IF NOT EXISTS comments (
     post_id INTEGER NOT NULL,
+    referred_post_id INTEGER NOT NULL,
     body VARCHAR NOT NULL,
     PRIMARY KEY (post_id),
-    FOREIGN KEY (post_id)REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (referred_post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Table: comment_questions
-DROP TABLE IF EXISTS comment_questions;
-CREATE TABLE IF NOT EXISTS comment_questions (
-    id_comment INTEGER NOT NULL,
-    id_question INTEGER NOT NULL,
-    PRIMARY KEY (id_comment),
-    FOREIGN KEY (id_comment) REFERENCES comments(post_id),
-    FOREIGN KEY (id_question) REFERENCES questions(post_id)
-);
-
--- Table: comment_answers
-DROP TABLE IF EXISTS comment_answers;
-CREATE TABLE IF NOT EXISTS comment_answers (
-    id_comment INTEGER NOT NULL,
-    id_answer INTEGER NOT NULL,
-    PRIMARY KEY (id_comment),
-    FOREIGN KEY (id_comment) REFERENCES comments(post_id),
-    FOREIGN KEY (id_answer) REFERENCES answers(post_id)
-);
 
 -- Table: following_questions
 DROP TABLE IF EXISTS following_questions;
@@ -259,15 +240,15 @@ CREATE FUNCTION question_search_update() RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'INSERT' THEN
         NEW.tsvectors = (
-            setweight(to_tsvector('english', NEW.title), 'A'),
-            setweight(to_tsvector('english', NEW.body), 'B')
+            setweight(to_tsvector('english', NEW.title), 'A')
+            -- setweight(to_tsvector('english', NEW.body), 'B')
         );
     END IF;
     IF TG_OP = 'UPDATE' THEN
         IF (NEW.title <> OLD.title OR NEW.body <> OLD.body) THEN
             NEW.tsvectors = (
-                setweight(to_tsvector('english', NEW.title), 'A'),
-                setweight(to_tsvector('english', NEW.body), 'B')
+                setweight(to_tsvector('english', NEW.title), 'A')
+                -- setweight(to_tsvector('english', NEW.body), 'B')
             );
         END IF;
     END IF;
@@ -300,11 +281,10 @@ DROP FUNCTION IF EXISTS allow_comments();
 CREATE FUNCTION allow_comments() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-	IF NEW.post_id IN (SELECT post_id FROM questions UNION SELECT post_id FROM answers) THEN
+	IF NEW.referred_post_id IN (SELECT post_id FROM questions UNION SELECT post_id FROM answers) THEN
 		RETURN NEW; -- Comment is allowed on a question or an answer
 	ELSE
-		RAISE EXCEPTION 'Commenting is only allowed under questions and
-answers.';
+		RAISE EXCEPTION 'Commenting is only allowed under questions and answers.';
 	END IF;
 END
 $BODY$
@@ -479,22 +459,13 @@ VALUES
     ('Alternative Answer for What is the impact of climate change on ecosystems?', 'The impact of climate change on ecosystems is a critical concern...', TRUE, 7, 5, 12);
 
 -- 4 Comments
-INSERT INTO Comments (body, post_id)
+INSERT INTO comments (post_id, referred_post_id, body)
 VALUES
-    ('Great post! I found this information very helpful.', 13),
-    ('I have a question about your post. Can you please clarify?', 14),
-    ('This is an interesting topic. I enjoyed reading your article.', 15),
-    ('Thanks for sharing your insights. I learned a lot from this.', 16);
+    (13, 7, 'Great post! I found this information very helpful.'),
+    (14, 4, 'I have a question about your post. Can you please clarify?'),
+    (15, 1, 'This is an interesting topic. I enjoyed reading your article.'),
+    (16, 9, 'Thanks for sharing your insights. I learned a lot from this.');
 
-INSERT INTO comment_questions (id_comment, id_question)
-VALUES 
-    (4, 14),
-    (1, 15);
-
-INSERT INTO comment_answers (id_comment, id_answer)
-VALUES
-    (7, 13),
-    (9, 16);
 
 -- Tagging the questions
 INSERT INTO tagged (id_tag, id_post)
