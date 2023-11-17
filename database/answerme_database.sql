@@ -1,5 +1,6 @@
-BEGIN TRANSACTION;
-
+DROP SCHEMA IF EXISTS lbaw2392 CASCADE;
+CREATE SCHEMA IF NOT EXISTS lbaw2392;
+SET search_path TO lbaw2392;
 
 -- Table: settings
 DROP TABLE IF EXISTS settings;
@@ -31,8 +32,6 @@ CREATE TABLE IF NOT EXISTS users (
     FOREIGN KEY (user_settings) REFERENCES settings(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-
-
 -- Table: posts
 DROP TABLE IF EXISTS posts;
 CREATE TABLE IF NOT EXISTS posts (
@@ -42,8 +41,8 @@ CREATE TABLE IF NOT EXISTS posts (
     edited BOOLEAN NOT NULL,
     user_id INTEGER NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE);
-
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE
+);
 
 -- Table: questions
 DROP TABLE IF EXISTS questions;
@@ -55,6 +54,7 @@ CREATE TABLE IF NOT EXISTS questions (
     PRIMARY KEY (post_id),
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
 -- Table: answers
 DROP TABLE IF EXISTS answers;
 CREATE TABLE IF NOT EXISTS answers (
@@ -79,7 +79,6 @@ CREATE TABLE IF NOT EXISTS comments (
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (referred_post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-
 
 -- Table: following_questions
 DROP TABLE IF EXISTS following_questions;
@@ -217,7 +216,6 @@ CREATE TABLE post_votes (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-
 
 -- Performance Indexes
 
@@ -474,3 +472,4 @@ VALUES
     (4, 4),
     (5, 4),
     (6, 4);
+
