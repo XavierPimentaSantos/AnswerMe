@@ -223,11 +223,8 @@ CREATE TABLE post_votes (
 
 CREATE INDEX tagged_tag ON tagged USING hash (id_tag);
 
-CREATE INDEX comment_question ON comment_questions USING btree (id_question);
-CLUSTER comment_questions USING comment_question;
-
-CREATE INDEX comment_answer ON comment_answers USING btree (id_answer);
-CLUSTER comment_answers USING comment_answer;
+CREATE INDEX comment ON comments USING btree (referred_post_id);
+CLUSTER comments USING comment;
 
 CREATE INDEX question_answer ON answers USING btree(answered_question);
 CLUSTER answers USING question_answer;
@@ -422,22 +419,22 @@ VALUES
 -- 16 Posts
 INSERT INTO posts (creation_date, edit_date, edited, user_id)
 VALUES
-    ('2023-10-15', '2025-01-01', TRUE, 5),
-    ('2023-11-20', '2025-01-01', FALSE, 3),
-    ('2024-01-25', '2025-01-01', TRUE, 8),
-    ('2024-02-10', '2025-01-01', TRUE, 2),
-    ('2023-12-30', '2025-01-01', FALSE, 6),
-    ('2024-03-15', '2025-01-01', TRUE, 9),
-    ('2023-10-20', '2025-01-01', FALSE, 1),
-    ('2023-11-25', '2025-01-01', TRUE, 4),
-    ('2024-04-27', '2025-01-01', TRUE, 7),
-    ('2023-11-10', '2025-01-01', FALSE, 10),
-    ('2024-09-05', '2025-01-01', TRUE, 6),
-    ('2024-06-12', '2025-01-01', FALSE, 3),
-    ('2024-05-18', '2025-01-01', TRUE, 2),
-    ('2024-07-07', '2025-01-01', TRUE, 8),
-    ('2024-08-14', '2025-01-01', FALSE, 4),
-    ('2024-09-22', '2025-01-01', TRUE, 7);
+    ('2023-10-15', '2025-01-01 00:00:00', TRUE, 5),
+    ('2023-11-20', '2025-01-01 00:00:00', FALSE, 3),
+    ('2024-01-25', '2025-01-01 00:00:00', TRUE, 8),
+    ('2024-02-10', '2025-01-01 00:00:00', TRUE, 2),
+    ('2023-12-30', '2025-01-01 00:00:00', FALSE, 6),
+    ('2024-03-15', '2025-01-01 00:00:00', TRUE, 9),
+    ('2023-10-20', '2025-01-01 00:00:00', FALSE, 1),
+    ('2023-11-25', '2025-01-01 00:00:00', TRUE, 4),
+    ('2024-04-27', '2025-01-01 00:00:00', TRUE, 7),
+    ('2023-11-10', '2025-01-01 00:00:00', FALSE, 10),
+    ('2024-09-05', '2025-01-01 00:00:00', TRUE, 6),
+    ('2024-06-12', '2025-01-01 00:00:00', FALSE, 3),
+    ('2024-05-18', '2025-01-01 00:00:00', TRUE, 2),
+    ('2024-07-07', '2025-01-01 00:00:00', TRUE, 8),
+    ('2024-08-14', '2025-01-01 00:00:00', FALSE, 4),
+    ('2024-09-22', '2025-01-01 00:00:00', TRUE, 7);
 
 -- 6 Questions
 INSERT INTO questions (title, body, score, post_id)
