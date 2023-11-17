@@ -38,6 +38,7 @@ DROP TABLE IF EXISTS posts;
 CREATE TABLE IF NOT EXISTS posts (
     id SERIAL NOT NULL,
     creation_date TIMESTAMP DEFAULT NOW() NOT NULL,
+    edit_date TIMESTAMP DEFAULT NOW() NOT NULL,
     edited BOOLEAN NOT NULL,
     user_id INTEGER NOT NULL,
     PRIMARY KEY (id),
@@ -419,24 +420,24 @@ VALUES
     (TRUE, TRUE, TRUE, FALSE, FALSE, TRUE, 10);
 
 -- 16 Posts
-INSERT INTO posts (creation_date, edited, user_id)
+INSERT INTO posts (creation_date, edit_date, edited, user_id)
 VALUES
-    ('2023-10-15', TRUE, 5),
-    ('2023-11-20', FALSE, 3),
-    ('2024-01-25', TRUE, 8),
-    ('2024-02-10', TRUE, 2),
-    ('2023-12-30', FALSE, 6),
-    ('2024-03-15', TRUE, 9),
-    ('2023-10-20', FALSE, 1),
-    ('2023-11-25', TRUE, 4),
-    ('2024-04-27', TRUE, 7),
-    ('2023-11-10', FALSE, 10),
-    ('2024-09-05', TRUE, 6),
-    ('2024-06-12', FALSE, 3),
-    ('2024-05-18', TRUE, 2),
-    ('2024-07-07', TRUE, 8),
-    ('2024-08-14', FALSE, 4),
-    ('2024-09-22', TRUE, 7);
+    ('2023-10-15', '2025-01-01', TRUE, 5),
+    ('2023-11-20', '2025-01-01', FALSE, 3),
+    ('2024-01-25', '2025-01-01', TRUE, 8),
+    ('2024-02-10', '2025-01-01', TRUE, 2),
+    ('2023-12-30', '2025-01-01', FALSE, 6),
+    ('2024-03-15', '2025-01-01', TRUE, 9),
+    ('2023-10-20', '2025-01-01', FALSE, 1),
+    ('2023-11-25', '2025-01-01', TRUE, 4),
+    ('2024-04-27', '2025-01-01', TRUE, 7),
+    ('2023-11-10', '2025-01-01', FALSE, 10),
+    ('2024-09-05', '2025-01-01', TRUE, 6),
+    ('2024-06-12', '2025-01-01', FALSE, 3),
+    ('2024-05-18', '2025-01-01', TRUE, 2),
+    ('2024-07-07', '2025-01-01', TRUE, 8),
+    ('2024-08-14', '2025-01-01', FALSE, 4),
+    ('2024-09-22', '2025-01-01', TRUE, 7);
 
 -- 6 Questions
 INSERT INTO questions (title, body, score, post_id)
