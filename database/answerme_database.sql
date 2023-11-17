@@ -378,7 +378,7 @@ EXECUTE FUNCTION enforce_unique_username();
 COMMIT TRANSACTION;
 
 -- DATABASE POPULATION 
-
+BEGIN TRANSACTION;
 -- 10 users
 INSERT INTO users (fullname, username, email, bio, birth_date, nationality, user_type, user_password)
 VALUES
@@ -474,3 +474,5 @@ VALUES
     (4, 4),
     (5, 4),
     (6, 4);
+
+END TRANSACTION;
