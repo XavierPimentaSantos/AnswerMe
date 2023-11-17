@@ -18,12 +18,8 @@ class PostController extends Controller
         $post->save();
     }
 
-    public function edit(Request $request, $id)
+    public function delete(Request $request, $id)
     {
         $post = Post::find($id);
-
-        $this->authorize('edit', $post);
-
-        
     }
 }
