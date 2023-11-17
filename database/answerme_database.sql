@@ -222,11 +222,8 @@ CREATE TABLE post_votes (
 
 CREATE INDEX tagged_tag ON tagged USING hash (id_tag);
 
-CREATE INDEX comment_question ON comment_questions USING btree (id_question);
-CLUSTER comment_questions USING comment_question;
-
-CREATE INDEX comment_answer ON comment_answers USING btree (id_answer);
-CLUSTER comment_answers USING comment_answer;
+CREATE INDEX comment ON comments USING btree (referred_post_id);
+CLUSTER comments USING comment;
 
 CREATE INDEX question_answer ON answers USING btree(answered_question);
 CLUSTER answers USING question_answer;
