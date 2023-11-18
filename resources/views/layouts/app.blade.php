@@ -11,6 +11,7 @@
         <title>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Styles -->
+        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
         <link href="{{ url('css/milligram.min.css') }}" rel="stylesheet">
         <link href="{{ url('css/app.css') }}" rel="stylesheet">
         <script type="text/javascript">
@@ -22,10 +23,10 @@
     </head>
     <body>
         <main>
-            <header>
-                <h1><a href="{{ url('/cards') }}">Thingy!</a></h1>
+            <header class="bg-black">
+                <h1><a href="{{ url('/cards') }}">AnswerMe!</a></h1>
                 @if (Auth::check())
-                    <a class="button" href="{{ url('/logout') }}"> Logout </a> <span>{{ Auth::user()->name }}</span>
+                    <a class="button" href="{{ url('/logout') }}"> Logout </a> <span class="text-white">{{ Auth::user()->name }}</span>
                 @endif
             </header>
             <section id="content">
