@@ -136,6 +136,7 @@ Route::delete('questions/{question_id}/vote', function(Request $request, int $qu
 
 Route::post('questions', function(Request $request) {
     // adiciona nova Question à base de dados
+    [QuestionController::class, 'store'];
     return view('question', [/*parâmetros*/]); // é preciso criar uma view question.blade.php que vai incluir as respostas e tudo
 });
 

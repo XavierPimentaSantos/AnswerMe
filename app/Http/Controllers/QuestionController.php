@@ -19,6 +19,7 @@ class QuestionController extends Controller
 
         $question->title = $request->input('title');
         $question->body = $request->input('body');
+        $question->score = 0;
         $question->post_id = $post->id;
     }
 

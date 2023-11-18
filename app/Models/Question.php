@@ -15,6 +15,7 @@ class Question extends Model
     protected $primaryKey = 'post_id';
     public $timestamps = false;
     protected $attributes = [
+        'post_id',
         'title' = "Question title.",
         'body' = "Question body goes here.",
         'score' = 0,

@@ -17,7 +17,11 @@ class Post extends Model
     protected $dateFormat = 'U';
 
     protected $attributes = [
+        'id',
+        'creation_date',
+        'edit_date',
         'edited' = 0,
+        'user_id',
     ];
 
     public function user(): BelongsTo
