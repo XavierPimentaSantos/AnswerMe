@@ -218,7 +218,7 @@ CREATE TABLE post_votes (
 );
 
 -- Performance Indexes
-
+ 
 CREATE INDEX tagged_tag ON tagged USING hash (id_tag);
 
 CREATE INDEX comment ON comments USING btree (referred_post_id);
