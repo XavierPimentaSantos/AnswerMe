@@ -50,10 +50,10 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the questions for a user.
+     * Get the cards for a user.
      */
-    public function questions(): HasMany
+    public function cards(): HasMany
     {
-        return $this->hasMany(Question::class);
+        return $this->hasMany(Card::class);
     }
 }

@@ -23,10 +23,14 @@
     </head>
     <body>
         <main>
-            <header class="bg-black">
-                <h1><a href="{{ url('/cards') }}">AnswerMe!</a></h1>
+            <header class="bg-black flex justify-between items-center">
+                <h1 class="text-white"><a href="{{ url('/cards') }}">AnswerMe!</a></h1>
+                <a class="button" href="{{ route('questions.create') }}">ASK A QUESTION</a>
                 @if (Auth::check())
-                    <a class="button" href="{{ url('/logout') }}"> Logout </a> <span class="text-white">{{ Auth::user()->name }}</span>
+                    <div class="flex items-center">
+                        <a class="button mr-2" href="{{ url('/logout') }}">Logout</a>
+                        <span class="text-white">{{ Auth::user()->name }}</span>
+                    </div>
                 @endif
             </header>
             <section id="content">
