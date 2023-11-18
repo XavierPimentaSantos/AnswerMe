@@ -28,7 +28,7 @@ body {
   #cards article.card {
     display: flex;
     flex-direction: column;
-    background-color: #d3edc3;
+    background-color: gray;
     padding: 1em;
     margin: 1em;
   }
@@ -86,7 +86,7 @@ body {
     margin: 0 auto;
     padding: 1em;
     max-width: 20em;
-    border: 1px solid #d2afe7;
+    border: 1px solid gray;
   }
   #content > form .error {
     font-weight: bold;
