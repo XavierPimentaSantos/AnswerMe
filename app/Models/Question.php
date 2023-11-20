@@ -12,13 +12,22 @@ class Question extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'post_id';
-    public $timestamps = false;
+    protected $table = 'questions';
+    protected $primaryKey = 'id';
+    public $incrementing = true;
+    public $timestamps = true;
+    const CREATED_AT = 'creation_date';
+    const UPDATED_AT = 'edit_date';
+
     protected $attributes = [
-        'post_id',
+        'id',
         'title' = "Question title.",
         'body' = "Question body goes here.",
         'score' = 0,
+        'creation_date',
+        'edit_date',
+        'edited',
+        'user_id',
     ];
 
     public function post(): BelongsTo
