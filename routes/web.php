@@ -68,6 +68,8 @@ Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show')
 Route::get('/', [QuestionController::class, 'index'])->name('questions.index');
 
 Route::get('/questions/{id}', [QuestionController::class, 'show'])->name('questions.show');
+
+Route::post('/update-profile', [ProfileController::class, 'updateProfile'])->name('profile.updateProfile');
 /*
 
 // M01

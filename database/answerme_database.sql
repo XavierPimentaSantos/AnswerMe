@@ -65,6 +65,7 @@ INSERT INTO users VALUES (
 ); 
 
 
+
 INSERT INTO users VALUES (
   DEFAULT,
   'John Doe',

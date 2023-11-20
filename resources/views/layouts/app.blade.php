@@ -7,7 +7,6 @@
 
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
-
         <title>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Styles -->
@@ -21,7 +20,7 @@
         <script type="text/javascript" src={{ url('js/app.js') }} defer>
         </script>
     </head>
-    <body>
+    <body class = "flex flex-col min-h-screen">
         <main>
             <header class="bg-black flex justify-between items-center">
                 <h1 class="text-white"><a href="{{ url('/cards') }}">AnswerMe!</a></h1>
@@ -36,6 +35,9 @@
             <section id="content">
                 @yield('content')
             </section>
+            <footer class = "bg-black justify-between items-center p-4">
+                <p class="text-white">&copy; Made By lbaw2392</p> 
+            </footer>
         </main>
     </body>
 </html>

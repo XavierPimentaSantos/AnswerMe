@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Question; // Assuming you have a Question model
+use App\Models\Question; 
+use Illuminate\Support\Facades\View;
+
 
 class QuestionController extends Controller
 {
@@ -60,18 +62,11 @@ class QuestionController extends Controller
      * @param  \App\Models\Question  $question
      * @return \Illuminate\Http\Response
      */
-    public function show(string $id): View
-    {
-        // Get the question.
-        $question = Question::findOrFail($id);
-
-        // Check if the current user can show (view) the question.
-        $this->authorize('show', $question);
-
-        return view('pages.question', [
-            'question' => $question
-        ]);
+    public function show($id){
+    $question = Question::findOrFail($id);
+    return View::make('pages.question', [
+        'question' => $question
+    ]);
     }
-
     // Add other methods like edit, update, destroy as needed
 }

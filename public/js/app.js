@@ -22,23 +22,92 @@ function addEventListeners() {
     let cardCreator = document.querySelector('article.card form.new_card');
     if (cardCreator != null)
       cardCreator.addEventListener('submit', sendCreateCardRequest);
+
+    document.getElementById('edit-profile-btn').addEventListener('click', function () {
+      toggleProfileSections(true);
+    });
+
+    document.getElementById('update-profile-btn').addEventListener('click', function () {
+      updateProfile();
+    });
+
+  }
+
+
+  function toggleProfileSections(editMode) {
+    document.getElementById('profile-view').style.display = editMode ? 'none' : 'block';
+    document.getElementById('profile-edit').style.display = editMode ? 'block' : 'none';
+    document.getElementById('edit-profile-btn').style.display = editMode ? 'none' : 'inline-block';
+    document.getElementById('profile-header').style.display = editMode ? 'none' : 'block';
   }
   
   function encodeForAjax(data) {
     if (data == null) return null;
-    return Object.keys(data).map(function(k){
-      return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])
-    }).join('&');
+    console.log('Returning not NULL, Data is not null');
+    console.log(data);
+    const return_value = [];
+    data.forEach((value, key) => {
+        return_value.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
+    });
+
+    console.log('Returning:', return_value.join('&'));
+    return return_value.join('&');
   }
+
+  function updateProfile() {
+    // Gather form data
+    console.log('A');
+    let formData = new FormData(document.getElementById('edit-profile-form'));
+    console.log('B');
+
+    // Send AJAX request to update profile
+    // console.log('Sending AJAX request to update profile');
+    const result = sendAjaxRequest('post', '/update-profile', formData, function () {
+        // Handle the response, update success or error messages
+        console.log('C: ' + result.status);
+        if (this.status === 200) {
+            
+            document.getElementById('success-message').classList.remove('hidden');
+            document.getElementById('error-message').classList.add('hidden');
+
+            // Update profile view with new data
+            let name = formData.get('name');
+            let email = formData.get('email');
+
+            document.getElementById('profile-view').innerHTML = `
+                <p><strong>Name:</strong> ${name}</p>
+                <p><strong>Email:</strong> ${email}</p>
+            `;
+
+            toggleProfileSections(false);  // Hide the edit section
+        } else {
+
+            console.log('Error updating profile');
+            document.getElementById('success-message').classList.add('hidden');
+            document.getElementById('error-message').classList.remove('hidden');
+        }
+    });
+}
   
   function sendAjaxRequest(method, url, data, handler) {
     let request = new XMLHttpRequest();
+    console.log('D');
   
     request.open(method, url, true);
+
+    console.log('E');
     request.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').content);
+
+    console.log('F');
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+    console.log('G');
     request.addEventListener('load', handler);
+
+    console.log('H');
     request.send(encodeForAjax(data));
+
+    console.log('II: ' + encodeForAjax(data));
   }
   
   function sendItemUpdateRequest() {
@@ -54,6 +123,7 @@ function addEventListeners() {
   
     sendAjaxRequest('delete', '/api/item/' + id, null, itemDeletedHandler);
   }
+
   
   function sendCreateItemRequest(event) {
     let id = this.closest('article').getAttribute('data-id');
@@ -102,6 +172,8 @@ function addEventListeners() {
     // Reset the new item form
     form.querySelector('[type=text]').value="";
   }
+
+
   
   function itemDeletedHandler() {
     if (this.status != 200) window.location = '/';
