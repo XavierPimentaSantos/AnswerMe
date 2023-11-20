@@ -14,7 +14,7 @@ class AnswerController extends Controller
 
     public function store(Request $request, $question_id)
     {
-        
+
         $question = Question::findOrFail($question_id);
 
         $request->validate([
@@ -50,5 +50,14 @@ class AnswerController extends Controller
         $answer->content = $request->input('content');
 
         $answer->save();
+    }
+
+    public function delete(Request $request, $question_id, $answer_id)
+    {
+        $answer = Answer::findOrFail($answer_id);
+
+        $answer->delete();
+
+        return redirect()->route('questions.show', ['id' => $question_id]);
     }
 }

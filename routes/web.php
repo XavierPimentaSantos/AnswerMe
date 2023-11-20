@@ -73,6 +73,8 @@ Route::post('/questions/{question_id}/answer', [AnswerController::class, 'store'
 
 Route::post('/questions/{question_id}/answer/{answer_id}/edit', [AnswerController::class, 'edit'])->name('answers.edit');
 
+Route::post('/questions/{question_id}/answer/{answer_id}/delete', [AnswerController::class, 'delete'])->name('answers.delete');
+
 /*
 
 // M01
