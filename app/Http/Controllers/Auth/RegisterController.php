@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 
 use Illuminate\View\View;
 
+use DateTime;
+
 use App\Models\User;
 
 class RegisterController extends Controller
@@ -27,16 +29,39 @@ class RegisterController extends Controller
      */
     public function register(Request $request)
     {
+        //get date from request
+        $date = $request->get('birth_date');
+
+        //update date in request
+        $request->offsetSet('birth_date', DateTime::createFromFormat('Y-m-d', $date)->getTimestamp());
+
         $request->validate([
-            'name' => 'required|string|max:250',
+            'fullname' => 'required|string|max:250',
+            'username' => 'required|string|max:250|unique:users',
             'email' => 'required|email|max:250|unique:users',
-            'password' => 'required|min:8|confirmed'
+            'password' => 'required|min:8|confirmed',
+            'bio' => 'nullable',
+            'birth_date' => 'nullable',
+            'nationality' => 'nullable',
         ]);
 
         User::create([
-            'name' => $request->name,
+            'fullname' => $request->fullname,
+            'username' => $request->username,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'user_password' => Hash::make($request->password),
+            'bio' => $request->bio,
+            'birth_date' => $request->birth_date,
+            'nationality' => $request->nationality,
+            'user_type' => 1,
+            'user_settings' => Settings::create([
+                                    'dark_mode' => 0,
+                                    'hide_nation' => 0,
+                                    'hide_birth_date' => 0,
+                                    'hide_email' => 0,
+                                    'hide_name' => 0,
+                                    'language' => 0
+                                    ])
         ]);
 
         $credentials = $request->only('email', 'password');
