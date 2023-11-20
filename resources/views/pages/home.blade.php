@@ -20,7 +20,7 @@
             </div>
         @endforeach
 
-        <div class="text-center mt-2">
+        <div class="text-center mt-2 ">
             <div class="pagination-links">
                 {{ $questions->links() }}
             </div>

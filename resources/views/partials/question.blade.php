@@ -4,7 +4,6 @@
                 <a href="{{ route('questions.show', $question->id) }}">
                         <div class="question-title">
                             <h2>{{ $question->title }}</h2>
-                            <!-- Add more details as needed -->
                         </div>
                 </a>
                     <p class="card-content">{{ $question->content }}</p>

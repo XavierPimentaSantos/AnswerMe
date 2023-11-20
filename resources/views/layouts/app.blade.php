@@ -30,6 +30,10 @@
                         <a class="button mr-2" href="{{ url('/logout') }}">Logout</a>
                         <a href="{{ route('profile.show') }}"><span class="text-white">{{ Auth::user()->name }}</span></a>
                     </div>
+                @else
+                    <div class="flex items-center">
+                        <a class="button mr-2" href="{{ url('/login') }}">Login</a>
+                    </div>
                 @endif
             </header>
             <section id="content">
