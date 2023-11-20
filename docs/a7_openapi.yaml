@@ -343,7 +343,7 @@ paths:
         '400':
           description: 'Bad Request. Invalid vote value.'
 
-  /questions:
+  /questions/create:
     post:
       operationId: R301
       summary: 'R301: Post Question'
