@@ -7,7 +7,9 @@
                 <a href="{{ route('questions.show', $question->id) }}">
                         <div class="question-title">
                             <h2>{{ $question->title }}</h2>
-                            <!-- Add more details as needed -->
+                            @if ($question->user_id)
+                            <p class="card-content text-red-700">Asked by: {{ $question->user->name }}</p>
+                            @endif
                         </div>
                 </a>
                     <p class="card-content">{{ $question->content }}</p>

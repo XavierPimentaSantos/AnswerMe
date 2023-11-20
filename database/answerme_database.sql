@@ -1,6 +1,3 @@
---
--- Use a specific schema and set it as default - thingy.
---
 DROP SCHEMA IF EXISTS lbaw2392 CASCADE;
 CREATE SCHEMA IF NOT EXISTS lbaw2392;
 SET search_path TO lbaw2392;
@@ -8,11 +5,12 @@ SET search_path TO lbaw2392;
 --
 -- Drop any existing tables.
 --
-DROP TABLE IF EXISTS users CASCADE;
+
 DROP TABLE IF EXISTS cards CASCADE;
 DROP TABLE IF EXISTS items CASCADE;
 DROP TABLE IF EXISTS questions CASCADE;
 DROP TABLE IF EXISTS answers CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
 
 --
 -- Create tables.
@@ -30,28 +28,6 @@ CREATE TABLE users (
   remember_token VARCHAR
 );
 
-CREATE TABLE cards (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR NOT NULL,
-  user_id INTEGER REFERENCES users NOT NULL
-);
-
-CREATE TABLE items (
-  id SERIAL PRIMARY KEY,
-  card_id INTEGER NOT NULL REFERENCES cards ON DELETE CASCADE,
-  description VARCHAR NOT NULL,
-  done BOOLEAN NOT NULL DEFAULT FALSE
-);
-
--- Table: questions
-CREATE TABLE questions (
-    id SERIAL PRIMARY KEY,
-    title VARCHAR NOT NULL,
-    content VARCHAR NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 
 -- Table: settings
 DROP TABLE IF EXISTS settings;
@@ -66,20 +42,6 @@ CREATE TABLE IF NOT EXISTS settings (
     PRIMARY KEY (id)
 );
 
--- Table: users
-DROP TABLE IF EXISTS users;
-CREATE TABLE IF NOT EXISTS users (
-    id SERIAL NOT NULL,
-    fullname VARCHAR NOT NULL,
-    username VARCHAR UNIQUE NOT NULL,
-    user_password VARCHAR NOT NULL,
-    email VARCHAR UNIQUE NOT NULL,
-    bio VARCHAR,
-    birth_date DATE,
-    nationality VARCHAR,
-    user_type CHAR NOT NULL,
-    remember_token VARCHAR
-);
 
 -- Table: questions
 DROP TABLE IF EXISTS questions;
@@ -90,9 +52,8 @@ CREATE TABLE IF NOT EXISTS questions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     score INTEGER DEFAULT (0) NOT NULL,
-    edited BOOLEAN DEFAULT (0) NOT NULL,
+    edited BOOLEAN DEFAULT (TRUE) NOT NULL,
     user_id INTEGER NOT NULL,
-    PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -130,7 +91,7 @@ CREATE TABLE IF NOT EXISTS comments_questions (
 );
 
 -- Table: comments_answer
-DROP TABLE IF EXISTS comments_answer;
+DROP TABLE IF EXISTS comments_answers;
 CREATE TABLE IF NOT EXISTS comments_answers (
     id SERIAL NOT NULL,
     referred_answer_id INTEGER NOT NULL,
@@ -227,7 +188,7 @@ CREATE TABLE IF NOT EXISTS notification_comments_question (
     comment_id INTEGER NOT NULL,
     PRIMARY KEY (id_notification, comment_id),
     FOREIGN KEY (id_notification) REFERENCES notifications(id),
-    FOREIGN KEY (comment_id) REFERENCES comments_question(id) ON DELETE SET NULL ON UPDATE CASCADE
+    FOREIGN KEY (comment_id) REFERENCES comments_questions(id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- Table: notification_comments_answer
@@ -237,7 +198,7 @@ CREATE TABLE IF NOT EXISTS notification_comments_answer (
     comment_id INTEGER NOT NULL,
     PRIMARY KEY (id_notification, comment_id),
     FOREIGN KEY (id_notification) REFERENCES notifications(id),
-    FOREIGN KEY (comment_id) REFERENCES comments_answer(id) ON DELETE SET NULL ON UPDATE CASCADE
+    FOREIGN KEY (comment_id) REFERENCES comments_answers(id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- Table: notification_deletes_question
@@ -328,7 +289,7 @@ CREATE TABLE IF NOT EXISTS answer_votes (
 
 INSERT INTO users VALUES (
   DEFAULT,
-  'John Doe',
+  'Mestre Fu',
   'admin@example.com',
   '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W'
 ); -- Password is 1234. Generated using Hash::make('1234')
@@ -336,8 +297,8 @@ INSERT INTO users VALUES (
 
 INSERT INTO users VALUES (
   DEFAULT,
-  'John Doe',
-  'a@example.com',
+  'João Silva',
+  'jsilva@example.com',
   '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W'
 ); 
 
@@ -345,18 +306,52 @@ INSERT INTO users VALUES (
 
 INSERT INTO users VALUES (
   DEFAULT,
-  'John Doe',
+  'Lourenço Silva',
   'b@example.com',
   '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W'
 ); 
 
-INSERT INTO cards VALUES (DEFAULT, 'Things to do', 1);
-INSERT INTO items VALUES (DEFAULT, 1, 'Buy milk');
-INSERT INTO items VALUES (DEFAULT, 1, 'Walk the dog', true);
+-- Question 1
+INSERT INTO questions VALUES (DEFAULT, 'If algorithms had personalities, which one would be your best friend?', 'Imagine spending a day with your favorite algorithm and discuss its characteristics.', DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1);
 
-INSERT INTO cards VALUES (DEFAULT, 'Things not to do', 1);
-INSERT INTO items VALUES (DEFAULT, 2, 'Break a leg');
-INSERT INTO items VALUES (DEFAULT, 2, 'Crash the car');
+-- Question 2
+INSERT INTO questions VALUES (DEFAULT, 'In a coding language competition, which language would win and why?', 'Debate the strengths and weaknesses of programming languages as if they were competing in a contest.', DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1);
 
+-- Question 3
+INSERT INTO questions VALUES (DEFAULT, 'If you could implement a feature in the real world, what would it be?', 'Discuss a computer science feature you''d love to bring into our daily lives.', DEFAULT, DEFAULT, DEFAULT, DEFAULT, 2);
 
-INSERT INTO questions VALUES (DEFAULT, 'How to do this?', 'I have no idea');
+-- Question 4
+INSERT INTO questions VALUES (DEFAULT, 'If bugs were physical creatures, what would they look like?', 'Imagine the appearance and characteristics of the pesky bugs that you encounter in your code.', DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1);
+
+-- Question 5
+INSERT INTO questions VALUES (DEFAULT, 'If software could dream, what would be its wildest dream?', 'Explore the imaginative world of software and its fantastical dreams.', DEFAULT, DEFAULT, DEFAULT, DEFAULT, 2);
+
+-- Question 6
+INSERT INTO questions VALUES (DEFAULT, 'In a cyberpunk future, what role would you play?', 'Envision yourself in a futuristic cyberpunk world and discuss your role in the digital landscape.', DEFAULT, DEFAULT, DEFAULT, DEFAULT, 2);
+
+-- Question 7
+INSERT INTO questions VALUES (DEFAULT, 'If you could create a virtual reality experience, what would it be about?', 'Design a virtual reality experience related to computer science or engineering.', DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1);
+
+-- Question 8
+INSERT INTO questions VALUES (DEFAULT, 'If robots had emotions, how would you console a sad robot?', 'Explore the emotional side of artificial intelligence and discuss ways to comfort a robot in distress.', DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1);
+
+-- Question 9
+INSERT INTO questions VALUES (DEFAULT, 'If you could invent a new programming paradigm, what would it be called?', 'Introduce a groundbreaking programming paradigm and discuss its principles.', DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1);
+
+-- Question 10
+INSERT INTO questions VALUES (DEFAULT, 'If your laptop could speak, what tech secrets would it reveal?', 'Imagine the secrets your laptop might spill about your tech habits and experiences.', DEFAULT, DEFAULT, DEFAULT, DEFAULT, 2);
+
+-- Question 11
+INSERT INTO questions VALUES (DEFAULT, 'In a futuristic tech competition, what would be your winning invention?', 'Present your groundbreaking tech invention for a futuristic competition.', DEFAULT, DEFAULT, DEFAULT, DEFAULT, 2);
+
+-- Question 12
+INSERT INTO questions VALUES (DEFAULT, 'If you could attend a lecture by any tech pioneer, who would it be and why?', 'Choose a tech pioneer and discuss the insights you''d hope to gain from attending their lecture.', DEFAULT, DEFAULT, DEFAULT, DEFAULT, 2);
+
+-- Question 13
+INSERT INTO questions VALUES (DEFAULT, 'If you were a computer virus, what would be your mission?', 'Explore the motivations and objectives of a fictional computer virus that you create.', DEFAULT, DEFAULT, DEFAULT, DEFAULT, 2);
+
+-- Question 14
+INSERT INTO questions VALUES (DEFAULT, 'If you could program your dreams, what would your coding nightmare look like?', 'Imagine the coding challenges and nightmares you might encounter in a dream-like programming world.', DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1);
+
+-- Question 15
+INSERT INTO questions VALUES (DEFAULT, 'If software engineers had a superhero team, what powers would each member possess?', 'Assemble your dream superhero team of software engineers and describe their unique powers.', DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1);

@@ -23,7 +23,7 @@
     <body class="flex flex-col min-h-screen">
         <main class="flex-grow">
             <header class="bg-black flex justify-between items-center">
-                <h1 class="text-white"><a href="{{ url('/cards') }}">AnswerMe!</a></h1>
+                <h1 class="text-white"><a href="{{ url('/login') }}">AnswerMe!</a></h1>
                 @if (Auth::check())
                     <a class="button" href="{{ route('questions.create') }}">ASK A QUESTION</a>
                     <div class="flex items-center">
