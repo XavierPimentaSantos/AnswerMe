@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Table: posts
-DROP TABLE IF EXISTS posts;
+/* DROP TABLE IF EXISTS posts;
 CREATE TABLE IF NOT EXISTS posts (
     id SERIAL NOT NULL,
     creation_date TIMESTAMP DEFAULT NOW() NOT NULL,
@@ -42,41 +42,53 @@ CREATE TABLE IF NOT EXISTS posts (
     user_id INTEGER NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE
-);
+); */
 
 -- Table: questions
 DROP TABLE IF EXISTS questions;
 CREATE TABLE IF NOT EXISTS questions (
-    post_id INTEGER NOT NULL,
+    /* post_ */id SERIAL NOT NULL,
     title VARCHAR NOT NULL,
     body VARCHAR NOT NULL, 
     score INTEGER DEFAULT (0) NOT NULL,
-    PRIMARY KEY (post_id),
-    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE
+    creation_date TIMESTAMP DEFAULT NOW() NOT NULL,
+    edit_date TIMESTAMP DEFAULT NOW() NOT NULL,
+    edited BOOLEAN NOT NULL,
+    user_id INTEGER NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table: answers
 DROP TABLE IF EXISTS answers;
 CREATE TABLE IF NOT EXISTS answers (
     answered_question INTEGER NOT NULL,
-    post_id INTEGER NOT NULL,
+    id SERIAL NOT NULL,
     title VARCHAR NOT NULL, 
     body VARCHAR NOT NULL, 
     correct BOOLEAN NOT NULL, 
     score INTEGER DEFAULT (0) NOT NULL,
-    PRIMARY KEY (post_id),
-    FOREIGN KEY (answered_question) REFERENCES questions(post_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE
+    creation_date TIMESTAMP DEFAULT NOW() NOT NULL,
+    edit_date TIMESTAMP DEFAULT NOW() NOT NULL,
+    edited BOOLEAN NOT NULL,
+    user_id INTEGER NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (answered_question) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table: comments
 DROP TABLE IF EXISTS comments;
 CREATE TABLE IF NOT EXISTS comments (
-    post_id INTEGER NOT NULL,
+    id SERIAL NOT NULL,
     referred_post_id INTEGER NOT NULL,
     body VARCHAR NOT NULL,
-    PRIMARY KEY (post_id),
-    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    creation_date TIMESTAMP DEFAULT NOW() NOT NULL,
+    edit_date TIMESTAMP DEFAULT NOW() NOT NULL,
+    edited BOOLEAN NOT NULL,
+    user_id INTEGER NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (referred_post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -197,24 +209,44 @@ CREATE TABLE IF NOT EXISTS notification_users (
     FOREIGN KEY (following_user_id, followed_user_id) REFERENCES following_users(user_id, followed_user_id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
--- Table: notification_votes
-DROP TABLE IF EXISTS notification_votes;
-CREATE TABLE IF NOT EXISTS notification_votes (
+-- Table: notification_question_votes
+DROP TABLE IF EXISTS notification_question_votes;
+CREATE TABLE IF NOT EXISTS notification_question_votes (
     id_notification INTEGER NOT NULL,
-    post_id INTEGER NOT NULL,
-    PRIMARY KEY (id_notification, post_id),
+    question INTEGER NOT NULL,
+    PRIMARY KEY (id_notification, question_id),
     FOREIGN KEY (id_notification) REFERENCES notifications(id),
-    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (questions_id) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Table: post_votes
-DROP TABLE IF EXISTS post_votes;
-CREATE TABLE post_votes (
+-- Table: notification_answer_votes
+DROP TABLE IF EXISTS notification_answer_votes;
+CREATE TABLE IF NOT EXISTS notification_answer_votes (
+    id_notification INTEGER NOT NULL,
+    answer_id INTEGER NOT NULL,
+    PRIMARY KEY (id_notification, answer_id),
+    FOREIGN KEY (id_notification) REFERENCES notifications(id),
+    FOREIGN KEY (answer_id) REFERENCES answers(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- Table: question_votes
+DROP TABLE IF EXISTS question_votes;
+CREATE TABLE IF NOT EXISTS question_votes (
     user_id INTEGER NOT NULL,
-    post_id INTEGER NOT NULL,
-    PRIMARY KEY (user_id, post_id),
+    question_id INTEGER NOT NULL,
+    PRIMARY KEY (user_id, question_id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- Table: answer_votes
+DROP TABLE IF EXISTS answer_votes;
+CREATE TABLE IF NOT EXISTS answer_votes (
+    user_id INTEGER NOT NULL,
+    answer_id INTEGER NOT NULL,
+    PRIMARY KEY (user_id, answer_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (answer_id) REFERENCES answers(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Performance Indexes
@@ -277,7 +309,7 @@ DROP FUNCTION IF EXISTS allow_comments();
 CREATE FUNCTION allow_comments() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-	IF NEW.referred_post_id IN (SELECT post_id FROM questions UNION SELECT post_id FROM answers) THEN
+	IF NEW.referred_post_id IN (SELECT id FROM questions UNION SELECT id FROM answers) THEN
 		RETURN NEW; -- Comment is allowed on a question or an answer
 	ELSE
 		RAISE EXCEPTION 'Commenting is only allowed under questions and answers.';
@@ -341,7 +373,7 @@ DROP FUNCTION IF EXISTS prevent_self_vote();
 CREATE FUNCTION prevent_self_vote() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-        IF NEW.user_id = (SELECT user_id FROM questions WHERE post_id = NEW.post_id) THEN 
+        IF NEW.user_id = (SELECT user_id FROM questions WHERE id = NEW.id) THEN 
             RAISE EXCEPTION 'Users cannot vote on their own posts.';
         END IF;
         RETURN NEW;

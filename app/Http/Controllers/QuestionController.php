@@ -7,12 +7,26 @@ use Illuminate\Http\Request;
 class QuestionController extends Controller
 {
     /**
-     * Store a newly created resource in storage.
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Creates a new Question.
+     */
+    public function create(Request $request)
+    {
+        
+    }
+
+    /**
+     * Creates and stores a Question in storage.
      */
     public function store(Request $request)
     {
-        $post = new Post();
-
         $question = new Question();
 
         $this->authorize('create', $question);
@@ -32,16 +46,19 @@ class QuestionController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        $question = Question::find($id);
-
-        $this->authorize('edit', $question);
-
-        $question->title = $request->input('title');
-        $question->body = $request->input('body');
+        //
     }
 
     /**
@@ -49,11 +66,6 @@ class QuestionController extends Controller
      */
     public function destroy(string $id)
     {
-        $question = Question::find($id);
-
-        $this->authorize('delete', $question);
-
-        $question->delete();
-        return response()->json($question);
+        //
     }
 }
