@@ -4,6 +4,12 @@
 
 @section('content')
 
+@auth
+    @if(auth()->user()->isAdmin())
+        <a href="{{ route('admin.dashboard') }}">Go to Admin Dashboard</a>
+    @endif
+@endauth
+
 <section id="cards">
     @each('partials.card', $cards, 'card')
     <article class="card">

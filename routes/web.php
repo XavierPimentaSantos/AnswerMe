@@ -66,6 +66,16 @@ Route::post('/questions', [QuestionController::class, 'store'])->name('questions
 Route::get('/', [QuestionController::class, 'index'])->name('questions.index');
 
 
+//Admin
+Route::middleware('admin')->prefix('admin')->group(function () {
+    Route::get('/admin/dashboard', 'Admin\DashboardController@index')->name('admin.dashboard');
+    Route::view('/users', 'admin.users.search')->name('admin.users.index');
+    Route::put('/users', 'AdminController@index');
+    Route::get('/users/{id}/edit', 'AdminController@editUser')->name('admin.users.edit');
+    Route::put('/users/{id}', 'AdminController@updateUser')->name('admin.users.update');
+    Route::delete('/users/{id}', 'AdminController@deleteUser')->name('admin.users.delete');
+});
+
 
 /*
 

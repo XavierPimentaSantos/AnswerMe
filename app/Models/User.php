@@ -56,4 +56,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Card::class);
     }
+
+    public function isAdmin()
+    {
+        //return $this->role === 4; // 4 == admin?
+        return true;
+    }
 }
