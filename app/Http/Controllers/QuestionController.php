@@ -15,7 +15,7 @@ class QuestionController extends Controller
     public function index()
     {
         $questions = Question::latest()->paginate(10); // Assuming you want to display 10 questions per page
-        return view('home', compact('questions'));
+        return view('pages.home', compact('questions'));
     }
 
     /**
@@ -60,9 +60,17 @@ class QuestionController extends Controller
      * @param  \App\Models\Question  $question
      * @return \Illuminate\Http\Response
      */
-    public function show(Question $question)
+    public function show(string $id): View
     {
-        return view('questions.show', compact('question'));
+        // Get the question.
+        $question = Question::findOrFail($id);
+
+        // Check if the current user can show (view) the question.
+        $this->authorize('show', $question);
+
+        return view('pages.question', [
+            'question' => $question
+        ]);
     }
 
     // Add other methods like edit, update, destroy as needed

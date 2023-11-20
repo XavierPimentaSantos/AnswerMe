@@ -6,7 +6,7 @@
     <div class="container">
         <h2>Ask a Question</h2>
 
-        <form action="{{ route('questions.store') }}" method="post">
+        <form action="{{ route('questions.store') }}" method="post" enctype="multipart/form-data">
             @csrf
 
             <div class="form-group">

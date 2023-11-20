@@ -10,7 +10,7 @@ use App\Http\Controllers\QuestionController;
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-
+use App\Http\Controllers\Auth\ProfileController;
 
 
 /*
@@ -63,10 +63,11 @@ Route::get('/questions/create', [QuestionController::class, 'create'])->name('qu
 
 Route::post('/questions', [QuestionController::class, 'store'])->name('questions.store');
 
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+
 Route::get('/', [QuestionController::class, 'index'])->name('questions.index');
 
-
-
+Route::get('/questions/{id}', [QuestionController::class, 'show'])->name('questions.show');
 /*
 
 // M01

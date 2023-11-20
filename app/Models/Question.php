@@ -9,7 +9,6 @@ class Question extends Model
     protected $fillable = [
         'title',
         'content',
-        // Add any other fields you may need
     ];
 
     // Relationships
