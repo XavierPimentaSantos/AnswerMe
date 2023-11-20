@@ -32,22 +32,10 @@ CREATE TABLE IF NOT EXISTS users (
     FOREIGN KEY (user_settings) REFERENCES settings(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Table: posts
-/* DROP TABLE IF EXISTS posts;
-CREATE TABLE IF NOT EXISTS posts (
-    id SERIAL NOT NULL,
-    creation_date TIMESTAMP DEFAULT NOW() NOT NULL,
-    edit_date TIMESTAMP DEFAULT NOW() NOT NULL,
-    edited BOOLEAN NOT NULL,
-    user_id INTEGER NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE
-); */
-
 -- Table: questions
 DROP TABLE IF EXISTS questions;
 CREATE TABLE IF NOT EXISTS questions (
-    /* post_ */id SERIAL NOT NULL,
+    id SERIAL NOT NULL,
     title VARCHAR NOT NULL,
     body VARCHAR NOT NULL, 
     score INTEGER DEFAULT (0) NOT NULL,
@@ -77,11 +65,11 @@ CREATE TABLE IF NOT EXISTS answers (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Table: comments
-DROP TABLE IF EXISTS comments;
-CREATE TABLE IF NOT EXISTS comments (
+-- Table: comments_question
+DROP TABLE IF EXISTS comments_question;
+CREATE TABLE IF NOT EXISTS comments_question (
     id SERIAL NOT NULL,
-    referred_post_id INTEGER NOT NULL,
+    referred_question_id INTEGER NOT NULL,
     body VARCHAR NOT NULL,
     creation_date TIMESTAMP DEFAULT NOW() NOT NULL,
     edit_date TIMESTAMP DEFAULT NOW() NOT NULL,
@@ -89,7 +77,22 @@ CREATE TABLE IF NOT EXISTS comments (
     user_id INTEGER NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (referred_post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (referred_question_id) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- Table: comments_answer
+DROP TABLE IF EXISTS comments_answer;
+CREATE TABLE IF NOT EXISTS comments_answer (
+    id SERIAL NOT NULL,
+    referred_answer_id INTEGER NOT NULL,
+    body VARCHAR NOT NULL,
+    creation_date TIMESTAMP DEFAULT NOW() NOT NULL,
+    edit_date TIMESTAMP DEFAULT NOW() NOT NULL,
+    edited BOOLEAN NOT NULL,
+    user_id INTEGER NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (referred_answer_id) REFERENCES answers(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table: following_questions
@@ -99,7 +102,7 @@ CREATE TABLE IF NOT EXISTS following_questions (
     question_id INTEGER NOT NULL,
     PRIMARY KEY (user_id, question_id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE, 
-    FOREIGN KEY (question_id) REFERENCES questions(post_id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table: tags
@@ -114,10 +117,10 @@ CREATE TABLE IF NOT EXISTS tags (
 DROP TABLE IF EXISTS tagged;
 CREATE TABLE IF NOT EXISTS tagged (
     id_tag INTEGER,
-    id_post INTEGER,
-    PRIMARY KEY (id_tag, id_post),
-    FOREIGN KEY (id_tag) REFERENCES tags(id),
-    FOREIGN KEY (id_post) REFERENCES posts(id)
+    id_question INTEGER,
+    PRIMARY KEY (id_tag, id_question),
+    FOREIGN KEY (id_tag) REFERENCES tags(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (id_question) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table: following_tags
@@ -127,7 +130,7 @@ CREATE TABLE IF NOT EXISTS following_tags (
     tag_id INTEGER NOT NULL,
     PRIMARY KEY (user_id, tag_id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE, 
-    FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table: following_users
@@ -143,7 +146,7 @@ CREATE TABLE IF NOT EXISTS following_users (
 -- Table: notifications
 DROP TABLE IF EXISTS notifications;
 CREATE TABLE IF NOT EXISTS notifications (
-    id SERIAL,
+    id SERIAL NOT NULL,
     name VARCHAR NOT NULL,
     PRIMARY KEY (id)
 );
@@ -178,14 +181,24 @@ CREATE TABLE IF NOT EXISTS notification_comments (
     FOREIGN KEY (comment_id) REFERENCES comments(post_id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
--- Table: notification_deletes
-DROP TABLE IF EXISTS notification_deletes;
-CREATE TABLE IF NOT EXISTS notification_deletes (
+-- Table: notification_deletes_question
+DROP TABLE IF EXISTS notification_deletes_question;
+CREATE TABLE IF NOT EXISTS notification_deletes_question (
     id_notification INTEGER NOT NULL,
-    post_id INTEGER NOT NULL,
-    PRIMARY KEY (id_notification, post_id),
+    question_id INTEGER NOT NULL,
+    PRIMARY KEY (id_notification, question_id),
     FOREIGN KEY (id_notification) REFERENCES notifications(id),
-    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE NO ACTION
+    FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE NO ACTION
+);
+
+-- Table: notification_deletes_answer
+DROP TABLE IF EXISTS notification_deletes_answer;
+CREATE TABLE IF NOT EXISTS notification_deletes_answer (
+    id_notification INTEGER NOT NULL,
+    answer_id INTEGER NOT NULL,
+    PRIMARY KEY (id_notification, answer_id),
+    FOREIGN KEY (id_notification) REFERENCES notifications(id),
+    FOREIGN KEY (answer_id) REFERENCES answers(id) ON DELETE NO ACTION
 );
 
 -- Table: notification_questions
@@ -195,7 +208,7 @@ CREATE TABLE IF NOT EXISTS notification_questions (
     question_id INTEGER NOT NULL,
     PRIMARY KEY (id_notification, question_id),
     FOREIGN KEY (id_notification) REFERENCES notifications(id), 
-    FOREIGN KEY (question_id) REFERENCES questions(post_id) ON DELETE SET NULL ON UPDATE CASCADE
+    FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- Table: notification_users
@@ -289,6 +302,7 @@ CREATE TRIGGER question_search_trigger
     FOR EACH ROW
     EXECUTE PROCEDURE question_search_update();
 
+
 CREATE OR REPLACE FUNCTION prevent_self_follow()
 RETURNS TRIGGER AS
 $BODY$
@@ -300,16 +314,18 @@ BEGIN
 END;
 $BODY$
 LANGUAGE plpgsql;
+
 CREATE TRIGGER prevent_self_follow
 BEFORE INSERT ON following_users
 FOR EACH ROW
 EXECUTE FUNCTION prevent_self_follow();
 
-DROP FUNCTION IF EXISTS allow_comments();
-CREATE FUNCTION allow_comments() RETURNS TRIGGER AS
+
+DROP FUNCTION IF EXISTS allow_comments_question();
+CREATE FUNCTION allow_comments_question() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-	IF NEW.referred_post_id IN (SELECT id FROM questions UNION SELECT id FROM answers) THEN
+	IF NEW.referred_post_id IN (SELECT id FROM questions) THEN
 		RETURN NEW; -- Comment is allowed on a question or an answer
 	ELSE
 		RAISE EXCEPTION 'Commenting is only allowed under questions and answers.';
@@ -318,11 +334,29 @@ END
 $BODY$
 LANGUAGE plpgsql;
 
-
-CREATE TRIGGER allow_comment_trigger
-	BEFORE INSERT ON comments
+CREATE TRIGGER allow_comment_question_trigger
+	BEFORE INSERT ON comments_question
 	FOR EACH ROW
-EXECUTE FUNCTION allow_comments();
+EXECUTE FUNCTION allow_comments_question();
+
+
+DROP FUNCTION IF EXISTS allow_comments_answer();
+CREATE FUNCTION allow_comments_answer() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+	IF NEW.referred_post_id IN (SELECT id FROM answers) THEN
+		RETURN NEW; -- Comment is allowed on a question or an answer
+	ELSE
+		RAISE EXCEPTION 'Commenting is only allowed under questions and answers.';
+	END IF;
+END
+$BODY$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER allow_comment_answer_trigger
+	BEFORE INSERT ON comments_answer
+	FOR EACH ROW
+EXECUTE FUNCTION allow_comments_answer();
 
 
 DROP FUNCTION IF EXISTS check_unique_emails();
@@ -336,13 +370,15 @@ BEGIN
 END
 $BODY$
 LANGUAGE plpgsql;
+
 CREATE TRIGGER check_unique_email_trigger
 BEFORE INSERT OR UPDATE ON users
 FOR EACH ROW
 EXECUTE FUNCTION check_unique_emails();
 
-CREATE OR REPLACE FUNCTION mark_edited_post()
-RETURNS TRIGGER AS
+
+DROP FUNCTION IF EXISTS mark_edited_post();
+CREATE FUNCTION mark_edited_post() RETURNS TRIGGER AS
 $BODY$
 BEGIN
 	IF OLD.body IS DISTINCT FROM NEW.body THEN
@@ -369,23 +405,44 @@ FOR EACH ROW
 WHEN (OLD.body IS DISTINCT FROM NEW.body)
 EXECUTE FUNCTION mark_edited_post();
 
-DROP FUNCTION IF EXISTS prevent_self_vote();
-CREATE FUNCTION prevent_self_vote() RETURNS TRIGGER AS
+
+DROP FUNCTION IF EXISTS prevent_self_vote_question();
+CREATE FUNCTION prevent_self_vote_question() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-        IF NEW.user_id = (SELECT user_id FROM questions WHERE id = NEW.id) THEN 
-            RAISE EXCEPTION 'Users cannot vote on their own posts.';
-        END IF;
-        RETURN NEW;
+    IF NEW.user_id = (SELECT user_id FROM questions WHERE id = NEW.question_id) THEN 
+        RAISE EXCEPTION 'Users cannot vote on their own posts.';
+    END IF;
+    RETURN NEW;
 END
 $BODY$
 LANGUAGE plpgsql;
 
-CREATE TRIGGER prevent_self_votes_trigger
-        BEFORE INSERT
-        ON post_votes
-        FOR EACH ROW        
- EXECUTE PROCEDURE prevent_self_vote();
+CREATE TRIGGER prevent_self_votes_question_trigger
+    BEFORE INSERT
+    ON question_votes
+    FOR EACH ROW
+EXECUTE PROCEDURE prevent_self_vote_question();
+
+
+DROP FUNCTION IF EXISTS prevent_self_vote_answer();
+CREATE FUNCTION prevent_self_vote_answer() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+    IF NEW.user_id = (SELECT user_id FROM answers WHERE id = NEW.answer_id) THEN 
+        RAISE EXCEPTION 'Users cannot vote on their own posts.';
+    END IF;
+    RETURN NEW;
+END
+$BODY$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER prevent_self_votes_answer_trigger
+    BEFORE INSERT
+    ON answer_votes
+    FOR EACH ROW        
+EXECUTE PROCEDURE prevent_self_vote_answer();
+
 
 CREATE OR REPLACE FUNCTION enforce_unique_username()
 RETURNS TRIGGER AS
