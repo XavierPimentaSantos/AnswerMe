@@ -14,6 +14,7 @@ class AnswerController extends Controller
 
     public function store(Request $request, $question_id)
     {
+        
         $question = Question::findOrFail($question_id);
 
         $request->validate([
