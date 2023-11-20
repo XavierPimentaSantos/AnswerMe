@@ -45,6 +45,15 @@ CREATE TABLE questions (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+drop table if exists answers cascade;
+create table answers (
+    id serial primary key,
+    title varchar not null,
+    content varchar not null,
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp
+);
+
 --
 -- Insert value.
 --
