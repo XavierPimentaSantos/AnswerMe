@@ -50,8 +50,10 @@ create table answers (
     id serial primary key,
     title varchar not null,
     content varchar not null,
+    question integer not null,
     created_at timestamp default current_timestamp,
-    updated_at timestamp default current_timestamp
+    updated_at timestamp default current_timestamp,
+    foreign key question references questions(id)
 );
 
 --

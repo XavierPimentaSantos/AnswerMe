@@ -69,7 +69,9 @@ Route::get('/', [QuestionController::class, 'index'])->name('questions.index');
 
 Route::get('/questions/{id}', [QuestionController::class, 'show'])->name('questions.show');
 
-Route::post('/questions/{id}/answer', [AnswerController::class, 'store'])->name('answers.store');
+Route::post('/questions/{question_id}/answer', [AnswerController::class, 'store'])->name('answers.store');
+
+Route::post('/questions/{question_id}/answer/{answer_id}/edit', [AnswerController::class, 'edit'])->name('answers.edit');
 
 /*
 
