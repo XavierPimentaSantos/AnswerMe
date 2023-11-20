@@ -16,6 +16,7 @@ class LoginController extends Controller
     /**
      * Display a login form.
      */
+    
     public function showLoginForm()
     {
         if (Auth::check()) {

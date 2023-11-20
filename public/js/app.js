@@ -22,6 +22,23 @@ function addEventListeners() {
     let cardCreator = document.querySelector('article.card form.new_card');
     if (cardCreator != null)
       cardCreator.addEventListener('submit', sendCreateCardRequest);
+
+    document.getElementById('edit-profile-btn').addEventListener('click', function () {
+      toggleProfileSections(true);
+    });
+
+    document.getElementById('update-profile-btn').addEventListener('click', function () {
+      updateProfile();
+    });
+
+  }
+
+
+  function toggleProfileSections(editMode) {
+    document.getElementById('profile-view').style.display = editMode ? 'none' : 'block';
+    document.getElementById('profile-edit').style.display = editMode ? 'block' : 'none';
+    document.getElementById('edit-profile-btn').style.display = editMode ? 'none' : 'inline-block';
+    document.getElementById('profile-header').style.display = editMode ? 'none' : 'block';
   }
   
   function encodeForAjax(data) {
@@ -30,6 +47,35 @@ function addEventListeners() {
       return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])
     }).join('&');
   }
+
+  function updateProfile() {
+    // Gather form data
+    let formData = new FormData(document.getElementById('edit-profile-form'));
+
+    // Send AJAX request to update profile
+    console.log('AJAX request to update profile');
+    sendAjaxRequest('post', '/update-profile', formData, function () {
+        // Handle the response, update success or error messages
+        if (this.status === 200) {
+            document.getElementById('success-message').classList.remove('hidden');
+            document.getElementById('error-message').classList.add('hidden');
+
+            // Update profile view with new data
+            let name = formData.get('name');
+            let email = formData.get('email');
+
+            document.getElementById('profile-view').innerHTML = `
+                <p><strong>Name:</strong> ${name}</p>
+                <p><strong>Email:</strong> ${email}</p>
+            `;
+
+            toggleProfileSections(false);  // Hide the edit section
+        } else {
+            document.getElementById('success-message').classList.add('hidden');
+            document.getElementById('error-message').classList.remove('hidden');
+        }
+    });
+}
   
   function sendAjaxRequest(method, url, data, handler) {
     let request = new XMLHttpRequest();
@@ -54,6 +100,7 @@ function addEventListeners() {
   
     sendAjaxRequest('delete', '/api/item/' + id, null, itemDeletedHandler);
   }
+
   
   function sendCreateItemRequest(event) {
     let id = this.closest('article').getAttribute('data-id');
@@ -102,6 +149,8 @@ function addEventListeners() {
     // Reset the new item form
     form.querySelector('[type=text]').value="";
   }
+
+
   
   function itemDeletedHandler() {
     if (this.status != 200) window.location = '/';
