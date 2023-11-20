@@ -56,6 +56,8 @@ Route::controller(RegisterController::class)->group(function () {
     Route::post('/register', 'register');
 }); */
 
+Route::redirect('/', '/login');
+
 // M01
 // R101
 Route::get('/login', function() { // retorna o form de login
@@ -111,92 +113,91 @@ Route::post('/users/{target_user_id}/follow', function(Request $request, int $ta
     // cria nova relação User-User
 });
 
-Route::delete('users/{target_user_id}/unfollow', function(Request $request, int $target_user_id) {
+Route::delete('/users/{target_user_id}/unfollow', function(Request $request, int $target_user_id) {
     // elimina a relação User-User
 });
 
-Route::post('tag/{tag_id}/follow', function(Request $request, int $tag_id) {
+Route::post('/tag/{tag_id}/follow', function(Request $request, int $tag_id) {
     // cria nova relação User-Tag
 });
 
-Route::delete('tag/{tag_id}/unfollow', function(Request $request, int $tag_id) {
+Route::delete('/tag/{tag_id}/unfollow', function(Request $request, int $tag_id) {
     // elimina a relação User-Tag
 });
 
-Route::post('questions/{question_id}/vote', function(Request $request, int $question_id) {
+Route::post('/questions/{question_id}/vote', function(Request $request, int $question_id) {
     // cria nova entrada na tabela post_votes
     // valor do voto (1 ou -1) está no $request?
 });
 
-Route::delete('questions/{question_id}/vote', function(Request $request, int $question_id) {
+Route::delete('/questions/{question_id}/vote', function(Request $request, int $question_id) {
     // elimina a entrada na tabela post_votes
 });
 
 // M03
 
-Route::post('questions', function(Request $request) {
+Route::post('/questions/create', function(Request $request) {
     // adiciona nova Question à base de dados
-    [QuestionController::class, 'store'];
-    return view('question', [/*parâmetros*/]); // é preciso criar uma view question.blade.php que vai incluir as respostas e tudo
+    [QuestionController::class, 'create'];
 });
 
-Route::get('questions/{question_id}', function(int $question_id) {
+Route::get('/questions/{question_id}', function(int $question_id) {
     return view('question', [/*parâmetros*/]);
 });
 
-Route::put('questions/{question_id}', function(Request $request, int $question_id) {
+Route::put('/questions/{question_id}', function(Request $request, int $question_id) {
     // editar questão
 });
 
-Route::delete('question/{question_id}', function(Request $request, int $question_id) {
+Route::delete('/question/{question_id}', function(Request $request, int $question_id) {
     // elimina questão da base de dados
 });
 
-Route::patch('question/{question_id}', function(Request $request, int $question_id) {
+Route::patch('/question/{question_id}', function(Request $request, int $question_id) {
     // altera as tags da questão
 });
 
 // M04
 
-Route::post('questions/{question_id}/answers', function(Request $request, int $question_id) {
+Route::post('/questions/{question_id}/answers', function(Request $request, int $question_id) {
     // adiciona nova Answer à BD ligada à dita Question
 });
 
-Route::put('questions/{question_id}/answers/{answer_id}', function(Request $request, int $question_id, int $answer_id) {
+Route::put('/questions/{question_id}/answers/{answer_id}', function(Request $request, int $question_id, int $answer_id) {
     // editar a resposta
 });
 
-Route::delete('questions/{question_id}/answers/{answer_id}', function(Request $request, int $question_id, int $answer_id) {
+Route::delete('/questions/{question_id}/answers/{answer_id}', function(Request $request, int $question_id, int $answer_id) {
     // eliminar a resposta da base de dados
 });
 
-Route::patch('questions/{question_id}/answers/{answer_id}', function(Request $request, int $question_id, int $answer_id) {
+Route::patch('/questions/{question_id}/answers/{answer_id}', function(Request $request, int $question_id, int $answer_id) {
     // validar a resposta
 });
 
 // M05
 
-Route::post('questions/{question_id}/comments', function(Request $request, int $question_id) {
+Route::post('/questions/{question_id}/comments', function(Request $request, int $question_id) {
     // adiciona novo comentário para uma Question na BD
 });
 
-Route::post('questions/{question_id}/answers/{answer_id}/comments', function(Request $request, int $question_id, int $answer_id) {
+Route::post('/questions/{question_id}/answers/{answer_id}/comments', function(Request $request, int $question_id, int $answer_id) {
     // adiciona novo comentário para uma Answer na BD
 });
 
-Route::put('questions/{question_id}/comments/{comment_id}', function(Request $request, int $question_id, int $comment_id) {
+Route::put('/questions/{question_id}/comments/{comment_id}', function(Request $request, int $question_id, int $comment_id) {
     // edita comentário
 });
 
-Route::delete('questions/{question_id}/comments/{comment_id}', function(Request $request, int $question_id, int $comment_id) {
+Route::delete('/questions/{question_id}/comments/{comment_id}', function(Request $request, int $question_id, int $comment_id) {
     // elimina comentário
 });
 
-Route::put('questions/{question_id}/answers/{answer_id}/comments/{comment_id}', function(Request $request, int $question_id, int $answer_id, int $comment_id) {
+Route::put('/questions/{question_id}/answers/{answer_id}/comments/{comment_id}', function(Request $request, int $question_id, int $answer_id, int $comment_id) {
     // edita comentário
 });
 
-Route::delete('questions/{question_id}/answers/{answer_id}/comments/{comment_id}', function(Request $request, int $question_id, int $answer_id, int $comment_id) {
+Route::delete('/questions/{question_id}/answers/{answer_id}/comments/{comment_id}', function(Request $request, int $question_id, int $answer_id, int $comment_id) {
     // edita comentário
 });
 
