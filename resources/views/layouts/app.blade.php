@@ -20,8 +20,8 @@
         <script type="text/javascript" src={{ url('js/app.js') }} defer>
         </script>
     </head>
-    <body class = "flex flex-col min-h-screen">
-        <main>
+    <body class="flex flex-col min-h-screen">
+        <main class="flex-grow">
             <header class="bg-black flex justify-between items-center">
                 <h1 class="text-white"><a href="{{ url('/cards') }}">AnswerMe!</a></h1>
                 @if (Auth::check())
@@ -35,9 +35,9 @@
             <section id="content">
                 @yield('content')
             </section>
-            <footer class = "bg-black justify-between items-center p-4">
-                <p class="text-white">&copy; Made By lbaw2392</p> 
-            </footer>
         </main>
+        <footer class="bg-black justify-between items-center p-4">
+            <p class="text-white">&copy; Made By lbaw2392</p>
+        </footer>
     </body>
 </html>

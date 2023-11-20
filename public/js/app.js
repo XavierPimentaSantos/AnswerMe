@@ -43,30 +43,20 @@ function addEventListeners() {
   
   function encodeForAjax(data) {
     if (data == null) return null;
-    console.log('Returning not NULL, Data is not null');
-    console.log(data);
-    const return_value = [];
-    data.forEach((value, key) => {
-        return_value.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
-    });
-
-    console.log('Returning:', return_value.join('&'));
-    return return_value.join('&');
+    return Object.keys(data).map(function(k){
+      return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])
+    }).join('&');
   }
 
   function updateProfile() {
     // Gather form data
-    console.log('A');
     let formData = new FormData(document.getElementById('edit-profile-form'));
-    console.log('B');
 
     // Send AJAX request to update profile
-    // console.log('Sending AJAX request to update profile');
-    const result = sendAjaxRequest('post', '/update-profile', formData, function () {
+    console.log('AJAX request to update profile');
+    sendAjaxRequest('post', '/update-profile', formData, function () {
         // Handle the response, update success or error messages
-        console.log('C: ' + result.status);
         if (this.status === 200) {
-            
             document.getElementById('success-message').classList.remove('hidden');
             document.getElementById('error-message').classList.add('hidden');
 
@@ -81,8 +71,6 @@ function addEventListeners() {
 
             toggleProfileSections(false);  // Hide the edit section
         } else {
-
-            console.log('Error updating profile');
             document.getElementById('success-message').classList.add('hidden');
             document.getElementById('error-message').classList.remove('hidden');
         }
@@ -91,23 +79,12 @@ function addEventListeners() {
   
   function sendAjaxRequest(method, url, data, handler) {
     let request = new XMLHttpRequest();
-    console.log('D');
   
     request.open(method, url, true);
-
-    console.log('E');
     request.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').content);
-
-    console.log('F');
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-    console.log('G');
     request.addEventListener('load', handler);
-
-    console.log('H');
     request.send(encodeForAjax(data));
-
-    console.log('II: ' + encodeForAjax(data));
   }
   
   function sendItemUpdateRequest() {

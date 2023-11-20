@@ -10,8 +10,8 @@
         <button class="button text-sm rounded px-1 py-1 bg-red-500" id="delete-account-btn">Delete Account</button>
 
         <div id="profile-view">
-            <p><strong>Name:</strong> {{ $user->name }}</p>
-            <p><strong>Email:</strong> {{ $user->email }}</p>
+            <p id = "name"><strong>Name:</strong> {{ $user->name }}</p>
+            <p id = "email"><strong>Email:</strong> {{ $user->email }}</p>
         </div>
 
         <div id="profile-edit" style="display: none;">
@@ -20,12 +20,12 @@
             <form id="edit-profile-form">
                 @csrf
                 <label for="name">Name:</label>
-                <input type="text" name="name" value="{{ $user->name }}" required>
+                <input type="text" id = "name-input" name="name" value="{{ $user->name }}" required>
 
                 <label for="email">Email:</label>
-                <input type="email" name="email" value="{{ $user->email }}" required>
+                <input type="email" id = "email-input" name="email" value="{{ $user->email }}" required>
 
-                <button type="button" id="update-profile-btn">Update Profile</button>
+                <button class = "button" type="submit" id="update-profile-btn">Update Profile</button>
             </form>
 
             <div id="success-message" class="hidden alert alert-success"></div>
