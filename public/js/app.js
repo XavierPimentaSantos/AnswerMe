@@ -26,10 +26,27 @@ function addEventListeners() {
     document.getElementById('edit-profile-btn').addEventListener('click', function () {
       toggleProfileSections(true);
     });
+/*
+    document.getElementById('edit-answer-btn').addEventListener('click', function () {
+      toggleAnswerSections(true);
+    });
 
+    document.getElementById('edit-question-btn').addEventListener('click', function () {
+      toggleQuestionSections(true);
+    });
+*/
     document.getElementById('update-profile-btn').addEventListener('click', function () {
       updateProfile();
     });
+/*
+    document.getElementById('update-question-btn').addEventListener('click', function () {
+      updateQuestion();
+    });
+
+    document.getElementById('update-answer-btn').addEventListener('click', function () {
+      updateAnswer();
+    });
+*/
 
   }
 
@@ -40,6 +57,16 @@ function addEventListeners() {
     document.getElementById('edit-profile-btn').style.display = editMode ? 'none' : 'inline-block';
     document.getElementById('profile-header').style.display = editMode ? 'none' : 'block';
   }
+
+  function toggleQuestionSections(editMode) {
+    document.getElementById('question-edit').style.display = editMode ? 'block' : 'none';
+    document.getElementById('question-view').style.display = editMode ? 'none' : 'block';
+  }
+
+  function toggleAnswerSections(editMode) {
+    document.getElementById('answer-edit').style.display = editMode ? 'block' : 'none';
+    document.getElementById('answer-view').style.display = editMode ? 'none' : 'block';
+  }
   
   function encodeForAjax(data) {
     if (data == null) return null;
@@ -48,34 +75,41 @@ function addEventListeners() {
     }).join('&');
   }
 
+  const fname = document.getElementById("name");
+  const email = document.getElementById("email");
+
+  function updateProfileData(newName, newEmail) {
+    fname.textContent = newName;
+    email.textContent = newEmail;
+  }
+
   function updateProfile() {
-    // Gather form data
-    let formData = new FormData(document.getElementById('edit-profile-form'));
-
-    // Send AJAX request to update profile
-    console.log('AJAX request to update profile');
-    sendAjaxRequest('post', '/update-profile', formData, function () {
-        // Handle the response, update success or error messages
-        if (this.status === 200) {
-            document.getElementById('success-message').classList.remove('hidden');
-            document.getElementById('error-message').classList.add('hidden');
-
-            // Update profile view with new data
-            let name = formData.get('name');
-            let email = formData.get('email');
-
-            document.getElementById('profile-view').innerHTML = `
-                <p><strong>Name:</strong> ${name}</p>
-                <p><strong>Email:</strong> ${email}</p>
-            `;
-
-            toggleProfileSections(false);  // Hide the edit section
-        } else {
-            document.getElementById('success-message').classList.add('hidden');
-            document.getElementById('error-message').classList.remove('hidden');
-        }
+    console.log('update profile');
+    const data = {
+      name: document.getElementById('name-input').value,
+      email: document.getElementById('email-input').value,
+    };
+    sendAjaxRequest('post', '/profile/edit', data, function () {
+      updateProfileData(data.name, data.email);
+      toggleProfileSections(false);
     });
-}
+  }
+  function updateQuestion() {
+    titleInput = document.getElementById('title-input');
+    contentInput = document.getElementById('content-input');
+    const data = {
+      question_id: document.getElementById('title-input').getAttribute('data-id'),
+      title: titleInput.textContent,
+      content: contentInput.textContent,
+    };
+    sendAjaxRequest('post', 'questions/update', data, function () {
+      toggleQuestionSections(false);
+    });
+  }
+
+  function updateAnswer() {
+
+  }
   
   function sendAjaxRequest(method, url, data, handler) {
     let request = new XMLHttpRequest();

@@ -7,8 +7,6 @@
         <a class="button text-sm rounded px-1 py-1" id="edit-profile-btn">Edit User Profile</a>
 
         <!-- Delete My Account Button -->
-        <button class="button text-sm rounded px-1 py-1 bg-red-500" id="delete-account-btn">Delete Account</button>
-
         <div id="profile-view">
             <p id = "name"><strong>Name:</strong> {{ $user->name }}</p>
             <p id = "email"><strong>Email:</strong> {{ $user->email }}</p>

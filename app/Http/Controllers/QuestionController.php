@@ -49,4 +49,40 @@ class QuestionController extends Controller
         'question' => $question
     ]);
     }
+
+
+    public function delete(Request $request, $question_id)
+    {
+        
+        $question = Question::findOrFail($question_id);
+
+        if ($question->user_id !== auth()->user()->id) {
+            abort(403, 'Unauthorized');
+        }
+    
+
+        $question->delete();
+
+        return redirect(url('/'))->withSuccess('You have successfully deleted your question!');
+    }
+
+    public function edit(Request $request, $question_id)
+    {
+        $question = Question::findOrFail($question_id);
+
+        if ($question->user_id !== auth()->user()->id) {
+            abort(403, 'Unauthorized');
+        }
+    
+
+        $request->validate([
+            'title' => 'required|max:255',
+            'content' => 'required',
+        ]);
+
+        $question->title = $request->input('title');
+        $question->content = $request->input('content');
+
+        $question->save();
+    }
 }

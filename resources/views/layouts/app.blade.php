@@ -18,6 +18,7 @@
             // See: http://stackoverflow.com/questions/18943276/html-5-autofocus-messes-up-css-loading/18945951#18945951
         </script>
         <script type="text/javascript" src={{ url('js/app.js') }} defer>
+            
         </script>
     </head>
     <body class="flex flex-col min-h-screen">
@@ -28,7 +29,7 @@
                     <a class="button" href="{{ route('questions.create') }}">ASK A QUESTION</a>
                     <div class="flex items-center">
                         <a class="button mr-2" href="{{ url('/logout') }}">Logout</a>
-                        <a href="{{ route('profile.show') }}"><span class="text-white">{{ Auth::user()->name }}</span></a>
+                        <a href="{{ route('profile.show')}}"><span class="text-white">{{ Auth::user()->name }}</span></a>
                     </div>
                 @else
                     <div class="flex items-center">

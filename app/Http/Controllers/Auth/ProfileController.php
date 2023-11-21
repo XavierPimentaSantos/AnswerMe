@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Validator;
+
 
 
 
@@ -25,17 +27,15 @@ class ProfileController extends Controller
         return view('pages.users', compact('users'));
     }
 
-    public function updateProfile(Request $request)
+    public function edit(Request $request)
     {
 
-        print_r('LOLOLOLOLOLOLOLOLOLOLLOLOLL');
         $user = Auth::user();
 
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            // Add more validation rules as needed
         ]);
 
         if ($validator->fails()) {
@@ -51,7 +51,7 @@ class ProfileController extends Controller
         ]);
         $user->save();
 
-        return redirect()->route('pages.profile')->with('success', 'Profile updated successfully');
+        return redirect()->route('profile.show')->with('success', 'Profile updated successfully');
     }
 
 }
