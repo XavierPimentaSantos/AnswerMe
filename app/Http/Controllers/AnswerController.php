@@ -47,7 +47,7 @@ class AnswerController extends Controller
     {
         $answer = Answer::findOrFail($answer_id);
 
-        if ($answer->question->user_id !== auth()->user()->id) {
+        if ($answer-->user_id !== auth()->user()->id) {
             abort(403, 'Unauthorized');
         }
     
@@ -68,7 +68,7 @@ class AnswerController extends Controller
         
         $answer = Answer::findOrFail($answer_id);
 
-        if ($answer->question->user_id !== auth()->user()->id) {
+        if ($answer->user_id !== auth()->user()->id) {
             abort(403, 'Unauthorized');
         }
     
