@@ -16,7 +16,7 @@
                     <p class="card-content">{{ $question->content }}</p>
                 </div>
                 <div>
-                    @if ($question->user_id === auth()->user()->id)                       
+                    @if (Auth::check() && $question->user_id === auth()->user()->id)                       
                     <a id = "edit-question-btn" class="button bg-blue-500 text-white px-4 py-2 rounded mt-1 inline-block">Edit Question</a>
                     <form action="{{ route('questions.delete', $question->id)}}" method="POST" class="inline-block">
                         @csrf
