@@ -61,7 +61,9 @@ Route::controller(ProfileController::class)->group(function () {
     Route::post('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
 });
 
-
+Route::post('/tag', [TagController::class, 'store'])->name('tag.store');
+Route::delete('/tag/{tag_id}', [TagController::class, 'delete'])->name('tag.delete');
+Route::put('/tag/{tag_id}', [TagController::class, 'edit'])->name('tag.edit');
 
 /*
 
