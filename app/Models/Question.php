@@ -25,8 +25,8 @@ class Question extends Model
         return $this->hasMany(Answer::class);
     }
     
-    public function tags() : HasMany
+    public function tags() : BelongsToMany
     {
-        return $this->hasMany(Tag::class);
+        return $this->belongsToMany(Tag::class);
     }
 }

@@ -132,6 +132,15 @@ CREATE TABLE IF NOT EXISTS tagged (
     FOREIGN KEY (id_question) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+DROP TABLE IF EXISTS question_tag;
+CREATE TABLE IF NOT EXISTS question_tag (
+    question_id INTEGER,
+    tag_id INTEGER,
+    PRIMARY KEY (question_id, tag_id),
+    FOREIGN KEY (question_id) REFERENCES questions(id),
+    FOREIGN KEY (tag_id) REFERENCES tags(id)
+);
+
 -- Table: following_tags
 DROP TABLE IF EXISTS following_tags;
 CREATE TABLE IF NOT EXISTS following_tags (
