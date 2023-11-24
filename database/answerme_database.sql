@@ -123,14 +123,14 @@ CREATE TABLE IF NOT EXISTS tags (
 );
 
 -- Table: tagged
-DROP TABLE IF EXISTS tagged;
+/* DROP TABLE IF EXISTS tagged;
 CREATE TABLE IF NOT EXISTS tagged (
     id_tag INTEGER,
     id_question INTEGER,
     PRIMARY KEY (id_tag, id_question),
     FOREIGN KEY (id_tag) REFERENCES tags(id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (id_question) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
-);
+); */
 
 DROP TABLE IF EXISTS question_tag;
 CREATE TABLE IF NOT EXISTS question_tag (
