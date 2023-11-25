@@ -13,6 +13,7 @@ use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ProfileController;
+use App\Http\Controllers\Auth\AdminController;
 
 
 /*
@@ -59,9 +60,13 @@ Route::controller(AnswerController::class)->group(function () {
 Route::controller(ProfileController::class)->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::post('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile/{username}', [ProfileController::class, 'showUser'])->name('profile.showUser');
 });
 
-
+Route::controller(AdminController::class)->group(function () {
+    Route::get('/admin', [AdminController::class, 'show'])->name('admin.show');
+    Route::post('/admin/submit', [AdminController::class, 'submit'])->name('admin.submit');
+});
 
 /*
 

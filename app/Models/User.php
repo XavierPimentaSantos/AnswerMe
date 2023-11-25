@@ -40,4 +40,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Question::class);
     }
+
+    public function isModerator()
+{
+    return $this->user_type == 3 || $this->user_type == 4;
+}
+    public function isAdmin()
+{
+    return $this->user_type == 4;
+}
 }

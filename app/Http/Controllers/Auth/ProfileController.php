@@ -21,6 +21,17 @@ class ProfileController extends Controller
         return view('pages.profile', compact('user'));
     }
 
+    public function showUser($username)
+    {
+        $user = User::where('name', $username)->first();
+    
+        if ($user) {
+            return view('pages.profile', compact('user'));
+        } else {
+            return redirect('/')->with('error', 'User not found');
+        }
+    }
+
     public function index()
     {
         $users = User::all();

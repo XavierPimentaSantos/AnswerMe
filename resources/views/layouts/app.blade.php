@@ -36,6 +36,9 @@
                         <a class="button mr-2" href="{{ url('/login') }}">Login</a>
                     </div>
                 @endif
+                @if (Auth::check() && Auth::user()->isAdmin())
+                    <a href="{{ route('admin.show') }}" class="btn btn-primary">Admin Page</a>
+                @endif
             </header>
             <section id="content">
                 @yield('content')

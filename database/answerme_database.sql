@@ -286,12 +286,8 @@ CREATE TABLE IF NOT EXISTS answer_votes (
 -- Insert value.
 --
 
-INSERT INTO users VALUES (
-  DEFAULT,
-  'Mestre Fu',
-  'admin@example.com',
-  '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W'
-); -- Password is 1234. Generated using Hash::make('1234')
+INSERT INTO users (name, email, password, user_type)
+VALUES ('Mestre Fu', 'admin@example.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 4);-- Password is 1234. Generated using Hash::make('1234')
 
 
 INSERT INTO users VALUES (
@@ -309,6 +305,7 @@ INSERT INTO users VALUES (
   'b@example.com',
   '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W'
 ); 
+
 
 -- Question 1
 INSERT INTO questions VALUES (DEFAULT, 'If algorithms had personalities, which one would be your best friend?', 'Imagine spending a day with your favorite algorithm and discuss its characteristics.', DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1);
