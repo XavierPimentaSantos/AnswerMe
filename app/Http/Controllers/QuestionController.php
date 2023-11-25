@@ -85,4 +85,9 @@ class QuestionController extends Controller
 
         $question->save();
     }
+
+    public function attach_tag() {
+        
+    }
+
 }

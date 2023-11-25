@@ -25,14 +25,15 @@
                     </form>
                     @endif
                 </div>
-                @if ($question->tags->count() > 0)
                 <div id="tag_bar" style="display: flex; flex-direction: row;">
-                    @foreach ($question->tags as $tag)
-                    <div class="tag_item" style="background-color: #00ffff">
-                        {{ $tag->name }}
-                    </div>
+                    @if ($question->tags->count() > 0)
+                        @foreach ($question->tags as $tag)
+                            <div class="tag_item" style="background-color: #00ffff">
+                                {{ $tag->name }}
+                            </div>
+                        @endforeach
+                    @endif
                 </div>
-                @endif
             </div>
             <div id="question-edit" class="questions bg-gray-200 mb-3 p-4" style="display: none;">
                         <h2>Edit Question</h2>
