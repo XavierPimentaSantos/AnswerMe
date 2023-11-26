@@ -17,6 +17,8 @@ class Question extends Model
     protected $fillable = [
         'title',
         'content',
+        'score',
+        'edited',
         'user_id',
     ];
 

@@ -35,6 +35,8 @@ class QuestionController extends Controller
         $question = Question::create([
             'title' => $request->input('title'),
             'content' => $request->input('content'),
+            'score' => 0,
+            'edited' => 0,
             'user_id' => Auth::user()->id,
         ]);
 
@@ -87,8 +89,12 @@ class QuestionController extends Controller
 
         $question->title = $request->input('title');
         $question->content = $request->input('content');
+        $question->edited = 1;
 
         $question->save();
+
+        return redirect()->route('questions.show', $question->id)
+            ->with('success', 'Question created successfully');
     }
 
     public function attach_tag() {
