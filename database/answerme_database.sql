@@ -363,3 +363,16 @@ INSERT INTO questions VALUES (DEFAULT, 'If you could program your dreams, what w
 
 -- Question 15
 INSERT INTO questions VALUES (DEFAULT, 'If software engineers had a superhero team, what powers would each member possess?', 'Assemble your dream superhero team of software engineers and describe their unique powers.', DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1);
+
+
+-- Tag 1
+INSERT INTO tags VALUES (DEFAULT, 'Technology');
+
+-- Tag 2
+INSERT INTO tags VALUES (DEFAULT, 'Cooking');
+
+-- Tag 3
+INSERT INTO tags VALUES (DEFAULT, 'Cars');
+
+-- Tag 4
+INSERT INTO tags VALUES (DEFAULT, 'Embroidery');

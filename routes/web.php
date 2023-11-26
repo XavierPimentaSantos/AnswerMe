@@ -53,8 +53,6 @@ Route::controller(AnswerController::class)->group(function () {
     Route::delete('/questions/{question_id}/answer/{answer_id}/delete', [AnswerController::class, 'delete'])->name('answers.delete');
 });
 
-
-
 Route::controller(ProfileController::class)->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::post('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
