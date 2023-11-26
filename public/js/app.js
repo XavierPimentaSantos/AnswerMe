@@ -121,5 +121,45 @@ function addEventListeners() {
     request.send(encodeForAjax(data));
   }
   
+  //
+  document.addEventListener('DOMContentLoaded', function () {
+    // Listen for change event on checkboxes with class 'tag-checkbox'
+    var checkboxes = document.querySelectorAll('.tag-checkbox');
+    checkboxes.forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
+            updateSelectedTags();
+        });
+    });
+
+    // Function to update the content of 'selected_tags' div using AJAX
+    function updateSelectedTags() {
+        var selectedTags = [];
+
+        // Iterate through checked checkboxes and collect values
+        checkboxes.forEach(function (checkbox) {
+            if (checkbox.checked) {
+                selectedTags.push(checkbox.value);
+            }
+        });
+
+        // Send AJAX request to update-selected-tags route
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/update-selected-tags', true);
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // Update the content of 'selected_tags' div with the returned HTML
+                document.getElementById('selected_tags').innerHTML = xhr.responseText;
+            } else if (xhr.status !== 200) {
+                console.error('Error updating selected tags:', xhr.statusText);
+            }
+        };
+        
+        // Convert the selectedTags array to JSON and send it in the request body
+        xhr.send(JSON.stringify({ selectedTags: selectedTags }));
+    }
+  });
+  //
+
   addEventListeners();
   

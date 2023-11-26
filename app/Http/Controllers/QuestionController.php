@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\View;
 
 use Illuminate\Support\Facades\Auth;
 
-
+use App\Models\Tag;
 
 class QuestionController extends Controller
 {
@@ -38,6 +38,11 @@ class QuestionController extends Controller
             'user_id' => Auth::user()->id,
         ]);
 
+        $tags = $request->input('sel_tags', []);
+
+        foreach($tags as $tag) {
+            $question->tags()->attach($tag);
+        }
 
         return redirect()->route('questions.show', $question->id)
             ->with('success', 'Question created successfully');

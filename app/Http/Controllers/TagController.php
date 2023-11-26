@@ -56,4 +56,15 @@ class TagController extends Controller
         return redirect()->route('questions.index') // se calhar enviar para outro sítio
             ->with('success', 'Tag was deleted successfully.');
     }
+
+    public function updateSelectedTags(Request $request)
+    {
+        // Assuming you have the logic to retrieve selected tags based on the request
+        $selectedTags = $request->input('selectedTags', []);
+
+        // You can also perform any additional logic here
+
+        // Return the updated HTML
+        return view('partials.selected_tags', compact('selectedTags'))->render();
+    }
 }
