@@ -80,7 +80,14 @@ class QuestionController extends Controller
         if ($question->user_id !== auth()->user()->id) {
             abort(403, 'Unauthorized');
         }
-    
+        
+        $tags = $request->input('sel_tags', []);
+
+        $question->tags()->detach();
+
+        foreach($tags as $tag) {
+            $question->tags()->attach($tag);
+        }
 
         $request->validate([
             'title' => 'required|max:255',

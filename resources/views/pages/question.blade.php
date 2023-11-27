@@ -2,6 +2,15 @@
 
 @section('content')
 
+<?php
+    $available_tags = DB::table('tags')->get();
+
+    $question_tags = array();
+    foreach($question->tags as $tag) {
+        $question_tags[] = $tag->id;
+    }
+?>
+
 <article class="card" data-id="{{ $question->id }}">
             <div id = "question-view" class="questions bg-gray-200 mb-3 p-4" style="display: block;">
                 <div class="question-card-body">
@@ -49,6 +58,24 @@
 
                             <label for="content">Content:</label>
                             <input type="text" name="content" value="{{ $question->content }}" required>
+
+                            <div class="form-group" id="question_tag_container">
+                                <div id="tag_list">
+                                    @foreach ($available_tags as $available_tag)
+                                        @if (in_array($available_tag->id, $question_tags))
+                                        <div style="display: flex; flex-direction: row;">
+                                            <input type="checkbox" name="sel_tags[]" id="tag_{{ $available_tag->id }}" value="{{ $available_tag->id }}" class="tag-checkbox" checked>
+                                            <label for="tag_{{ $available_tag->id }}">{{ $available_tag->name }}</label>
+                                        </div>
+                                        @else
+                                        <div style="display: flex; flex-direction: row;">
+                                            <input type="checkbox" name="sel_tags[]" id="tag_{{ $available_tag->id }}" value="{{ $available_tag->id }}" class="tag-checkbox">
+                                            <label for="tag_{{ $available_tag->id }}">{{ $available_tag->name }}</label>
+                                        </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </div>
 
                             <button class = "button" type="submit" id="update-question-btn">Update Question</button>
                         </form>
