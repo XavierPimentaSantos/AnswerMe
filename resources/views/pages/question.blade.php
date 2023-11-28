@@ -4,7 +4,7 @@
 
 <?php
     $available_tags = DB::table('tags')->get();
-
+    $sel_tags = array();
     $question_tags = array();
     foreach($question->tags as $tag) {
         $question_tags[] = $tag->id;

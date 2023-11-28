@@ -122,43 +122,37 @@ function addEventListeners() {
   }
   
   //
-  document.addEventListener('DOMContentLoaded', function () {
-    // Listen for change event on checkboxes with class 'tag-checkbox'
-    var checkboxes = document.querySelectorAll('.tag-checkbox');
-    checkboxes.forEach(function (checkbox) {
-        checkbox.addEventListener('change', function () {
-            updateSelectedTags();
+  
+  let checkboxes = document.querySelectorAll('.tag-checkbox');
+
+    checkboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            console.log('checkbox ticked');
+            updateTags(); // when any checkbox is ticked/unticked, we want to update the tags that are shown
         });
     });
 
-    // Function to update the content of 'selected_tags' div using AJAX
-    function updateSelectedTags() {
-        var selectedTags = [];
+    function updateTags() {
+        let checkedTags = document.querySelectorAll('.tag-checkbox:checked');
+        let selectedTags = Array.from(checkedTags).map(checkbox => checkbox.value);
 
-        // Iterate through checked checkboxes and collect values
-        checkboxes.forEach(function (checkbox) {
-            if (checkbox.checked) {
-                selectedTags.push(checkbox.value);
-            }
-        });
-
-        // Send AJAX request to update-selected-tags route
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/update-selected-tags', true);
-        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                // Update the content of 'selected_tags' div with the returned HTML
-                document.getElementById('selected_tags').innerHTML = xhr.responseText;
-            } else if (xhr.status !== 200) {
-                console.error('Error updating selected tags:', xhr.statusText);
-            }
-        };
-        
-        // Convert the selectedTags array to JSON and send it in the request body
-        xhr.send(JSON.stringify({ selectedTags: selectedTags }));
+        // Make an AJAX request using the fetch API
+        fetch('/update_tags', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // You may need to include additional headers if required
+            },
+            body: JSON.stringify({ selectedTags: selectedTags }),
+        })
+        .then(response => response.text())
+        .then(data => {
+            // Update a portion of the page with the returned HTML
+            document.getElementById('tag-section').innerHTML = data;
+        })
+        .catch(error => console.error('Error updating tags:', error));
     }
-  });
+
   //
 
   addEventListeners();

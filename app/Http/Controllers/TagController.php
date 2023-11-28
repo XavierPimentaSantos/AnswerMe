@@ -57,14 +57,14 @@ class TagController extends Controller
             ->with('success', 'Tag was deleted successfully.');
     }
 
-    public function updateSelectedTags(Request $request)
+    public function updateTags(Request $request)
     {
-        // Assuming you have the logic to retrieve selected tags based on the request
+        // Retrieve selected tags from the request
         $selectedTags = $request->input('selectedTags', []);
 
-        // You can also perform any additional logic here
+        // Process selected tags (update database, perform actions, etc.)
 
-        // Return the updated HTML
-        return view('partials.selected_tags', compact('selectedTags'))->render();
+        // Return updated HTML (for demonstration, you might use a Blade view)
+        return view('partials.selected_tags', ['tags' => $updatedTags])->render();
     }
 }
