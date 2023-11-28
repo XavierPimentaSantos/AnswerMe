@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 
 use Illuminate\View\View;
 
+use DateTime;
+
 use App\Models\User;
 
 class RegisterController extends Controller
@@ -29,14 +31,21 @@ class RegisterController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:250',
+            'username' => 'required|string|max:250|unique:users',
             'email' => 'required|email|max:250|unique:users',
+            'bio' => 'nullable',
+            'nationality' => 'nullable',
             'password' => 'required|min:8|confirmed'
         ]);
 
         User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'username' => $request->username,
+            'bio' => $request->bio,
+            'nationality' => $request->nationality,
+            'user_type' => 1,
         ]);
 
         $credentials = $request->only('email', 'password');
