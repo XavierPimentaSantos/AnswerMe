@@ -59,6 +59,10 @@
                             <label for="content">Content:</label>
                             <input type="text" name="content" value="{{ $question->content }}" required>
 
+                            <div id="tag-section" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 4px;">
+                                @include('partials.selected_tags', ['tags' => []]) 
+                            </div>
+
                             <div class="form-group" id="question_tag_container">
                                 <div id="tag_list">
                                     @foreach ($available_tags as $available_tag)
