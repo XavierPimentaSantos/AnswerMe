@@ -7,7 +7,7 @@ use App\Http\Controllers\ItemController;
 
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\AnswerController;
-
+use App\Http\Controllers\TagController;
 
 
 use App\Http\Controllers\Auth\LoginController;
@@ -62,7 +62,7 @@ Route::post('/tag', [TagController::class, 'store'])->name('tag.store');
 Route::delete('/tag/{tag_id}', [TagController::class, 'delete'])->name('tag.delete');
 Route::put('/tag/{tag_id}', [TagController::class, 'edit'])->name('tag.edit');
 
-Route::post('/update_tags', [TagController::class, 'updateTags'])->name('tag.update');
+Route::post('/update_tags', [TagController::class, 'updateTags']);
 
 /*
 

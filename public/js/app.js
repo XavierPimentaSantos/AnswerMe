@@ -23,9 +23,9 @@ function addEventListeners() {
     if (cardCreator != null)
       cardCreator.addEventListener('submit', sendCreateCardRequest);
 
-    document.getElementById('edit-profile-btn').addEventListener('click', function () {
+    /* document.getElementById('edit-profile-btn').addEventListener('click', function () {
       toggleProfileSections(true);
-    });
+    }); */
 /*
     document.getElementById('edit-answer-btn').addEventListener('click', function () {
       toggleAnswerSections(true);
@@ -136,11 +136,14 @@ function addEventListeners() {
         let checkedTags = document.querySelectorAll('.tag-checkbox:checked');
         let selectedTags = Array.from(checkedTags).map(checkbox => checkbox.value);
 
+        console.log('mensagem iai');
+
         // Make an AJAX request using the fetch API
         fetch('/update_tags', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
                 // You may need to include additional headers if required
             },
             body: JSON.stringify({ selectedTags: selectedTags }),
@@ -155,5 +158,5 @@ function addEventListeners() {
 
   //
 
-  addEventListeners();
+  // addEventListeners();
   

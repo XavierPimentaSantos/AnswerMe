@@ -65,6 +65,6 @@ class TagController extends Controller
         // Process selected tags (update database, perform actions, etc.)
 
         // Return updated HTML (for demonstration, you might use a Blade view)
-        return view('partials.selected_tags', ['tags' => $updatedTags])->render();
+        return view('partials.selected_tags', ['tags' => $selectedTags])->render();
     }
 }
