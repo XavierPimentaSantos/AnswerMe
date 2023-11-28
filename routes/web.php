@@ -59,8 +59,9 @@ Route::controller(AnswerController::class)->group(function () {
 
 Route::controller(ProfileController::class)->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-    Route::post('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile/{username}/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::get('/profile/{username}', [ProfileController::class, 'showUser'])->name('profile.showUser');
+    Route::delete('/profile/{username}/delete', [ProfileController::class, 'delete'])->name('profile.delete');
 });
 
 Route::controller(AdminController::class)->group(function () {
