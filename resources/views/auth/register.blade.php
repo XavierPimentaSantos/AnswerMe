@@ -31,6 +31,10 @@
     <label for="password-confirm">Confirm Password</label>
     <input id="password-confirm" type="password" name="password_confirmation" required>
 
+    @if(Auth::user() && Auth::user()->isAdmin())
+        <input type="hidden" name="admin_create" value="1">
+    @endif
+
     <button type="submit">
       Register
     </button>

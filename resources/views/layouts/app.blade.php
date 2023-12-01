@@ -37,7 +37,7 @@
                     </div>
                 @endif
                 @if (Auth::check() && Auth::user()->isAdmin())
-                    <a href="{{ route('admin.show') }}" class="btn btn-primary">Admin Page</a>
+                    <a href="{{ route('admin.show') }}" class="button mr-2">Admin Page</a>
                 @endif
             </header>
             <section id="content">
