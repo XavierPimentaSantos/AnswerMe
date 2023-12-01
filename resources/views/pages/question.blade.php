@@ -66,17 +66,13 @@
                             <div class="form-group" id="question_tag_container">
                                 <div id="tag_list">
                                     @foreach ($available_tags as $available_tag)
-                                        @if (in_array($available_tag->id, $question_tags))
-                                        <div style="display: flex; flex-direction: row;">
+                                        <div style="display: none;">
+                                            @if (in_array($available_tag->id, $question_tags))
                                             <input type="checkbox" name="sel_tags[]" id="tag_{{ $available_tag->id }}" value="{{ $available_tag->id }}" class="tag-checkbox" checked>
-                                            <label for="tag_{{ $available_tag->id }}">{{ $available_tag->name }}</label>
-                                        </div>
-                                        @else
-                                        <div style="display: flex; flex-direction: row;">
+                                            @else
                                             <input type="checkbox" name="sel_tags[]" id="tag_{{ $available_tag->id }}" value="{{ $available_tag->id }}" class="tag-checkbox">
-                                            <label for="tag_{{ $available_tag->id }}">{{ $available_tag->name }}</label>
+                                            @endif
                                         </div>
-                                        @endif
                                     @endforeach
                                 </div>
                             </div>

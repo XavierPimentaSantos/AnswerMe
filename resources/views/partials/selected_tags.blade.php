@@ -8,7 +8,7 @@
 
 @foreach($tags as $tagID)
     <?php
-        $tag = Tag::find($tagID);
+        $tag = Tag::findOrFail($tagID);
         $tag_name = $tag->name;
     ?>
     <div style="border: 2px solid red; width: min-width; display: flex; flex-direction: row;" >

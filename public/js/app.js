@@ -123,6 +123,75 @@ function addEventListeners() {
   
   //
   
+  /* let selectedTags = [];
+  let add_tag = document.getElementById('add_tag');
+  let tag_input = document.getElementById('tag_input');
+  add_tag.addEventListener('click', function() {
+    console.log('add_tag button pressed');
+    tag_val = tag_input.value.trim();
+    console.log('value = ' + tag_val);
+
+    if(!selectedTags.includes(tag_val)) {
+      selectedTags.push(tag_val);
+    }
+
+    document.getElementById('tag_'+tag_val).checked = true;
+
+    fetch('/update_tags', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+          // You may need to include additional headers if required
+      },
+      body: JSON.stringify({ selectedTags: selectedTags }),
+    })
+    .then(response => response.text())
+    .then(data => {
+        // Update a portion of the page with the returned HTML
+        document.getElementById('tag-section').innerHTML = data;
+    })
+    .catch(error => console.error('Error updating tags:', error));
+  }); */
+
+  let add_tag = document.getElementById('add_tag');
+  let tag_input = document.getElementById('tag_input');
+  add_tag.addEventListener('click', function() {
+    tag_val = tag_input.value.trim();
+    tag_checkbox = document.getElementById('tag_'+tag_val);
+    if(tag_checkbox.checked == true) {
+      tag_checkbox.checked = false;
+    }
+    else {
+      tag_checkbox.checked = true;
+    }
+    updateTags();
+  });
+
+  function updateTags() {
+    let checkedTags = document.querySelectorAll('.tag-checkbox:checked');
+    let selectedTags = Array.from(checkedTags).map(checkbox => checkbox.value);
+
+    console.log('mensagem iai');
+
+    // Make an AJAX request using the fetch API
+    fetch('/update_tags', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+            // You may need to include additional headers if required
+        },
+        body: JSON.stringify({ selectedTags: selectedTags }),
+    })
+    .then(response => response.text())
+    .then(data => {
+        // Update a portion of the page with the returned HTML
+        document.getElementById('tag-section').innerHTML = data;
+    })
+    .catch(error => console.error('Error updating tags:', error));
+  }
+
   let checkboxes = document.querySelectorAll('.tag-checkbox');
 
     checkboxes.forEach(function(checkbox) {
@@ -130,31 +199,9 @@ function addEventListeners() {
             console.log('checkbox ticked');
             updateTags(); // when any checkbox is ticked/unticked, we want to update the tags that are shown
         });
-    });
+    }); 
 
-    function updateTags() {
-        let checkedTags = document.querySelectorAll('.tag-checkbox:checked');
-        let selectedTags = Array.from(checkedTags).map(checkbox => checkbox.value);
-
-        console.log('mensagem iai');
-
-        // Make an AJAX request using the fetch API
-        fetch('/update_tags', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-                // You may need to include additional headers if required
-            },
-            body: JSON.stringify({ selectedTags: selectedTags }),
-        })
-        .then(response => response.text())
-        .then(data => {
-            // Update a portion of the page with the returned HTML
-            document.getElementById('tag-section').innerHTML = data;
-        })
-        .catch(error => console.error('Error updating tags:', error));
-    }
+    
 
   //
 
