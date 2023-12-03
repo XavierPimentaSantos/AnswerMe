@@ -12,75 +12,84 @@
 ?>
 
 <article class="card" data-id="{{ $question->id }}">
-            <div id = "question-view" class="questions bg-gray-200 mb-3 p-4" style="display: block;">
-                <div class="question-card-body">
-                    <div class="question-title">
-                        <div style="display: flex; flex-direction: row;">
-                            <h2>{{ $question->title }}</h2>
-                            @if ($question->edited == 1)
-                                <h3>(edited)</h3>
+    <div id = "question-view" class="questions bg-gray-200 mb-3 p-4" style="display: block;">
+        <div class="question-card-body">
+            <div class="question-title">
+                <div style="display: flex; flex-direction: row;">
+                    <h2>{{ $question->title }}</h2>
+                    @if ($question->edited == 1)
+                        <h3>(edited)</h3>
+                    @endif
+                </div>
+                @if ($question->user_id)
+                <p class="card-content text-red-700">Asked by: {{ $question->user->name }}</p>
+                @endif
+            </div>
+            <p class="card-content">{{ $question->content }}</p>
+        </div>
+        <div>
+            @if ($question->user_id === auth()->user()->id)                       
+            <a id = "edit-question-btn" class="button bg-blue-500 text-white px-4 py-2 rounded mt-1 inline-block">Edit Question</a>
+            <form action="{{ route('questions.delete', $question->id)}}" method="POST" class="inline-block">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="button bg-red-500 text-white px-4 py-2 rounded mt-1 inline-block">Delete Question</button>
+            </form>
+            @endif
+        </div>
+        <div id="tag_bar" style="display: flex; flex-direction: row;">
+            @if ($question->tags->count() > 0)
+                @foreach ($question->tags as $tag)
+                    <div class="tag_item" style="background-color: #00ffff">
+                        {{ $tag->name }}
+                    </div>
+                @endforeach
+            @endif
+        </div>
+    </div>
+    <div id="question-edit" class="questions bg-gray-200 mb-3 p-4" style="display: none;">
+        <h2>Edit Question</h2>
+
+        <form id="edit-question-form" action="{{ route('questions.edit', $question->id) }}" method="POST" class="inline-block">
+            @csrf
+            @method('POST')
+            <label for="title">Title:</label>
+            <input type="text" name="title" id = "title-input" value="{{ $question->title }}"  data-id="{{ $question->id }}" required>
+
+            <label for="content">Content:</label>
+            <input type="text" name="content" value="{{ $question->content }}" required>
+
+            <div id="tag-section" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 4px;">
+                @include('partials.selected_tags', ['tags' => $question_tags]) 
+            </div>
+
+            <div class="form-group" id="question_tag_container">
+                <div id="tag_list">
+                    @foreach ($available_tags as $available_tag)
+                        <div style="display: none;">
+                            @if (in_array($available_tag->id, $question_tags))
+                            <input type="checkbox" name="sel_tags[]" id="tag_{{ $available_tag->id }}" value="{{ $available_tag->id }}" class="tag-checkbox" checked>
+                            @else
+                            <input type="checkbox" name="sel_tags[]" id="tag_{{ $available_tag->id }}" value="{{ $available_tag->id }}" class="tag-checkbox">
                             @endif
                         </div>
-                        @if ($question->user_id)
-                        <p class="card-content text-red-700">Asked by: {{ $question->user->name }}</p>
-                        @endif
-                    </div>
-                    <p class="card-content">{{ $question->content }}</p>
+                    @endforeach
                 </div>
-                <div>
-                    @if ($question->user_id === auth()->user()->id)                       
-                    <a id = "edit-question-btn" class="button bg-blue-500 text-white px-4 py-2 rounded mt-1 inline-block">Edit Question</a>
-                    <form action="{{ route('questions.delete', $question->id)}}" method="POST" class="inline-block">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="button bg-red-500 text-white px-4 py-2 rounded mt-1 inline-block">Delete Question</button>
-                    </form>
-                    @endif
-                </div>
-                <div id="tag_bar" style="display: flex; flex-direction: row;">
-                    @if ($question->tags->count() > 0)
-                        @foreach ($question->tags as $tag)
-                            <div class="tag_item" style="background-color: #00ffff">
-                                {{ $tag->name }}
-                            </div>
+                <div class="form-group" id="question_tag_container">
+                    <input type="text" name="tag_input" id="tag_input" list="tag_listing">
+                    <datalist id="tag_listing">
+                        @foreach ($available_tags as $available_tag)
+                            <option value="{{ $available_tag->id }}">{{ $available_tag->name }}</option>
                         @endforeach
-                    @endif
+                    </datalist>
+                    <button id="add_tag" type="button">Add tag</button>
                 </div>
             </div>
-            <div id="question-edit" class="questions bg-gray-200 mb-3 p-4" style="display: none;">
-                        <h2>Edit Question</h2>
 
-                        <form id="edit-question-form" action="{{ route('questions.edit', $question->id) }}" method="POST" class="inline-block">
-                            @csrf
-                            @method('POST')
-                            <label for="title">Title:</label>
-                            <input type="text" name="title" id = "title-input" value="{{ $question->title }}"  data-id="{{ $question->id }}" required>
-
-                            <label for="content">Content:</label>
-                            <input type="text" name="content" value="{{ $question->content }}" required>
-
-                            <div id="tag-section" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 4px;">
-                                @include('partials.selected_tags', ['tags' => []]) 
-                            </div>
-
-                            <div class="form-group" id="question_tag_container">
-                                <div id="tag_list">
-                                    @foreach ($available_tags as $available_tag)
-                                        <div style="display: none;">
-                                            @if (in_array($available_tag->id, $question_tags))
-                                            <input type="checkbox" name="sel_tags[]" id="tag_{{ $available_tag->id }}" value="{{ $available_tag->id }}" class="tag-checkbox" checked>
-                                            @else
-                                            <input type="checkbox" name="sel_tags[]" id="tag_{{ $available_tag->id }}" value="{{ $available_tag->id }}" class="tag-checkbox">
-                                            @endif
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-
-                            <button class = "button" type="submit" id="update-question-btn">Update Question</button>
-                        </form>
-                    </div>
-            </article>
+            <button class = "button" type="submit" id="update-question-btn">Update Question</button>
+        </form>
+    </div>
+</article>
 @if (Auth::check())
 <form action="{{ route('answers.store', $question->id) }}" method="post">
     @csrf

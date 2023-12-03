@@ -48,7 +48,7 @@
                         <option value="{{ $available_tag->id }}">{{ $available_tag->name }}</option>
                     @endforeach
                 </datalist>
-                <button id="add_tag">Add tag</button>
+                <button id="add_tag" type="button">Add tag</button>
             </div>
 
             <button type="submit" class="btn btn-primary">Submit</button>

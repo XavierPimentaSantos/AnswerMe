@@ -165,6 +165,7 @@ function addEventListeners() {
     else {
       tag_checkbox.checked = true;
     }
+    console.log('that\'s crazy...');
     updateTags();
   });
 
@@ -194,12 +195,12 @@ function addEventListeners() {
 
   let checkboxes = document.querySelectorAll('.tag-checkbox');
 
-    checkboxes.forEach(function(checkbox) {
-        checkbox.addEventListener('change', function() {
-            console.log('checkbox ticked');
-            updateTags(); // when any checkbox is ticked/unticked, we want to update the tags that are shown
-        });
-    }); 
+  checkboxes.forEach(function(checkbox) {
+      checkbox.addEventListener('change', function() {
+          console.log('checkbox ticked');
+          updateTags(); // when any checkbox is ticked/unticked, we want to update the tags that are shown
+      });
+  }); 
 
     
 
