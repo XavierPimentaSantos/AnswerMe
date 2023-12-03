@@ -43,7 +43,9 @@ class QuestionController extends Controller
         $tags = $request->input('sel_tags', []);
 
         foreach($tags as $tag) {
-            $question->tags()->attach($tag);
+            $tagID = Tag::where('name', $tag)->first();
+            $actual_tag = $tagID->id;
+            $question->tags()->attach($actual_tag);
         }
 
         return redirect()->route('questions.show', $question->id)
@@ -86,7 +88,9 @@ class QuestionController extends Controller
         $question->tags()->detach();
 
         foreach($tags as $tag) {
-            $question->tags()->attach($tag);
+            $tagID = Tag::where('name', $tag)->first();
+            $actual_tag = $tagID->id;
+            $question->tags()->attach($actual_tag);
         }
 
         $request->validate([

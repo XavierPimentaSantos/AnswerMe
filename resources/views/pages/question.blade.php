@@ -3,11 +3,11 @@
 @section('content')
 
 <?php
-    $available_tags = DB::table('tags')->get();
+    $available_tags = DB::table('tags')->pluck('name')->toArray();
     $sel_tags = array();
     $question_tags = array();
     foreach($question->tags as $tag) {
-        $question_tags[] = $tag->id;
+        $question_tags[] = $tag->name;
     }
 ?>
 
@@ -60,30 +60,30 @@
             <input type="text" name="content" value="{{ $question->content }}" required>
 
             <div id="tag-section" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 4px;">
+                @csrf
                 @include('partials.selected_tags', ['tags' => $question_tags]) 
             </div>
 
+            <div id="tag_list">
+                @foreach ($available_tags as $available_tag)
+                    <div style="display: none;">
+                        @if (in_array($available_tag, $question_tags))
+                        <input type="checkbox" name="sel_tags[]" id="tag_{{ $available_tag }}" value="{{ $available_tag }}" class="tag-checkbox" checked>
+                        @else
+                        <input type="checkbox" name="sel_tags[]" id="tag_{{ $available_tag }}" value="{{ $available_tag }}" class="tag-checkbox">
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+
             <div class="form-group" id="question_tag_container">
-                <div id="tag_list">
+                <input type="text" name="tag_input" id="tag_input" list="tag_listing">
+                <datalist id="tag_listing">
                     @foreach ($available_tags as $available_tag)
-                        <div style="display: none;">
-                            @if (in_array($available_tag->id, $question_tags))
-                            <input type="checkbox" name="sel_tags[]" id="tag_{{ $available_tag->id }}" value="{{ $available_tag->id }}" class="tag-checkbox" checked>
-                            @else
-                            <input type="checkbox" name="sel_tags[]" id="tag_{{ $available_tag->id }}" value="{{ $available_tag->id }}" class="tag-checkbox">
-                            @endif
-                        </div>
+                        <option value="{{ $available_tag }}">{{ $available_tag }}</option>
                     @endforeach
-                </div>
-                <div class="form-group" id="question_tag_container">
-                    <input type="text" name="tag_input" id="tag_input" list="tag_listing">
-                    <datalist id="tag_listing">
-                        @foreach ($available_tags as $available_tag)
-                            <option value="{{ $available_tag->id }}">{{ $available_tag->name }}</option>
-                        @endforeach
-                    </datalist>
-                    <button id="add_tag" type="button">Add tag</button>
-                </div>
+                </datalist>
+                <button id="add_tag" type="button">Add tag</button>
             </div>
 
             <button class = "button" type="submit" id="update-question-btn">Update Question</button>

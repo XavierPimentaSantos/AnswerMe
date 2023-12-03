@@ -1,7 +1,7 @@
 <!-- resources/views/questions/create.blade.php -->
 
 <?php
-    $available_tags = DB::table('tags')->get();
+    $available_tags = DB::table('tags')->pluck('name')->toArray();
     $sel_tags = array();
 ?>
 
@@ -34,8 +34,7 @@
                 <div>
                     @foreach ($available_tags as $available_tag)
                         <div style="display: none;">
-                            <input type="checkbox" name="sel_tags[]" id="tag_{{ $available_tag->id }}" value="{{ $available_tag->id }}" class="tag-checkbox">
-                            <label for="tag_{{ $available_tag->id }}">{{ $available_tag->name }}</label>
+                            <input type="checkbox" name="sel_tags[]" id="tag_{{ $available_tag }}" value="{{ $available_tag }}" class="tag-checkbox">
                         </div>
                     @endforeach
                 </div>
@@ -45,7 +44,7 @@
                 <input type="text" name="tag_input" id="tag_input" list="tag_listing">
                 <datalist id="tag_listing">
                     @foreach ($available_tags as $available_tag)
-                        <option value="{{ $available_tag->id }}">{{ $available_tag->name }}</option>
+                        <option value="{{ $available_tag }}">{{ $available_tag }}</option>
                     @endforeach
                 </datalist>
                 <button id="add_tag" type="button">Add tag</button>

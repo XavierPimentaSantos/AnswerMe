@@ -6,13 +6,14 @@
     $db_tags = DB::table('tags')->get();
 ?>
 
-@foreach($tags as $tagID)
+@foreach($tags as $tag_name)
     <?php
-        $tag = Tag::findOrFail($tagID);
-        $tag_name = $tag->name;
+        $tag = Tag::where('name', $tag_name);
     ?>
+    @if ($tag_name)
     <div style="border: 2px solid red; width: min-width; display: flex; flex-direction: row;" >
         <div>{{ $tag_name }}</div>
-        <label for="tag_{{ $tagID }}">X</label>
+        <label for="tag_{{ $tag_name }}">X</label>
     </div>
+    @endif
 @endforeach
