@@ -59,12 +59,8 @@ class TagController extends Controller
 
     public function updateTags(Request $request)
     {
-        // Retrieve selected tags from the request
         $selectedTags = $request->input('selectedTags', []);
 
-        // Process selected tags (update database, perform actions, etc.)
-
-        // Return updated HTML (for demonstration, you might use a Blade view)
         return view('partials.selected_tags', ['tags' => $selectedTags])->render();
     }
 }

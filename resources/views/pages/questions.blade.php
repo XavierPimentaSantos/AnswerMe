@@ -24,7 +24,6 @@
                 <textarea name="content" class="form-control" rows="5" required></textarea>
             </div>
 
-            <!-- fun times -->
             <div id="tag-section" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 4px;">
                 @csrf
                 @include('partials.selected_tags', ['tags' => []]) 

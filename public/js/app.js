@@ -121,38 +121,7 @@ function addEventListeners() {
     request.send(encodeForAjax(data));
   }
   
-  //
-  
-  /* let selectedTags = [];
-  let add_tag = document.getElementById('add_tag');
-  let tag_input = document.getElementById('tag_input');
-  add_tag.addEventListener('click', function() {
-    console.log('add_tag button pressed');
-    tag_val = tag_input.value.trim();
-    console.log('value = ' + tag_val);
-
-    if(!selectedTags.includes(tag_val)) {
-      selectedTags.push(tag_val);
-    }
-
-    document.getElementById('tag_'+tag_val).checked = true;
-
-    fetch('/update_tags', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-          // You may need to include additional headers if required
-      },
-      body: JSON.stringify({ selectedTags: selectedTags }),
-    })
-    .then(response => response.text())
-    .then(data => {
-        // Update a portion of the page with the returned HTML
-        document.getElementById('tag-section').innerHTML = data;
-    })
-    .catch(error => console.error('Error updating tags:', error));
-  }); */
+  //  START SECTION: FUNCTIONS RELATED TO EDITING A POST'S TAGS
 
   let add_tag = document.getElementById('add_tag');
   let tag_input = document.getElementById('tag_input');
@@ -181,13 +150,11 @@ function addEventListeners() {
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-            // You may need to include additional headers if required
         },
         body: JSON.stringify({ selectedTags: selectedTags }),
     })
     .then(response => response.text())
     .then(data => {
-        // Update a portion of the page with the returned HTML
         document.getElementById('tag-section').innerHTML = data;
     })
     .catch(error => console.error('Error updating tags:', error));
@@ -202,9 +169,7 @@ function addEventListeners() {
       });
   }); 
 
-    
-
-  //
+  //  END SECTION
 
   // addEventListeners();
   
