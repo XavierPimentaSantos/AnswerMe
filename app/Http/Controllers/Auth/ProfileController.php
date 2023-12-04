@@ -54,17 +54,4 @@ class ProfileController extends Controller
         return redirect()->route('profile.show')->with('success', 'Profile updated successfully');
     }
 
-
-    public function update(Request $request)
-    {
-        $user = Auth::user();
-        $user->update([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-        ]);
-        $user->save();
-
-        return redirect()->route('profile.show')->with('success', 'Profile updated successfully');
-    }
-
 }

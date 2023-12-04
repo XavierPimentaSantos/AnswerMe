@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Question; 
 use Illuminate\Support\Facades\View;
+use App\Models\User;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 
 
@@ -65,7 +67,7 @@ class QuestionController extends Controller
 
         return redirect(url('/'))->withSuccess('You have successfully deleted your question!');
     }
-
+    /*
     public function edit(Request $request, $question_id)
     {
         $question = Question::findOrFail($question_id);
@@ -73,6 +75,8 @@ class QuestionController extends Controller
         if ($question->user_id !== auth()->user()->id) {
             abort(403, 'Unauthorized');
         }
+
+        
     
 
         $request->validate([
@@ -84,5 +88,36 @@ class QuestionController extends Controller
         $question->content = $request->input('content');
 
         $question->save();
+    }*/
+
+    public function edit(Request $request, $question_id)
+    {
+        $user = Auth::user();
+
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()
+                ->route('pages.question', $question_id)
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $question = Question::findOrFail($question_id);
+
+        if ($question->user_id !== $user->id) {
+            return redirect()->route('questions.show', $question_id)->with('error', 'You are not authorized to edit this question');
+        }
+
+        $question->update([
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+        ]);
+        $question->save();
+
+        return redirect()->route('questions.show', $question_id)->with('success', 'Question updated successfully');
     }
 }
