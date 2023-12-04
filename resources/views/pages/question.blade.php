@@ -16,10 +16,19 @@
         <div class="question-card-body">
             <div class="question-title">
                 <div style="display: flex; flex-direction: row;">
-                    <h2>{{ $question->title }}</h2>
+                    <h2 style="margin: 0; margin-right: 5px;">{{ $question->title }}</h2>
                     @if ($question->edited == 1)
                         <h3>(edited)</h3>
                     @endif
+                    <div id="tag_bar" style="display: flex; flex-direction: row; gap: 4px; flex-wrap: wrap; align-content: center;">
+                        @if ($question->tags->count() > 0)
+                            @foreach ($question->tags as $tag)
+                                <div class="tag_item" style="border: 2px solid black; border-radius: 3px; padding: 2px 4px; height: fit-content; width: fit-content;">
+                                    {{ $tag->name }}
+                                </div>
+                            @endforeach
+                        @endif
+                    </div>
                 </div>
                 @if ($question->user_id)
                 <p class="card-content text-red-700">Asked by: {{ $question->user->name }}</p>
@@ -37,15 +46,7 @@
             </form>
             @endif
         </div>
-        <div id="tag_bar" style="display: flex; flex-direction: row;">
-            @if ($question->tags->count() > 0)
-                @foreach ($question->tags as $tag)
-                    <div class="tag_item" style="background-color: #00ffff">
-                        {{ $tag->name }}
-                    </div>
-                @endforeach
-            @endif
-        </div>
+        
     </div>
     <div id="question-edit" class="questions bg-gray-200 mb-3 p-4" style="display: none;">
         <h2>Edit Question</h2>
