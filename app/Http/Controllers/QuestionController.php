@@ -44,10 +44,10 @@ class QuestionController extends Controller
     }
 
     public function show($id){
-    $question = Question::findOrFail($id);
-    return View::make('pages.question', [
-        'question' => $question
-    ]);
+        $question = Question::findOrFail($id);
+        return View::make('pages.question', [
+            'question' => $question
+        ]);
     }
 
 

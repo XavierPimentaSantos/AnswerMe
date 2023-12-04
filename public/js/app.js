@@ -38,7 +38,7 @@ function addEventListeners() {
     document.getElementById('update-profile-btn').addEventListener('click', function () {
       updateProfile();
     });
-/*
+
     document.getElementById('update-question-btn').addEventListener('click', function () {
       updateQuestion();
     });
@@ -46,10 +46,34 @@ function addEventListeners() {
     document.getElementById('update-answer-btn').addEventListener('click', function () {
       updateAnswer();
     });
-*/
+
 
   }
 
+
+  const profileForm = document.getElementById("edit-profile-form");
+  const profileView = document.getElementById("profile-view");
+  const editButton = document.getElementById("edit-profile-btn");
+  const submitEdit = document.getElementById("update-profile-btn");
+  const fullnameInput = document.getElementById("name-input");
+  const emailInput = document.getElementById("email-input");
+  const fullname = document.getElementById("name");
+  const email = document.getElementById("email");
+
+  function updateProfileData(newName, newEmail) {
+    fullname.textContent = newName;
+    email.textContent = newEmail;
+  }
+
+  function updateProfile() {
+    /*const newName = fullnameInput.value;
+    const newEmail = emailInput.value;
+    const data = {name: newName, email: newEmail};
+    sendAjaxRequest('put', `api/profile/${userId}`, data, function () {*/
+      updateProfileData(newName, newEmail);
+      toggleProfileSections(false);
+    // });
+  }
 
   function toggleProfileSections(editMode) {
     document.getElementById('profile-view').style.display = editMode ? 'none' : 'block';
@@ -75,41 +99,6 @@ function addEventListeners() {
     }).join('&');
   }
 
-  const fname = document.getElementById("name");
-  const email = document.getElementById("email");
-
-  function updateProfileData(newName, newEmail) {
-    fname.textContent = newName;
-    email.textContent = newEmail;
-  }
-
-  function updateProfile() {
-    console.log('update profile');
-    const data = {
-      name: document.getElementById('name-input').value,
-      email: document.getElementById('email-input').value,
-    };
-    sendAjaxRequest('post', '/profile/edit', data, function () {
-      updateProfileData(data.name, data.email);
-      toggleProfileSections(false);
-    });
-  }
-  function updateQuestion() {
-    titleInput = document.getElementById('title-input');
-    contentInput = document.getElementById('content-input');
-    const data = {
-      question_id: document.getElementById('title-input').getAttribute('data-id'),
-      title: titleInput.textContent,
-      content: contentInput.textContent,
-    };
-    sendAjaxRequest('post', 'questions/update', data, function () {
-      toggleQuestionSections(false);
-    });
-  }
-
-  function updateAnswer() {
-
-  }
   
   function sendAjaxRequest(method, url, data, handler) {
     let request = new XMLHttpRequest();
