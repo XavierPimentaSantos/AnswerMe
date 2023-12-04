@@ -1,40 +1,23 @@
 function addEventListeners() {
-    let itemCheckers = document.querySelectorAll('article.card li.item input[type=checkbox]');
-    [].forEach.call(itemCheckers, function(checker) {
-      checker.addEventListener('change', sendItemUpdateRequest);
-    });
-  
-    let itemCreators = document.querySelectorAll('article.card form.new_item');
-    [].forEach.call(itemCreators, function(creator) {
-      creator.addEventListener('submit', sendCreateItemRequest);
-    });
-  
-    let itemDeleters = document.querySelectorAll('article.card li a.delete');
-    [].forEach.call(itemDeleters, function(deleter) {
-      deleter.addEventListener('click', sendDeleteItemRequest);
-    });
-  
-    let cardDeleters = document.querySelectorAll('article.card header a.delete');
-    [].forEach.call(cardDeleters, function(deleter) {
-      deleter.addEventListener('click', sendDeleteCardRequest);
-    });
-  
-    let cardCreator = document.querySelector('article.card form.new_card');
-    if (cardCreator != null)
-      cardCreator.addEventListener('submit', sendCreateCardRequest);
-
+    
     document.getElementById('edit-profile-btn').addEventListener('click', function () {
       toggleProfileSections(true);
     });
-/*
+
+    document.getElementById('edit-question-btn').addEventListener('click', function () {
+      console.log("edit answer");
+      toggleQuestionSections(true);
+    });
+
     document.getElementById('edit-answer-btn').addEventListener('click', function () {
       toggleAnswerSections(true);
     });
 
-    document.getElementById('edit-question-btn').addEventListener('click', function () {
-      toggleQuestionSections(true);
+    document.getElementById('update-answer-btn').addEventListener('click', function () {
+      console.log("update answer");
+      updateAnswer();
     });
-*/
+
     document.getElementById('update-profile-btn').addEventListener('click', function () {
       updateProfile();
     });
@@ -43,12 +26,12 @@ function addEventListeners() {
       updateQuestion();
     });
 
-    document.getElementById('update-answer-btn').addEventListener('click', function () {
-      updateAnswer();
-    });
-
-
+    
   }
+
+
+
+
 
 
   const profileForm = document.getElementById("edit-profile-form");
@@ -60,9 +43,17 @@ function addEventListeners() {
   const fullname = document.getElementById("name");
   const email = document.getElementById("email");
 
+  const titleInput = document.getElementById("title-input");
+  const contentInput = document.getElementById("content-input");
+
   function updateProfileData(newName, newEmail) {
     fullname.textContent = newName;
     email.textContent = newEmail;
+  }
+
+  function updateAnswerData(newTitle, newContent) {
+    title.textContent = newTitle;
+    content.textContent = newContent;
   }
 
   function updateProfile() {
@@ -75,6 +66,15 @@ function addEventListeners() {
     // });
   }
 
+  function updateAnswer() {
+    //sendAjaxRequest('put', `api/answer/${userId}`, data, function () {
+      updateAnswerData(newAnswer);
+      toggleAnswerSections(false);
+   // });
+  }
+
+
+
   function toggleProfileSections(editMode) {
     document.getElementById('profile-view').style.display = editMode ? 'none' : 'block';
     document.getElementById('profile-edit').style.display = editMode ? 'block' : 'none';
@@ -85,7 +85,7 @@ function addEventListeners() {
   function toggleQuestionSections(editMode) {
     document.getElementById('question-edit').style.display = editMode ? 'block' : 'none';
     document.getElementById('question-view').style.display = editMode ? 'none' : 'block';
-  }
+}
 
   function toggleAnswerSections(editMode) {
     document.getElementById('answer-edit').style.display = editMode ? 'block' : 'none';

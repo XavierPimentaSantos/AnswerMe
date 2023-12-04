@@ -52,6 +52,7 @@ Route::controller(AnswerController::class)->group(function () {
     Route::post('/questions/{question_id}/answer', [AnswerController::class, 'store'])->name('answers.store');
     Route::post('/questions/{question_id}/answer/{answer_id}/edit', [AnswerController::class, 'edit'])->name('answers.edit');
     Route::delete('/questions/{question_id}/answer/{answer_id}/delete', [AnswerController::class, 'delete'])->name('answers.delete');
+
 });
 
 
