@@ -30,13 +30,11 @@
             </div>
 
             <div class="form-group">
-                <div>
-                    @foreach ($available_tags as $available_tag)
-                        <div style="display: none;">
-                            <input type="checkbox" name="sel_tags[]" id="tag_{{ $available_tag }}" value="{{ $available_tag }}" class="tag-checkbox">
-                        </div>
-                    @endforeach
-                </div>
+                @foreach ($available_tags as $available_tag)
+                    <div style="display: none;">
+                        <input type="checkbox" name="sel_tags[]" id="tag_{{ $available_tag }}" value="{{ $available_tag }}" class="tag-checkbox">
+                    </div>
+                @endforeach
             </div>
 
             <div class="form-group" id="question_tag_container">
