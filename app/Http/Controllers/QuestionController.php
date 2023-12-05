@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\View;
 
 use Illuminate\Support\Facades\Auth;
 
-
+use App\Models\Tag;
 
 class QuestionController extends Controller
 {
@@ -35,9 +35,18 @@ class QuestionController extends Controller
         $question = Question::create([
             'title' => $request->input('title'),
             'content' => $request->input('content'),
+            'score' => 0,
+            'edited' => 0,
             'user_id' => Auth::user()->id,
         ]);
 
+        $tags = $request->input('sel_tags', []);
+
+        foreach($tags as $tag) {
+            $tagID = Tag::where('name', $tag)->first();
+            $actual_tag = $tagID->id;
+            $question->tags()->attach($actual_tag);
+        }
 
         return redirect()->route('questions.show', $question->id)
             ->with('success', 'Question created successfully');
@@ -73,7 +82,16 @@ class QuestionController extends Controller
         if ($question->user_id !== auth()->user()->id) {
             abort(403, 'Unauthorized');
         }
-    
+        
+        $tags = $request->input('sel_tags', []);
+
+        $question->tags()->detach();
+
+        foreach($tags as $tag) {
+            $tagID = Tag::where('name', $tag)->first();
+            $actual_tag = $tagID->id;
+            $question->tags()->attach($actual_tag);
+        }
 
         $request->validate([
             'title' => 'required|max:255',
@@ -82,7 +100,16 @@ class QuestionController extends Controller
 
         $question->title = $request->input('title');
         $question->content = $request->input('content');
+        $question->edited = 1;
 
         $question->save();
+
+        return redirect()->route('questions.show', $question->id)
+            ->with('success', 'Question created successfully');
     }
+
+    public function attach_tag() {
+        
+    }
+
 }

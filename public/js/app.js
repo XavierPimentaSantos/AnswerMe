@@ -23,9 +23,9 @@ function addEventListeners() {
     if (cardCreator != null)
       cardCreator.addEventListener('submit', sendCreateCardRequest);
 
-    document.getElementById('edit-profile-btn').addEventListener('click', function () {
+    /* document.getElementById('edit-profile-btn').addEventListener('click', function () {
       toggleProfileSections(true);
-    });
+    }); */
 /*
     document.getElementById('edit-answer-btn').addEventListener('click', function () {
       toggleAnswerSections(true);
@@ -121,5 +121,55 @@ function addEventListeners() {
     request.send(encodeForAjax(data));
   }
   
-  addEventListeners();
+  //  START SECTION: FUNCTIONS RELATED TO EDITING A POST'S TAGS
+
+  let add_tag = document.getElementById('add_tag');
+  let tag_input = document.getElementById('tag_input');
+  add_tag.addEventListener('click', function() {
+    tag_val = tag_input.value.trim();
+    tag_checkbox = document.getElementById('tag_'+tag_val);
+    if(tag_checkbox.checked == true) {
+      tag_checkbox.checked = false;
+    }
+    else {
+      tag_checkbox.checked = true;
+    }
+    console.log('that\'s crazy...');
+    updateTags();
+  });
+
+  function updateTags() {
+    let checkedTags = document.querySelectorAll('.tag-checkbox:checked');
+    let selectedTags = Array.from(checkedTags).map(checkbox => checkbox.value);
+
+    console.log('mensagem iai');
+
+    // Make an AJAX request using the fetch API
+    fetch('/update_tags', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+        },
+        body: JSON.stringify({ selectedTags: selectedTags }),
+    })
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById('tag-section').innerHTML = data;
+    })
+    .catch(error => console.error('Error updating tags:', error));
+  }
+
+  let checkboxes = document.querySelectorAll('.tag-checkbox');
+
+  checkboxes.forEach(function(checkbox) {
+      checkbox.addEventListener('change', function() {
+          console.log('checkbox ticked');
+          updateTags(); // when any checkbox is ticked/unticked, we want to update the tags that are shown
+      });
+  }); 
+
+  //  END SECTION
+
+  // addEventListeners();
   

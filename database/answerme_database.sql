@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS questions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     score INTEGER DEFAULT (0) NOT NULL,
-    edited BOOLEAN DEFAULT (TRUE) NOT NULL,
+    edited BOOLEAN DEFAULT (FALSE) NOT NULL,
     user_id INTEGER NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -122,14 +122,14 @@ CREATE TABLE IF NOT EXISTS tags (
     PRIMARY KEY (id)
 );
 
--- Table: tagged
-DROP TABLE IF EXISTS tagged;
-CREATE TABLE IF NOT EXISTS tagged (
-    id_tag INTEGER,
-    id_question INTEGER,
-    PRIMARY KEY (id_tag, id_question),
-    FOREIGN KEY (id_tag) REFERENCES tags(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (id_question) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
+-- Table: question_tag
+DROP TABLE IF EXISTS question_tag;
+CREATE TABLE IF NOT EXISTS question_tag (
+    question_id INTEGER,
+    tag_id INTEGER,
+    PRIMARY KEY (question_id, tag_id),
+    FOREIGN KEY (question_id) REFERENCES questions(id),
+    FOREIGN KEY (tag_id) REFERENCES tags(id)
 );
 
 -- Table: following_tags
@@ -354,3 +354,16 @@ INSERT INTO questions VALUES (DEFAULT, 'If you could program your dreams, what w
 
 -- Question 15
 INSERT INTO questions VALUES (DEFAULT, 'If software engineers had a superhero team, what powers would each member possess?', 'Assemble your dream superhero team of software engineers and describe their unique powers.', DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1);
+
+
+-- Tag 1
+INSERT INTO tags VALUES (DEFAULT, 'Technology');
+
+-- Tag 2
+INSERT INTO tags VALUES (DEFAULT, 'Cooking');
+
+-- Tag 3
+INSERT INTO tags VALUES (DEFAULT, 'Cars');
+
+-- Tag 4
+INSERT INTO tags VALUES (DEFAULT, 'Embroidery');
