@@ -17,11 +17,14 @@ class User extends Authenticatable
 
     public $timestamps  = false;
 
-
     protected $fillable = [
         'name',
         'email',
         'password',
+        'username',
+        'bio',
+        'nationality',
+        'user_type',
     ];
 
     protected $hidden = [
@@ -29,12 +32,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
 
     public function questions(): HasMany
     {

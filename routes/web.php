@@ -7,7 +7,7 @@ use App\Http\Controllers\ItemController;
 
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\AnswerController;
-
+use App\Http\Controllers\TagController;
 
 
 use App\Http\Controllers\Auth\LoginController;
@@ -38,7 +38,6 @@ Route::controller(RegisterController::class)->group(function () {
     Route::post('/register', 'register');
 });
 
-
 Route::controller(QuestionController::class)->group(function () {
     Route::get('/questions/create', [QuestionController::class, 'create'])->name('questions.create');
     Route::post('/questions', [QuestionController::class, 'store'])->name('questions.store');
@@ -55,15 +54,18 @@ Route::controller(AnswerController::class)->group(function () {
 
 });
 
-
-
 Route::controller(ProfileController::class)->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::post('/profile/{user_id}/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('api/profile/update/{id}',[ProfileController::class, 'update'])->name('profile.update');
 }); 
 
+Route::post('/tag', [TagController::class, 'store'])->name('tag.store');
+Route::delete('/tag/{tag_id}', [TagController::class, 'delete'])->name('tag.delete');
+Route::put('/tag/{tag_id}', [TagController::class, 'edit'])->name('tag.edit');
 
+// route for updating a question's tags
+Route::post('/update_tags', [TagController::class, 'updateTags']);
 
 /*
 
