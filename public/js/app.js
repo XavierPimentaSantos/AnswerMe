@@ -171,5 +171,37 @@ function addEventListeners() {
 
   //  END SECTION
 
+  // START SECTION: FUNCTIONS RELATED TO MARKING AN ANSWER AS CORRECT
+
+  let validate_answer_btn_array = Array.from(document.getElementsByClassName('validate_answer_btn'));
+
+  validate_answer_btn_array.forEach(function(element) {
+    element.addEventListener('click', function() {
+      let ans_id = element.getAttribute('data-id');
+      console.log('btn pressed, id =' + ans_id);
+      validateAnswer(ans_id);
+    })
+  });
+
+  function validateAnswer(answer_id) {
+    fetch('/validate_answer', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+      },
+      body: JSON.stringify({ answer_id: answer_id }),
+    })
+    .then(response => {
+      if(response.ok) {
+        document.getElementById('validate-answer-btn-' + answer_id).classList.add('hidden');
+        document.getElementById('valid_answer_' + answer_id).removeAttribute('class');
+      }
+    })
+    .catch(error => console.error('Error updating tags:', error));
+  }
+
+  // END SECTION
+
   // addEventListeners();
   

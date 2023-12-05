@@ -12,6 +12,9 @@ class Answer extends Model
     protected $fillable = [
         'title',
         'content',
+        'correct',
+        'score',
+        'edited',
         'question_id',
         'user_id',
     ];

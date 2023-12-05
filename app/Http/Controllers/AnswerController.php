@@ -30,6 +30,9 @@ class AnswerController extends Controller
         $answer = Answer::create([
             'title' => $request->input('title'),
             'content' => $request->input('content'),
+            'correct' => false,
+            'score' => 0,
+            'edited' => false,
             'question_id' => $question_id,
             'user_id' => Auth::user()->id,
         ]);
@@ -59,7 +62,7 @@ class AnswerController extends Controller
 
         $answer->title = $request->input('title');
         $answer->content = $request->input('content');
-
+        $answer->edited = true;
         $answer->save();
     }
 
@@ -76,6 +79,13 @@ class AnswerController extends Controller
         $answer->delete();
 
         return redirect()->route('questions.show', ['id' => $question_id]);
+    }
+
+    public function validate_answer(Request $request)
+    {
+        $answer = Answer::findOrFail($request->input('answer_id'));
+        $answer->correct = true;
+        $answer->save();
     }
 }
 
