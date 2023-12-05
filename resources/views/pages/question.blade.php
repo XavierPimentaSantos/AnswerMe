@@ -16,7 +16,7 @@
                     <p class="card-content">{{ $question->content }}</p>
                 </div>
                 <div>
-                    @if ($question->user_id === auth()->user()->id)                       
+                    @if ($question->user_id === auth()->user()->id && !Auth::user()->isBlocked())                       
                     <a id = "edit-question-btn" class="button bg-blue-500 text-white px-4 py-2 rounded mt-1 inline-block">Edit Question</a>
                     <form action="{{ route('questions.delete', $question->id)}}" method="POST" class="inline-block">
                         @csrf
@@ -42,7 +42,7 @@
                         </form>
                     </div>
             </article>
-@if (Auth::check())
+@if (Auth::check() && !Auth::user()->isBlocked())
 <form action="{{ route('answers.store', $question->id) }}" method="post">
     @csrf
     <h3> Answer this question </h3>

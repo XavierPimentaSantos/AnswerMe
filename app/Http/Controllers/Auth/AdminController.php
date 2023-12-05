@@ -34,4 +34,32 @@ class AdminController extends Controller
             return redirect()->route('admin.show')->with('error', 'User not found');
         }
     }
+
+    public function blockUser($username)
+    {
+        $user = User::where('name', $username)->first();
+    
+        if (!$user) {
+            return redirect('/')->with('error', 'User not found');
+        }
+    
+        $user->user_type = 2;
+        $user->save();
+    
+        return redirect()->route('admin.show')->with('success', 'User blocked');
+    }
+
+    public function unblockUser($username)
+    {
+        $user = User::where('name', $username)->first();
+    
+        if (!$user) {
+            return redirect('/')->with('error', 'User not found');
+        }
+    
+        $user->user_type = 1;
+        $user->save();
+    
+        return redirect()->route('admin.show')->with('success', 'User unblocked');
+    }
 }

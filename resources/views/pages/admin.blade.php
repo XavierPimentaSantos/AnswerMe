@@ -2,10 +2,19 @@
 
 @section('content')
 
+<?php
+    $users = DB::table("users")->get();
+?>
+
 <form method="POST" action="{{ route('admin.submit') }}">
     @csrf
     <label for="username">Search for a User:</label>
-    <input type="text" id="username" name="username">
+    <input type="text" id="username" name="username" list="username_list">
+    <datalist id="username_list">
+        @foreach ($users as $user)
+            <option value="{{ $user->name }}">
+        @endforeach
+    </datalist>
     <button type="submit">Search</button>
 </form>
 

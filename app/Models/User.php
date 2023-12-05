@@ -49,4 +49,9 @@ class User extends Authenticatable
 {
     return $this->user_type == 4;
 }
+
+    public function isBlocked()
+{
+    return $this->user_type == 2;
+}
 }

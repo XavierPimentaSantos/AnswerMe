@@ -67,6 +67,8 @@ Route::controller(ProfileController::class)->group(function () {
 Route::controller(AdminController::class)->group(function () {
     Route::get('/admin', [AdminController::class, 'show'])->name('admin.show');
     Route::post('/admin/submit', [AdminController::class, 'submit'])->name('admin.submit');
+    Route::post('/admin/block-user/{username}', [AdminController::class, 'blockUser'])->name('admin.blockUser');
+    Route::post('/admin/unblock-user/{username}', [AdminController::class, 'unblockUser'])->name('admin.unblockUser');
 });
 
 /*
