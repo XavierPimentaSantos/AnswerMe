@@ -112,4 +112,18 @@ class QuestionController extends Controller
         
     }
 
+    public function inc_score(Request $request)
+    {
+        $question = Question::findOrFail($request->input('question_id'));
+        if(!(Auth::user()->questionVotes()->where('question_id', $question->id)->exists())) {
+            $score = $question->score;
+            $question->score = $score + 1;
+            $question->save();
+            Auth::user()->questionVotes()->attach($question->id);
+        }
+
+        // return view('pages.question', ['question' => $question])->render();
+        // return $question->score;
+        return view('partials.question_score', ['question_id' => $question->id])->render();
+    }
 }

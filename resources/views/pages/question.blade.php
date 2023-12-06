@@ -15,6 +15,11 @@
     <div id = "question-view" class="questions bg-gray-200 mb-3 p-4" style="display: block;">
         <div class="question-card-body">
             <div class="question-title">
+                <div id="question_score_{{ $question->id }}">
+                    @csrf
+                    @include ('partials.question_score', ['question_id' => $question->id])
+                </div>
+                
                 <div style="display: flex; flex-direction: row;">
                     <h2 style="margin: 0; margin-right: 5px;">{{ $question->title }}</h2>
                     @if ($question->edited == 1)

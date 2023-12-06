@@ -65,6 +65,9 @@ Route::put('/tag/{tag_id}', [TagController::class, 'edit'])->name('tag.edit');
 // route for updating a question's tags
 Route::post('/update_tags', [TagController::class, 'updateTags']);
 
+// route for increasing a question's score
+Route::post('/increase_score', [QuestionController::class, 'inc_score']);
+
 /*
 
 // M01

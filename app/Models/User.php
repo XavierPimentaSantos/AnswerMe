@@ -10,6 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 // Added to define Eloquent relationships.
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -40,5 +41,10 @@ class User extends Authenticatable
     public function questions(): HasMany
     {
         return $this->hasMany(Question::class);
+    }
+
+    public function questionVotes() : BelongsToMany
+    {
+        return $this->belongsToMany(Question::class, 'question_votes', 'user_id', 'question_id');
     }
 }
