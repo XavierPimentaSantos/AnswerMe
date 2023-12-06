@@ -57,7 +57,6 @@ Route::controller(AnswerController::class)->group(function () {
 Route::controller(ProfileController::class)->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::post('/profile/{user_id}/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('api/profile/update/{id}',[ProfileController::class, 'update'])->name('profile.update');
 }); 
 
 Route::post('/tag', [TagController::class, 'store'])->name('tag.store');

@@ -76,40 +76,13 @@ class QuestionController extends Controller
 
         return redirect(url('/'))->withSuccess('You have successfully deleted your question!');
     }
-    /*
-    public function edit(Request $request, $question_id)
-    {
-        $question = Question::findOrFail($question_id);
-
-        if ($question->user_id !== auth()->user()->id) {
-            abort(403, 'Unauthorized');
-        }
-        
-        $tags = $request->input('sel_tags', []);
-
-        $question->tags()->detach();
-
-        foreach($tags as $tag) {
-            $tagID = Tag::where('name', $tag)->first();
-            $actual_tag = $tagID->id;
-            $question->tags()->attach($actual_tag);
-        }
-
-        $request->validate([
-            'title' => 'required|max:255',
-            'content' => 'required',
-        ]);
-
-        $question->title = $request->input('title');
-        $question->content = $request->input('content');
-        $question->edited = 1;
-
-        $question->save();
-    }*/
+    
 
     public function edit(Request $request, $question_id)
     {
         $user = Auth::user();
+
+        $question = Question::findOrFail($question_id);
 
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
@@ -123,16 +96,25 @@ class QuestionController extends Controller
                 ->withInput();
         }
 
-        $question = Question::findOrFail($question_id);
-
-        if ($question->user_id !== $user->id) {
-            return redirect()->route('questions.show', $question_id)->with('error', 'You are not authorized to edit this question');
-        }
-
         $question->update([
             'title' => $request->input('title'),
             'content' => $request->input('content'),
         ]);
+
+        $tags = $request->input('sel_tags', []);
+
+        $question->tags()->detach();
+
+        foreach($tags as $tag) {
+            $tagID = Tag::where('name', $tag)->first();
+            $actual_tag = $tagID->id;
+            $question->tags()->attach($actual_tag);
+        }
+
+
+        if ($question->user_id !== $user->id) {
+            return redirect()->route('questions.show', $question_id)->with('error', 'You are not authorized to edit this question');
+        }
 
         $question->edited = 1;
 
@@ -140,7 +122,8 @@ class QuestionController extends Controller
 
         return redirect()->route('questions.show', $question_id)->with('success', 'Question updated successfully');
     }
-}
-public function attach_tag() {
+    
+    public function attach_tag() {
         
+    }
 }
