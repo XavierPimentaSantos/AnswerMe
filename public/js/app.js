@@ -171,7 +171,7 @@ function addEventListeners() {
 
   //  END SECTION
 
-  // START SECTION: FUNCTIONS RELATED TO A QUESTION'S SCORE
+  // START SECTION: FUNCTIONS RELATED TO INCREASING A QUESTION'S SCORE
   
   let question_increase_score_btn_array = Array.from(document.getElementsByClassName('increase-question-score-btn'));
 
@@ -183,6 +183,43 @@ function addEventListeners() {
   
   function increaseScore(question_id) {
     fetch('/increase_score', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+      },
+      body: JSON.stringify({ question_id : question_id }),
+    })
+    .then(response => {
+      if(response.ok) {
+        console.log('succesfully updated score');
+        return response.text();
+      }
+      else {
+        console.log('could not update the score');
+      }
+    })
+    .then(data => {
+      console.log(question_id);
+      document.getElementById('question_score_' + question_id).innerHTML = data;
+    })
+    .catch(error => console.error('Error updating score:', error));
+  }
+
+  // END SECTION
+
+  // START SECTION: FUNCTIONS RELATED TO INCREASING A QUESTION'S SCORE
+  
+  let question_decrease_score_btn_array = Array.from(document.getElementsByClassName('decrease-question-score-btn'));
+
+  question_decrease_score_btn_array.forEach(function(button) {
+    button.addEventListener('click', function() {
+      decreaseScore(button.getAttribute('data-id'));
+    })
+  });
+  
+  function decreaseScore(question_id) {
+    fetch('/decrease_score', {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
