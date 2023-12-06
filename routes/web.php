@@ -51,12 +51,13 @@ Route::controller(AnswerController::class)->group(function () {
     Route::post('/questions/{question_id}/answer', [AnswerController::class, 'store'])->name('answers.store');
     Route::post('/questions/{question_id}/answer/{answer_id}/edit', [AnswerController::class, 'edit'])->name('answers.edit');
     Route::delete('/questions/{question_id}/answer/{answer_id}/delete', [AnswerController::class, 'delete'])->name('answers.delete');
+
 });
 
 Route::controller(ProfileController::class)->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-    Route::post('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-});
+    Route::post('/profile/{user_id}/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+}); 
 
 Route::post('/tag', [TagController::class, 'store'])->name('tag.store');
 Route::delete('/tag/{tag_id}', [TagController::class, 'delete'])->name('tag.delete');
