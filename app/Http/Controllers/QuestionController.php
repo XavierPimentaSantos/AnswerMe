@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Question; 
 use Illuminate\Support\Facades\View;
+use App\Models\User;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 use App\Models\Tag;
 
@@ -53,10 +55,10 @@ class QuestionController extends Controller
     }
 
     public function show($id){
-    $question = Question::findOrFail($id);
-    return View::make('pages.question', [
-        'question' => $question
-    ]);
+        $question = Question::findOrFail($id);
+        return View::make('pages.question', [
+            'question' => $question
+        ]);
     }
 
 
@@ -74,15 +76,31 @@ class QuestionController extends Controller
 
         return redirect(url('/'))->withSuccess('You have successfully deleted your question!');
     }
+    
 
     public function edit(Request $request, $question_id)
     {
+        $user = Auth::user();
+
         $question = Question::findOrFail($question_id);
 
-        if ($question->user_id !== auth()->user()->id) {
-            abort(403, 'Unauthorized');
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()
+                ->route('pages.question', $question_id)
+                ->withErrors($validator)
+                ->withInput();
         }
-        
+
+        $question->update([
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+        ]);
+
         $tags = $request->input('sel_tags', []);
 
         $question->tags()->detach();
@@ -93,23 +111,19 @@ class QuestionController extends Controller
             $question->tags()->attach($actual_tag);
         }
 
-        $request->validate([
-            'title' => 'required|max:255',
-            'content' => 'required',
-        ]);
 
-        $question->title = $request->input('title');
-        $question->content = $request->input('content');
+        if ($question->user_id !== $user->id) {
+            return redirect()->route('questions.show', $question_id)->with('error', 'You are not authorized to edit this question');
+        }
+
         $question->edited = 1;
 
         $question->save();
 
-        return redirect()->route('questions.show', $question->id)
-            ->with('success', 'Question created successfully');
+        return redirect()->route('questions.show', $question_id)->with('success', 'Question updated successfully');
     }
-
+    
     public function attach_tag() {
         
     }
-
 }
