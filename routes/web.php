@@ -66,17 +66,13 @@ Route::put('/tag/{tag_id}', [TagController::class, 'edit'])->name('tag.edit');
 // route for updating a question's tags
 Route::post('/update_tags', [TagController::class, 'updateTags']);
 
-<<<<<<< HEAD
 // route for validating an answer
 Route::post('/validate_answer', [AnswerController::class, 'validate_answer']);
-=======
 // route for increasing a question's score
 Route::post('/increase_score', [QuestionController::class, 'inc_score']);
-
 // route for decreasing a question's score
 Route::post('/decrease_score', [QuestionController::class, 'dec_score']);
 
->>>>>>> feature/votes
 /*
 
 // M01

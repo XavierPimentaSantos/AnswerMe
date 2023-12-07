@@ -126,9 +126,6 @@ class QuestionController extends Controller
     public function attach_tag() {
         
     }
-<<<<<<< HEAD
-}
-=======
 
     public function inc_score(Request $request)
     {
@@ -188,4 +185,3 @@ class QuestionController extends Controller
         return view('partials.question_score', ['question_id' => $question->id])->render();
     }
 }
->>>>>>> feature/votes

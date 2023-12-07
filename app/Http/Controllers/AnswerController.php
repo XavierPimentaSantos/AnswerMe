@@ -58,7 +58,6 @@ class AnswerController extends Controller
             'content' => 'required|string',
         ]);
 
-<<<<<<< HEAD
         if ($validator->fails()) {
             return redirect()
                 ->route('pages.question', $question_id)
@@ -78,11 +77,7 @@ class AnswerController extends Controller
             'content' => $request->input('content'),
         ]);
         
-=======
-        $answer->title = $request->input('title');
-        $answer->content = $request->input('content');
         $answer->edited = true;
->>>>>>> feature/validate-answers
         $answer->save();
 
         return redirect()->route('questions.show', $question_id)->with('success', 'Question updated successfully');
