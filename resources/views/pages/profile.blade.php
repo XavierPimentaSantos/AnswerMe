@@ -34,8 +34,9 @@
         <div id="profile-edit" style="display: none;">
             <h2>Edit Profile</h2>
 
-            <form id="edit-profile-form" method="POST" action="{{ route('profile.edit', ['username' => $user->name]) }}">
+            <form id="edit-profile-form" enctype="multipart/form-data" method="POST" action="{{ route('profile.edit')}}">                
                 @csrf
+                @method('POST')
                 <label for="name">Name:</label>
                 <input type="text" id = "name-input" name="name" value="{{ $user->name }}" required>
 

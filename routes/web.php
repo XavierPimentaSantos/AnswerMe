@@ -7,7 +7,7 @@ use App\Http\Controllers\ItemController;
 
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\AnswerController;
-
+use App\Http\Controllers\TagController;
 
 
 use App\Http\Controllers\Auth\LoginController;
@@ -39,7 +39,6 @@ Route::controller(RegisterController::class)->group(function () {
     Route::post('/register', 'register');
 });
 
-
 Route::controller(QuestionController::class)->group(function () {
     Route::get('/questions/create', [QuestionController::class, 'create'])->name('questions.create');
     Route::post('/questions', [QuestionController::class, 'store'])->name('questions.store');
@@ -53,9 +52,8 @@ Route::controller(AnswerController::class)->group(function () {
     Route::post('/questions/{question_id}/answer', [AnswerController::class, 'store'])->name('answers.store');
     Route::post('/questions/{question_id}/answer/{answer_id}/edit', [AnswerController::class, 'edit'])->name('answers.edit');
     Route::delete('/questions/{question_id}/answer/{answer_id}/delete', [AnswerController::class, 'delete'])->name('answers.delete');
+
 });
-
-
 
 Route::controller(ProfileController::class)->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
@@ -70,6 +68,21 @@ Route::controller(AdminController::class)->group(function () {
     Route::post('/admin/block-user/{username}', [AdminController::class, 'blockUser'])->name('admin.blockUser');
     Route::post('/admin/unblock-user/{username}', [AdminController::class, 'unblockUser'])->name('admin.unblockUser');
 });
+
+Route::post('/tag', [TagController::class, 'store'])->name('tag.store');
+Route::delete('/tag/{tag_id}', [TagController::class, 'delete'])->name('tag.delete');
+Route::put('/tag/{tag_id}', [TagController::class, 'edit'])->name('tag.edit');
+
+// route for updating a question's tags
+Route::post('/update_tags', [TagController::class, 'updateTags']);
+
+// route for validating an answer
+Route::post('/validate_answer', [AnswerController::class, 'validate_answer']);
+// route for increasing a question's score
+Route::post('/increase_score', [QuestionController::class, 'inc_score']);
+// route for decreasing a question's score
+Route::post('/decrease_score', [QuestionController::class, 'dec_score']);
+>>>>>>> routes/web.php
 
 /*
 
