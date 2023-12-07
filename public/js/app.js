@@ -75,10 +75,6 @@ function updateQuestion() {
   });
 }
 
-function updateAnswer() {
-
-}
-
 function sendAjaxRequest(method, url, data, handler) {
   let request = new XMLHttpRequest();
 
@@ -88,29 +84,41 @@ function sendAjaxRequest(method, url, data, handler) {
   request.addEventListener('load', handler);
   request.send(encodeForAjax(data));
 }
-  
-//  START SECTION: FUNCTIONS RELATED TO EDITING A POST'S TAGS
 
-let add_tag = document.getElementById('add_tag');
-let tag_input = document.getElementById('tag_input');
-add_tag.addEventListener('click', function() {
-  tag_val = tag_input.value.trim();
-  tag_checkbox = document.getElementById('tag_'+tag_val);
-  if(tag_checkbox.checked == true) {
-    tag_checkbox.checked = false;
-  }
-  else {
-    tag_checkbox.checked = true;
-  }
-  console.log('that\'s crazy...');
-  updateTags();
-});
+// START SECTION: FUNCTIONS RELATED TO EDITING A POST'S TAGS
+
+const add_tag = document.getElementById('add_tag');
+const tag_input = document.getElementById('tag_input');
+
+if(add_tag) {
+  add_tag.addEventListener('click', function() {
+    tag_val = tag_input.value.trim();
+    tag_checkbox = document.getElementById('tag_'+tag_val);
+    if(tag_checkbox.checked == true) {
+      tag_checkbox.checked = false;
+    }
+    else {
+      tag_checkbox.checked = true;
+    }
+    console.log('that\'s crazy...');
+    updateTags();
+  });
+}
+
+const checkboxes = document.querySelectorAll('.tag-checkbox');
+
+checkboxes.forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+        console.log('checkbox ticked');
+        updateTags(); // when any checkbox is ticked/unticked, we want to update the tags that are shown
+    });
+}); 
 
 function updateTags() {
-  let checkedTags = document.querySelectorAll('.tag-checkbox:checked');
-  let selectedTags = Array.from(checkedTags).map(checkbox => checkbox.value);
+  const checkedTags = document.querySelectorAll('.tag-checkbox:checked');
+  const selectedTags = Array.from(checkedTags).map(checkbox => checkbox.value);
 
-  console.log('mensagem iai');
+  // console.log('mensagem iai');
 
   // Make an AJAX request using the fetch API
   fetch('/update_tags', {
@@ -128,20 +136,80 @@ function updateTags() {
   .catch(error => console.error('Error updating tags:', error));
 }
 
-let checkboxes = document.querySelectorAll('.tag-checkbox');
+// END SECTION
 
-checkboxes.forEach(function(checkbox) {
-    checkbox.addEventListener('change', function() {
-        console.log('checkbox ticked');
-        updateTags(); // when any checkbox is ticked/unticked, we want to update the tags that are shown
-    });
-}); 
+// START SECTION: FUNCTIONS RELATED TO VOTING
 
-//  END SECTION
+const score_container = document.getElementById('question_score');
+
+if(score_container) {
+  score_container.addEventListener('click', function(event) {
+    if(event.target.classList.contains('increase-question-score-btn')) {
+      console.log('inc btn pressed');
+      increaseScore(event.target.getAttribute('data-id'));
+    }
+    else if(event.target.classList.contains('decrease-question-score-btn')) {
+      console.log('dec btn pressed');
+      decreaseScore(event.target.getAttribute('data-id'));
+    }
+  });  
+}
+
+function increaseScore(question_id) {
+  fetch('/increase_score', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+    },
+    body: JSON.stringify({ question_id : question_id }),
+  })
+  .then(response => {
+    if(response.ok) {
+      console.log('succesfully updated score');
+      return response.text();
+    }
+    else {
+      console.log('could not update the score');
+    }
+  })
+  .then(data => {
+    console.log(question_id);
+    document.getElementById('question_score').innerHTML = data;
+  })
+  .catch(error => console.error('Error updating score:', error));
+}
+
+function decreaseScore(question_id) {
+  fetch('/decrease_score', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+    },
+    body: JSON.stringify({ question_id : question_id }),
+  })
+  .then(response => {
+    if(response.ok) {
+      console.log('succesfully updated score');
+      return response.text();
+    }
+    else {
+      console.log('could not update the score');
+    }
+  })
+  .then(data => {
+    console.log(question_id);
+    document.getElementById('question_score').innerHTML = data;
+  })
+  .catch(error => console.error('Error updating score:', error));
+}
+
+// END SECTION
 
 // START SECTION: FUNCTIONS RELATED TO MARKING AN ANSWER AS CORRECT
 
-let validate_answer_btn_array = Array.from(document.getElementsByClassName('validate_answer_btn'));
+const validate_answer_btn_array = Array.from(document.getElementsByClassName('validate_answer_btn'));
 
 validate_answer_btn_array.forEach(function(element) {
   element.addEventListener('click', function() {

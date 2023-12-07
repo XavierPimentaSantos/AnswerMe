@@ -126,4 +126,66 @@ class QuestionController extends Controller
     public function attach_tag() {
         
     }
+<<<<<<< HEAD
 }
+=======
+
+    public function inc_score(Request $request)
+    {
+        $question = Question::findOrFail($request->input('question_id'));
+        
+        if(Auth::user()->questionUpVotes()->where('question_id', $question->id)->exists()) {
+            Auth::user()->questionUpVotes()->detach($question->id);
+            $score = $question->score;
+            $question->score = $score - 1;
+            $question->save();
+        }
+        else {
+            if(Auth::user()->questionDownVotes()->where('question_id', $question->id)->exists()) {
+                Auth::user()->questionDownVotes()->detach($question->id);
+                Auth::user()->questionUpVotes()->attach($question->id);
+                $score = $question->score;
+                $question->score = $score + 2;
+                $question->save();
+            }
+            else {
+                Auth::user()->questionUpVotes()->attach($question->id);
+                $score = $question->score;
+                $question->score = $score + 1;
+                $question->save();
+            }
+        }
+
+        return view('partials.question_score', ['question_id' => $question->id])->render();
+    }
+
+    public function dec_score(Request $request)
+    {
+        $question = Question::findOrFail($request->input('question_id'));
+
+        if(Auth::user()->questionDownVotes()->where('question_id', $question->id)->exists()) {
+            Auth::user()->questionDownVotes()->detach($question->id);
+            $score = $question->score;
+            $question->score = $score + 1;
+            $question->save();
+        }
+        else {
+            if(Auth::user()->questionUpVotes()->where('question_id', $question->id)->exists()) {
+                Auth::user()->questionUpVotes()->detach($question->id);
+                Auth::user()->questionDownVotes()->attach($question->id);
+                $score = $question->score;
+                $question->score = $score - 2;
+                $question->save();
+            }
+            else {
+                Auth::user()->questionDownVotes()->attach($question->id);
+                $score = $question->score;
+                $question->score = $score - 1;
+                $question->save();
+            }
+        }
+
+        return view('partials.question_score', ['question_id' => $question->id])->render();
+    }
+}
+>>>>>>> feature/votes

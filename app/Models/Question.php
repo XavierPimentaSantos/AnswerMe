@@ -37,4 +37,14 @@ class Question extends Model
     {
         return $this->belongsToMany(Tag::class);
     }
+
+    public function upvoters() : BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'question_up_votes', 'question_id', 'user_id');
+    }
+
+    public function downvoters() : BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'question_down_votes', 'question_id', 'user_id');
+    }
 }

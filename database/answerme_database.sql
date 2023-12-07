@@ -261,9 +261,19 @@ CREATE TABLE IF NOT EXISTS notification_answer_votes (
     FOREIGN KEY (answer_id) REFERENCES answers(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Table: question_votes
-DROP TABLE IF EXISTS question_votes;
-CREATE TABLE IF NOT EXISTS question_votes (
+-- Table: question_up_votes
+DROP TABLE IF EXISTS question_up_votes;
+CREATE TABLE IF NOT EXISTS question_up_votes (
+    user_id INTEGER NOT NULL,
+    question_id INTEGER NOT NULL,
+    PRIMARY KEY (user_id, question_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- Table: question_down_votes
+DROP TABLE IF EXISTS question_down_votes;
+CREATE TABLE IF NOT EXISTS question_down_votes (
     user_id INTEGER NOT NULL,
     question_id INTEGER NOT NULL,
     PRIMARY KEY (user_id, question_id),
