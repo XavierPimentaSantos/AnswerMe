@@ -91,6 +91,7 @@
         </form>
     </div>
 </article>
+<<<<<<< HEAD
     @if (Auth::check())
     <form action="{{ route('answers.store', $question->id) }}" method="post">
         @csrf
@@ -150,4 +151,37 @@
         <h2 class="py-5 text-center">No answers yet!</h2>
     </article>
     @endif
+=======
+@if (Auth::check())
+<form action="{{ route('answers.store', $question->id) }}" method="post">
+    @csrf
+    <h3> Answer this question </h3>
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" required>
+    <label for="content">Content:</label>
+    <textarea id="content" name="content" rows="4" required></textarea>
+    <button type="submit">Create Answer</button>
+</form>
+@endif
+@if ($question->answers->count() > 0)
+<article class="card text-center" data-id="{{ $question->id }}">
+    <div>
+        <h3 class="py-5">Answers:</h3>
+        <ol>
+            @foreach ($question->answers as $answer)
+                @include ('partials.answer', ['answer' => $answer])
+            @endforeach
+        </ol>
+    </div>
+    @if ($question->answers->count() > 10)
+    <div class="pagination">
+        {{ $question->answers()->paginate(10)->links() }}
+    </div>
+    @else
+    <h2 class="py-5 text-center">No answers yet!</h2>
+    @endif
+</article>
+@endif
+
+>>>>>>> feature/validate-answers
 @endsection

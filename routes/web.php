@@ -66,6 +66,8 @@ Route::put('/tag/{tag_id}', [TagController::class, 'edit'])->name('tag.edit');
 // route for updating a question's tags
 Route::post('/update_tags', [TagController::class, 'updateTags']);
 
+// route for validating an answer
+Route::post('/validate_answer', [AnswerController::class, 'validate_answer']);
 /*
 
 // M01
