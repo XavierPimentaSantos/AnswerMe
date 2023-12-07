@@ -1,62 +1,18 @@
-/* function addEventListeners() {
-  let itemCheckers = document.querySelectorAll('article.card li.item input[type=checkbox]');
-  [].forEach.call(itemCheckers, function(checker) {
-    checker.addEventListener('change', sendItemUpdateRequest);
-  });
-
-  let itemCreators = document.querySelectorAll('article.card form.new_item');
-  [].forEach.call(itemCreators, function(creator) {
-    creator.addEventListener('submit', sendCreateItemRequest);
-  });
-
-  let itemDeleters = document.querySelectorAll('article.card li a.delete');
-  [].forEach.call(itemDeleters, function(deleter) {
-    deleter.addEventListener('click', sendDeleteItemRequest);
-  });
-
-  let cardDeleters = document.querySelectorAll('article.card header a.delete');
-  [].forEach.call(cardDeleters, function(deleter) {
-    deleter.addEventListener('click', sendDeleteCardRequest);
-  });
-
-  let cardCreator = document.querySelector('article.card form.new_card');
-  if (cardCreator != null)
-    cardCreator.addEventListener('submit', sendCreateCardRequest);
-
-  
-
-  document.getElementById('update-profile-btn').addEventListener('click', function () {
-    updateProfile();
-  });
-
-  document.getElementById('update-question-btn').addEventListener('click', function () {
-    updateQuestion();
-  });
-
-  document.getElementById('update-answer-btn').addEventListener('click', function () {
-    updateAnswer();
-  });
-} */
-
-/* document.getElementById('edit-profile-btn').addEventListener('click', function () {
-  toggleProfileSections(true);
-}); */
-
-let edit_profile_btn = document.getElementById('edit-profile-btn');
+const edit_profile_btn = document.getElementById('edit-profile-btn');
 if(edit_profile_btn) {
   edit_profile_btn.addEventListener('click', function() {
     toggleProfileSections(true);
   });
 }
 
-let edit_answer_btn = document.getElementById('edit-answer-btn');
+const edit_answer_btn = document.getElementById('edit-answer-btn');
 if(edit_answer_btn) {
   edit_answer_btn.addEventListener('click', function () {
     toggleAnswerSections(true);
   });  
 }
 
-let edit_question_btn = document.getElementById('edit-question-btn');
+const edit_question_btn = document.getElementById('edit-question-btn');
 if(edit_question_btn) {
   edit_question_btn.addEventListener('click', function () {
     toggleQuestionSections(true);
@@ -135,8 +91,8 @@ function sendAjaxRequest(method, url, data, handler) {
 
 //  START SECTION: FUNCTIONS RELATED TO EDITING A POST'S TAGS
 
-let add_tag = document.getElementById('add_tag');
-let tag_input = document.getElementById('tag_input');
+const add_tag = document.getElementById('add_tag');
+const tag_input = document.getElementById('tag_input');
 add_tag.addEventListener('click', function() {
   tag_val = tag_input.value.trim();
   tag_checkbox = document.getElementById('tag_'+tag_val);
@@ -150,9 +106,18 @@ add_tag.addEventListener('click', function() {
   updateTags();
 });
 
+const checkboxes = document.querySelectorAll('.tag-checkbox');
+
+checkboxes.forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+        console.log('checkbox ticked');
+        updateTags(); // when any checkbox is ticked/unticked, we want to update the tags that are shown
+    });
+}); 
+
 function updateTags() {
-  let checkedTags = document.querySelectorAll('.tag-checkbox:checked');
-  let selectedTags = Array.from(checkedTags).map(checkbox => checkbox.value);
+  const checkedTags = document.querySelectorAll('.tag-checkbox:checked');
+  const selectedTags = Array.from(checkedTags).map(checkbox => checkbox.value);
 
   console.log('mensagem iai');
 
@@ -172,20 +137,11 @@ function updateTags() {
   .catch(error => console.error('Error updating tags:', error));
 }
 
-let checkboxes = document.querySelectorAll('.tag-checkbox');
-
-checkboxes.forEach(function(checkbox) {
-    checkbox.addEventListener('change', function() {
-        console.log('checkbox ticked');
-        updateTags(); // when any checkbox is ticked/unticked, we want to update the tags that are shown
-    });
-}); 
-
 //  END SECTION
 
 // START SECTION: FUNCTIONS RELATED TO VOTING
 
-let score_container = document.getElementById('question_score');
+const score_container = document.getElementById('question_score');
 
 if(score_container) {
   score_container.addEventListener('click', function(event) {
@@ -251,5 +207,3 @@ function decreaseScore(question_id) {
 }
 
 // END SECTION
-
-// addEventListeners();
