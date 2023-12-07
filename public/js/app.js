@@ -205,6 +205,70 @@ function decreaseScore(question_id) {
   .catch(error => console.error('Error updating score:', error));
 }
 
+const question_answers = document.getElementById('question_answers');
+if(question_answers) {
+  question_answers.addEventListener('click', function(event) {
+    if(event.target.classList.contains('increase-answer-score-btn')) {
+      console.log('inc btn ans pressed');
+      increaseScoreAns(event.target.getAttribute('data-id'));
+    }
+    else if(event.target.classList.contains('decrease-answer-score-btn')) {
+      console.log('dec btn ans pressed');
+      decreaseScoreAns(event.target.getAttribute('data-id'));
+    }
+  })
+}
+
+function increaseScoreAns(answer_id) {
+  fetch('/increase_score_ans', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+    },
+    body: JSON.stringify({ answer_id : answer_id }),
+  })
+  .then(response => {
+    if(response.ok) {
+      console.log('succesfully updated score');
+      return response.text();
+    }
+    else {
+      console.log('could not update the score');
+    }
+  })
+  .then(data => {
+    console.log(answer_id);
+    document.getElementById('answer_score_' + answer_id).innerHTML = data;
+  })
+  .catch(error => console.error('Error updating score:', error));
+}
+
+function decreaseScoreAns(answer_id) {
+  fetch('/decrease_score_ans', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+    },
+    body: JSON.stringify({ answer_id : answer_id }),
+  })
+  .then(response => {
+    if(response.ok) {
+      console.log('succesfully updated score');
+      return response.text();
+    }
+    else {
+      console.log('could not update the score');
+    }
+  })
+  .then(data => {
+    console.log(answer_id);
+    document.getElementById('answer_score_' + answer_id).innerHTML = data;
+  })
+  .catch(error => console.error('Error updating score:', error));
+}
+
 // END SECTION
 
 // START SECTION: FUNCTIONS RELATED TO MARKING AN ANSWER AS CORRECT

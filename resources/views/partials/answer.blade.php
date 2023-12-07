@@ -8,6 +8,10 @@
 <li>
     <div id="answer-view-{{ $answer->id }}"  class="answers bg-gray-100 mb-3 p-4">
         <div style="display: flex; flex-direcion: row; gap: 5px;">
+            <div id="answer_score_{{ $answer->id }}" data-id="{{ $answer->id }}" style="display: flex; flex-direction: row;">
+                @csrf
+                @include ('partials.answer_score', ['answer_id' => $answer->id])
+            </div>
             <h4 class="font-bold">{{ $answer->title }}</h4>
             @if (Auth::user()->id === $question->user_id)
             <button type="button" id="validate-answer-btn-{{ $answer->id }}" class="validate_answer_btn" data-id="{{ $answer->id }}">Validate answer</button>

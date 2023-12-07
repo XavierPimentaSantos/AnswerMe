@@ -14,7 +14,7 @@
 <article class="card" data-id="{{ $question->id }}">
     <div id = "question-view" class="questions bg-gray-200 mb-3 p-4" style="display: block;">
         <div class="question-card-body">
-            <div class="question-title">
+            <div class="question-title" style="display: flex; flex-direction: row;">
                 <div id="question_score" style="display: flex; flex-direction: column;">
                     @csrf
                     @include ('partials.question_score', ['question_id' => $question->id])
@@ -109,7 +109,7 @@
 </form>
 @endif
 @if ($question->answers->count() > 0)
-<article class="card text-center" data-id="{{ $question->id }}">
+<article id="question_answers" class="card text-center" data-id="{{ $question->id }}">
     <div>
         <h3 class="py-5">Answers:</h3>
         <ol>

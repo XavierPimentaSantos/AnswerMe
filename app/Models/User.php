@@ -52,4 +52,14 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Question::class, 'question_down_votes', 'user_id', 'question_id');
     }
+
+    public function answerUpVotes() : BelongsToMany
+    {
+        return $this->belongsToMany(Answer::class, 'answer_up_votes', 'user_id', 'answer_id');
+    }
+
+    public function answerDownVotes() : BelongsToMany
+    {
+        return $this->belongsToMany(Answer::class, 'answer_down_votes', 'user_id', 'answer_id');
+    }
 }

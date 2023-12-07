@@ -104,5 +104,62 @@ class AnswerController extends Controller
         $answer->correct = true;
         $answer->save();
     }
-}
 
+    public function inc_score(Request $request)
+    {
+        $answer = Answer::findOrFail($request->input('answer_id'));
+        
+        if(Auth::user()->answerUpVotes()->where('answer_id', $answer->id)->exists()) {
+            Auth::user()->answerUpVotes()->detach($answer->id);
+            $score = $answer->score;
+            $answer->score = $score - 1;
+            $answer->save();
+        }
+        else {
+            if(Auth::user()->answerDownVotes()->where('answer_id', $answer->id)->exists()) {
+                Auth::user()->answerDownVotes()->detach($answer->id);
+                Auth::user()->answerUpVotes()->attach($answer->id);
+                $score = $answer->score;
+                $answer->score = $score + 2;
+                $answer->save();
+            }
+            else {
+                Auth::user()->answerUpVotes()->attach($answer->id);
+                $score = $answer->score;
+                $answer->score = $score + 1;
+                $answer->save();
+            }
+        }
+
+        return view('partials.answer_score', ['answer_id' => $answer->id])->render();
+    }
+
+    public function dec_score(Request $request)
+    {
+        $answer = answer::findOrFail($request->input('answer_id'));
+
+        if(Auth::user()->answerDownVotes()->where('answer_id', $answer->id)->exists()) {
+            Auth::user()->answerDownVotes()->detach($answer->id);
+            $score = $answer->score;
+            $answer->score = $score + 1;
+            $answer->save();
+        }
+        else {
+            if(Auth::user()->answerUpVotes()->where('answer_id', $answer->id)->exists()) {
+                Auth::user()->answerUpVotes()->detach($answer->id);
+                Auth::user()->answerDownVotes()->attach($answer->id);
+                $score = $answer->score;
+                $answer->score = $score - 2;
+                $answer->save();
+            }
+            else {
+                Auth::user()->answerDownVotes()->attach($answer->id);
+                $score = $answer->score;
+                $answer->score = $score - 1;
+                $answer->save();
+            }
+        }
+
+        return view('partials.answer_score', ['answer_id' => $answer->id])->render();
+    }
+}
