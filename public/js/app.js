@@ -1,47 +1,34 @@
-    /* document.getElementById('edit-profile-btn').addEventListener('click', function () {
-      toggleProfileSections(true);
-    }); */
-/*
-    document.getElementById('edit-answer-btn').addEventListener('click', function () {
-      toggleAnswerSections(true);
-    });
+document.getElementById('edit-profile-btn').addEventListener('click', function () {
+  toggleProfileSections(true);
+});
 
-    document.getElementById('edit-question-btn').addEventListener('click', function () {
-      toggleQuestionSections(true);
-    });
-*/
-  document.getElementById('edit-profile-btn').addEventListener('click', function () {
-    toggleProfileSections(true);
-  });
-/*
-    document.getElementById('update-question-btn').addEventListener('click', function () {
-      updateQuestion();
-    });
+document.getElementById('edit-question-btn').addEventListener('click', function () {
+  toggleQuestionSections(true);
+});
 
-    document.getElementById('update-answer-btn').addEventListener('click', function () {
-      updateAnswer();
-    });
-*/
+document.getElementById('edit-answer-btn').addEventListener('click', function () {
+  console.log('edit answer button clicked');
+  toggleAnswerSections(true);
+});
+
+function toggleQuestionSections(editMode) {
+  document.getElementById('question-edit').style.display = editMode ? 'block' : 'none';
+  document.getElementById('question-view').style.display = editMode ? 'none' : 'block';
+}
+
+function toggleProfileSections(editMode) {
+  document.getElementById('profile-view').style.display = editMode ? 'none' : 'block';
+  document.getElementById('profile-edit').style.display = editMode ? 'block' : 'none';
+  document.getElementById('edit-profile-btn').style.display = editMode ? 'none' : 'inline-block';
+  document.getElementById('profile-header').style.display = editMode ? 'none' : 'block';
+}
+
+function toggleAnswerSections(editMode) {
+  document.getElementById('answer-edit').style.display = editMode ? 'block' : 'none';
+  document.getElementById('answer-view').style.display = editMode ? 'none' : 'block';
+}
 
 
-
-  function toggleProfileSections(editMode) {
-    document.getElementById('profile-view').style.display = editMode ? 'none' : 'block';
-    document.getElementById('profile-edit').style.display = editMode ? 'block' : 'none';
-    document.getElementById('edit-profile-btn').style.display = editMode ? 'none' : 'inline-block';
-    document.getElementById('profile-header').style.display = editMode ? 'none' : 'block';
-  }
-
-  function toggleQuestionSections(editMode) {
-    document.getElementById('question-edit').style.display = editMode ? 'block' : 'none';
-    document.getElementById('question-view').style.display = editMode ? 'none' : 'block';
-  }
-
-  function toggleAnswerSections(editMode) {
-    document.getElementById('answer-edit').style.display = editMode ? 'block' : 'none';
-    document.getElementById('answer-view').style.display = editMode ? 'none' : 'block';
-  }
-  
   function encodeForAjax(data) {
     if (data == null) return null;
     return Object.keys(data).map(function(k){
@@ -100,6 +87,7 @@
   let add_tag = document.getElementById('add_tag');
   let tag_input = document.getElementById('tag_input');
   add_tag.addEventListener('click', function() {
+    console.log('add tag clicked');
     tag_val = tag_input.value.trim();
     tag_checkbox = document.getElementById('tag_'+tag_val);
     if(tag_checkbox.checked == true) {
@@ -143,5 +131,4 @@
       });
   }); 
 
-
-  
+  //  END SECTION

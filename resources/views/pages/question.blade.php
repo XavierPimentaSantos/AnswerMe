@@ -150,28 +150,4 @@
         <h2 class="py-5 text-center">No answers yet!</h2>
     </article>
     @endif
-
-
-<script>
-    document.getElementById('edit-question-btn').addEventListener('click', function () {
-        toggleQuestionSections(true);
-    });
-
-    document.getElementById('edit-answer-btn').addEventListener('click', function () {
-        console.log('edit answer button clicked');
-        toggleAnswerSections(true);
-    });
-
-    function toggleQuestionSections(editMode) {
-        document.getElementById('question-edit').style.display = editMode ? 'block' : 'none';
-        document.getElementById('question-view').style.display = editMode ? 'none' : 'block';
-    }
-
-    function toggleAnswerSections(editMode) {
-        document.getElementById('answer-edit').style.display = editMode ? 'block' : 'none';
-        document.getElementById('answer-view').style.display = editMode ? 'none' : 'block';
-    }
-</script>
-
-
 @endsection
