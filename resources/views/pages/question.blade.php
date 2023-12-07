@@ -122,9 +122,9 @@
     <div class="pagination">
         {{ $question->answers()->paginate(10)->links() }}
     </div>
-    @else
-    <h2 class="py-5 text-center">No answers yet!</h2>
     @endif
+@else
+<h2 class="py-5 text-center">No answers yet!</h2>
 </article>
 @endif
 

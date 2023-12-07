@@ -295,7 +295,7 @@ function validateAnswer(answer_id) {
   .then(response => {
     if(response.ok) {
       document.getElementById('validate-answer-btn-' + answer_id).classList.add('hidden');
-      document.getElementById('valid_answer_' + answer_id).removeAttribute('class');
+      document.getElementById('valid_answer_' + answer_id).classList.remove('hidden');
     }
   })
   .catch(error => console.error('Error updating tags:', error));
