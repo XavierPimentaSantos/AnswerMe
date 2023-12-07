@@ -15,7 +15,7 @@
     <div id = "question-view" class="questions bg-gray-200 mb-3 p-4" style="display: block;">
         <div class="question-card-body">
             <div class="question-title">
-                <div id="question_score_{{ $question->id }}">
+                <div id="question_score" style="display: flex; flex-direction: column;">
                     @csrf
                     @include ('partials.question_score', ['question_id' => $question->id])
                 </div>
@@ -155,18 +155,5 @@
     <h2 class="py-5 text-center">No answers yet!</h2>
 </article>
 @endif
-
-
-<script>
-    document.getElementById('edit-question-btn').addEventListener('click', function () {
-        toggleQuestionSections(true);
-    });
-
-    function toggleQuestionSections(editMode) {
-        document.getElementById('question-edit').style.display = editMode ? 'block' : 'none';
-        document.getElementById('question-view').style.display = editMode ? 'none' : 'block';
-    }
-</script>
-
 
 @endsection

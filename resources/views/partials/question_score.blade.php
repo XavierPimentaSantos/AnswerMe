@@ -5,7 +5,6 @@
 ?>
 
 @if ($question)
-<div style="display: flex; flex-direction: column;">
     @if (Auth::user()->questionUpVotes()->where('question_id', $question->id)->exists())
     <button type="button" class="increase-question-score-btn" data-id="{{ $question->id }}" style="background-color: green;">increase</button>
     @else
@@ -17,5 +16,4 @@
     @else
     <button type="button" class="decrease-question-score-btn" data-id="{{ $question->id }}">decrease</button>
     @endif
-</div>
 @endif
