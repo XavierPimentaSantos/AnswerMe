@@ -4,6 +4,7 @@
 
 <div class="questions bg-gray-200 mb-3 p-4">
     <div class="question-card-body">
+        <h2>{{ $question->score }}</h2>
         <a href="{{ route('questions.show', $question->id) }}">
             <div class="question-title">
                 <h2>{{ $question->title }}</h2>

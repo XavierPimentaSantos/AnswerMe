@@ -115,16 +115,6 @@
     <button type="button" id="question-comment-post-btn" data-question-id="{{ $question->id }}">Post comment</button>
 </div>
 
-<form action="{{ route('answers.store', $question->id) }}" method="post" style="display: none;">
-    @csrf
-    <h3> Answer this question </h3>
-    <label for="title">Title:</label>
-    <input type="text" id="title" name="title" required>
-    <label for="content">Content:</label>
-    <textarea id="content" name="content" rows="4" required></textarea>
-    <button type="submit">Create Answer</button>
-</form>
-
 <div id="answer_post_form">
     @csrf
     <h3> Answer this question </h3>
