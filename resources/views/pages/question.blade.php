@@ -11,7 +11,7 @@
     }
 
     $answers = $question->answers()->orderByDesc('score')->orderBy('correct', 'desc')->get();
-    $questioncomments = $question->comments()->latest()->get();
+    $questioncomments = $question->comments()->latest()->get(); // paginate aqui?
 ?>
 
 <article class="card" data-id="{{ $question->id }}">
@@ -101,27 +101,18 @@
 </article>
 
 @if ($questioncomments->count() > 0)
-<div>
-    @foreach($questioncomments as $questioncomment)
-    <div style="display: flex; flex-direction: column; background-color: #edf2f7; border-radius: 5px; padding: 0.4rem;">
-        <h5>{{ $questioncomment->body }}</h5>
-        <div style="display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: space-between;">
-            <p style="margin: 0;">{{ $questioncomment->user->name }}</p>
-            <p style="margin: 0;">{{ $questioncomment->created_at }}</p>
-        </div>
-    </div>
-    @endforeach
+<div id="comment-section">
+    @csrf
+    @include ('partials.comment_section', ['questioncomments' => $questioncomments])
 </div>
 @endif
 
 @if (Auth::check())
 <div id="question_comment_form">
     <h5>Leave a comment</h5>
-    <form action="{{ route('questioncomment.store', $question->id) }}" method="POST">
-        @csrf
-        <input type="text" name="question_comment_body" id="question_comment_body" required>
-        <button type="submit">Post comment</button>
-    </form>
+    @csrf
+    <input type="text" name="question_comment_body" id="question_comment_body" required>
+    <button type="button" id="question-comment-post-btn" data-question-id="{{ $question->id }}">Post comment</button>
 </div>
 
 <form action="{{ route('answers.store', $question->id) }}" method="post">

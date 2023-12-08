@@ -302,3 +302,41 @@ function validateAnswer(answer_id) {
 }
 
 // END SECTION
+
+// START SECTION: FUNCTIONS RELATED TO COMMENTING UNDER A QUESTION
+
+const question_comment_post_btn = document.getElementById('question-comment-post-btn');
+
+if(question_comment_post_btn) {
+  question_comment_post_btn.addEventListener('click', function() {
+    console.log('question-comment-post-btn pressed');
+    question_comment_post();
+  });
+}
+
+function question_comment_post() {
+  const question_id = question_comment_post_btn.getAttribute('data-question-id');
+  const question_comment_body = document.getElementById('question_comment_body').value;
+  console.log(question_comment_body);
+  fetch('/questions/' + question_id + '/comment', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+    },
+    body: JSON.stringify({ 
+      question_id : question_id,
+      question_comment_body : question_comment_body
+    }),
+  })
+  .then(response => {
+    return response.text();
+  })
+  .then(data => {
+    document.getElementById('comment-section').innerHTML = data;
+    document.getElementById('question_comment_body').value = '';
+  })
+  .catch(error => console.error('Error updating tags:', error));
+}
+
+// END SECTION
