@@ -34,7 +34,7 @@
         <div id="profile-edit" style="display: none;">
             <h2>Edit Profile</h2>
 
-            <form id="edit-profile-form" enctype="multipart/form-data" method="POST" action="{{ route('profile.edit')}}">                
+            <form id="edit-profile-form" enctype="multipart/form-data" method="POST" action="{{ route('profile.edit', ['username' => $user->name]) }}">                
                 @csrf
                 @method('POST')
                 <label for="name">Name:</label>
