@@ -43,6 +43,20 @@ class User extends Authenticatable
         return $this->hasMany(Question::class);
     }
 
+    public function isModerator()
+{
+    return $this->user_type == 3 || $this->user_type == 4;
+}
+    public function isAdmin()
+{
+    return $this->user_type == 4;
+}
+
+    public function isBlocked()
+{
+    return $this->user_type == 2;
+}
+
     public function questionUpVotes() : BelongsToMany
     {
         return $this->belongsToMany(Question::class, 'question_up_votes', 'user_id', 'question_id');

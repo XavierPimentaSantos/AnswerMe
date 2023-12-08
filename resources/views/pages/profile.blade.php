@@ -6,8 +6,27 @@
         <h2 id="profile-header">User Profile</h2>
         <a class="button text-sm rounded px-1 py-1" id="edit-profile-btn">Edit User Profile</a>
 
-        <!-- Delete My Account Button -->
-        <div id="profile-view" style = "display: block;">
+        @if (Auth::user()->isAdmin() && !$user->isBlocked()) <!-- Check if the authenticated user is an admin -->
+            <form method="POST" action="{{ route('admin.blockUser', ['username' => $user->name]) }}">
+                @csrf
+                <button type="submit">Block User</button>
+            </form>
+        @endif
+
+        @if (Auth::user()->isAdmin() && $user->isBlocked()) <!-- Check if the authenticated user is an admin -->
+            <form method="POST" action="{{ route('admin.unblockUser', ['username' => $user->name]) }}">
+                @csrf
+                <button type="submit">Unblock User</button>
+            </form>
+        @endif
+
+        <form method="POST" action="{{ route('profile.delete', ['username' => $user->name]) }}" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+            @csrf
+            @method('DELETE')
+            <button type="submit">Delete Account</button>
+        </form>
+
+        <div id="profile-view">
             <p id = "name"><strong>Name:</strong> {{ $user->name }}</p>
             <p id = "email"><strong>Email:</strong> {{ $user->email }}</p>
         </div>
