@@ -8,7 +8,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\TagController;
-
+use App\Http\Controllers\QuestionCommentController;
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -58,6 +58,10 @@ Route::controller(ProfileController::class)->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::post('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
 }); 
+
+Route::controller(QuestionCommentController::class)->group(function () {
+    Route::post('/questions/{question_id}/comment', [QuestionCommentController::class, 'store'])->name('questioncomment.store');
+});
 
 Route::post('/tag', [TagController::class, 'store'])->name('tag.store');
 Route::delete('/tag/{tag_id}', [TagController::class, 'delete'])->name('tag.delete');

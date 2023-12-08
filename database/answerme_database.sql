@@ -78,15 +78,15 @@ CREATE TABLE IF NOT EXISTS answers (
 DROP TABLE IF EXISTS comments_questions;
 CREATE TABLE IF NOT EXISTS comments_questions (
     id SERIAL NOT NULL,
-    referred_question_id INTEGER NOT NULL,
+    question_id INTEGER NOT NULL,
     body VARCHAR NOT NULL,
-    creation_date TIMESTAMP DEFAULT NOW() NOT NULL,
-    edit_date TIMESTAMP DEFAULT NOW() NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMP DEFAULT NOW() NOT NULL,
     edited BOOLEAN NOT NULL,
     user_id INTEGER NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (referred_question_id) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table: comments_answer
@@ -95,8 +95,8 @@ CREATE TABLE IF NOT EXISTS comments_answers (
     id SERIAL NOT NULL,
     referred_answer_id INTEGER NOT NULL,
     body VARCHAR NOT NULL,
-    creation_date TIMESTAMP DEFAULT NOW() NOT NULL,
-    edit_date TIMESTAMP DEFAULT NOW() NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMP DEFAULT NOW() NOT NULL,
     edited BOOLEAN NOT NULL,
     user_id INTEGER NOT NULL,
     PRIMARY KEY (id),
