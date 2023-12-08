@@ -99,6 +99,11 @@ body {
   #content > form input {
     background-color: white;
   }
+
+  .profile-size {
+    width: 25rem;
+    height: 25rem;
+  }
   @media (max-width: 70em) {
     #cards {
       grid-template-columns: repeat(2, 1fr);

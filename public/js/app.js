@@ -23,13 +23,32 @@
     });
 */
 
+  document.getElementById('edit-question-btn').addEventListener('click', function () {
+    toggleQuestionSections(true);
+  });
 
+  document.getElementById('edit-answer-btn').addEventListener('click', function () {
+    console.log('edit answer button clicked');
+    toggleAnswerSections(true);
+  });
+
+  function toggleQuestionSections(editMode) {
+    document.getElementById('question-edit').style.display = editMode ? 'block' : 'none';
+    document.getElementById('question-view').style.display = editMode ? 'none' : 'block';
+  }
+
+  function toggleAnswerSections(editMode) {
+    document.getElementById('answer-edit').style.display = editMode ? 'block' : 'none';
+    document.getElementById('answer-view').style.display = editMode ? 'none' : 'block';
+  }
 
   function toggleProfileSections(editMode) {
     document.getElementById('profile-view').style.display = editMode ? 'none' : 'block';
+    document.getElementById('profile-picture').style.display = editMode ? 'none' : 'block';
     document.getElementById('profile-edit').style.display = editMode ? 'block' : 'none';
     document.getElementById('edit-profile-btn').style.display = editMode ? 'none' : 'inline-block';
     document.getElementById('profile-header').style.display = editMode ? 'none' : 'block';
+    document.getElementById('edit-profile-header').style.display = editMode ? 'block' : 'none';
   }
 
   function toggleQuestionSections(editMode) {
