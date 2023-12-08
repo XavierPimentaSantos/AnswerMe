@@ -100,12 +100,10 @@
     </div>
 </article>
 
-@if ($questioncomments->count() > 0)
 <div id="comment-section">
     @csrf
     @include ('partials.comment_section', ['questioncomments' => $questioncomments])
 </div>
-@endif
 
 @if (Auth::check())
 <div id="question_comment_form">
