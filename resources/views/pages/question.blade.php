@@ -109,13 +109,13 @@
 
 @if (Auth::check())
 <div id="question_comment_form">
-    <h5>Leave a comment</h5>
     @csrf
+    <h5>Leave a comment</h5>
     <input type="text" name="question_comment_body" id="question_comment_body" required>
     <button type="button" id="question-comment-post-btn" data-question-id="{{ $question->id }}">Post comment</button>
 </div>
 
-<form action="{{ route('answers.store', $question->id) }}" method="post">
+<form action="{{ route('answers.store', $question->id) }}" method="post" style="display: none;">
     @csrf
     <h3> Answer this question </h3>
     <label for="title">Title:</label>
@@ -124,16 +124,24 @@
     <textarea id="content" name="content" rows="4" required></textarea>
     <button type="submit">Create Answer</button>
 </form>
+
+<div id="answer_post_form">
+    @csrf
+    <h3> Answer this question </h3>
+    <label for="answer-title-input">Title:</label>
+    <input type="text" id="answer-title-input" name="answer-title-input" required>
+    <label for="answer-content-input">Content:</label>
+    <textarea id="answer-content-input" name="answer-content-input" rows="4" required></textarea>
+    <button type="button" id="answer-post-btn" data-question-id="{{ $question->id }}">Create Answer</button>
+</div>
 @endif
 
 @if ($answers->count() > 0)
 <article id="question_answers" class="card text-center" data-id="{{ $question->id }}">
     <div>
         <h3 class="py-5">Answers:</h3>
-        <ol style="list-style-type: none;">
-            @foreach ($answers as $answer)
-                @include ('partials.answer', ['answer' => $answer])
-            @endforeach
+        <ol style="list-style-type: none;" id="answer-section">
+            @include ('partials.answer', ['answers' => $answers])
         </ol>
     </div>
     @if ($answers->count() > 10)
@@ -141,8 +149,21 @@
         {{ $answers->paginate(10)->links() }}
     </div>
     @endif
+</article>
 @else
 <h2 class="py-5 text-center">No answers yet!</h2>
+<article id="question_answers" class="card text-center" data-id="{{ $question->id }}" style="display: none;">
+    <div>
+        <h3 class="py-5">Answers:</h3>
+        <ol style="list-style-type: none;" id="answer-section">
+            @include ('partials.answer', ['answers' => $answers])
+        </ol>
+    </div>
+    @if ($answers->count() > 10)
+    <div class="pagination">
+        {{ $answers->paginate(10)->links() }}
+    </div>
+    @endif
 </article>
 @endif
 

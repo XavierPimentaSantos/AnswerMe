@@ -336,7 +336,45 @@ function question_comment_post() {
     document.getElementById('comment-section').innerHTML = data;
     document.getElementById('question_comment_body').value = '';
   })
-  .catch(error => console.error('Error updating tags:', error));
+  .catch(error => console.error('Error posting comment:', error));
+}
+
+// END SECTION
+
+// START SECTION: FUNCTIONS RELATED TO ANSWERING A QUESTION
+
+const answer_post_btn = document.getElementById('answer-post-btn');
+
+if(answer_post_btn) {
+  answer_post_btn.addEventListener('click', function() {
+    answer_post();
+  });
+}
+
+function answer_post() {
+  const title = document.getElementById('answer-title-input').value;
+  const content = document.getElementById('answer-content-input').value;
+  const question_id = answer_post_btn.getAttribute('data-question-id');
+  fetch('/questions/' + question_id + '/answer', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+    },
+    body: JSON.stringify({ 
+      title : title,
+      content: content
+    }),
+  })
+  .then(response => {
+    return response.text();
+  })
+  .then(data => {
+    document.getElementById('answer-section').innerHTML = data;
+    document.getElementById('answer-title-input').value = '';
+    document.getElementById('answer-content-input').value = '';
+  })
+  .catch(error => console.error('Error posting question:', error));
 }
 
 // END SECTION

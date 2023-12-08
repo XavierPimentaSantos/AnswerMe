@@ -41,11 +41,10 @@ class AnswerController extends Controller
 
         $answer->save();
 
-        // You may want to associate the question with the currently authenticated user
-        // $question->user()->associate(auth()->user())->save();
-
-        return redirect()->route('questions.show', $question->id)
-            ->with('success', 'Answer created successfully');
+        /* return redirect()->route('questions.show', $question->id)
+            ->with('success', 'Answer created successfully'); */
+        
+        return view('partials.answer', ['answers' => $question->answers()->get()])->render();
     }
 
 

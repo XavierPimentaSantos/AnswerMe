@@ -1,10 +1,12 @@
 <?php
     use App\Models\Question;
     use App\Models\Answer;
-
-    $question = Question::find($answer->question_id);
 ?>
 
+@foreach ($answers as $answer)
+<?php
+    $question = Question::find($answer->question_id);
+?>
 <li>
     <div id="answer-view-{{ $answer->id }}"  class="answers bg-gray-100 mb-3 p-4">
         <div style="display: flex; flex-direcion: row; gap: 5px;">
@@ -48,3 +50,4 @@
         </form>
     </div>
 </li>
+@endforeach
