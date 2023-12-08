@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Tag;
 use App\Models\Answer;
+use App\Models\QuestionComment;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -46,5 +47,10 @@ class Question extends Model
     public function downvoters() : BelongsToMany
     {
         return $this->belongsToMany(User::class, 'question_down_votes', 'question_id', 'user_id');
+    }
+
+    public function comments() : HasMany
+    {
+        return $this->hasMany(QuestionComment::class);
     }
 }

@@ -9,12 +9,15 @@
     foreach($question->tags as $tag) {
         $question_tags[] = $tag->name;
     }
+
+    $answers = $question->answers()->orderByDesc('score')->orderBy('correct', 'desc')->get();
+    $questioncomments = $question->comments()->latest()->get(); // paginate aqui?
 ?>
 
 <article class="card" data-id="{{ $question->id }}">
     <div id = "question-view" class="questions bg-gray-200 mb-3 p-4" style="display: block;">
         <div class="question-card-body">
-            <div class="question-title">
+            <div class="question-title" style="display: flex; flex-direction: row;">
                 <div id="question_score" style="display: flex; flex-direction: column;">
                     @csrf
                     @include ('partials.question_score', ['question_id' => $question->id])
@@ -97,33 +100,57 @@
     </div>
 </article>
 
+<div id="comment-section">
+    @csrf
+    @include ('partials.comment_section', ['questioncomments' => $questioncomments])
+</div>
+
 @if (Auth::check())
-<form action="{{ route('answers.store', $question->id) }}" method="post">
+<div id="question_comment_form">
+    @csrf
+    <h5>Leave a comment</h5>
+    <input type="text" name="question_comment_body" id="question_comment_body" required>
+    <button type="button" id="question-comment-post-btn" data-question-id="{{ $question->id }}">Post comment</button>
+</div>
+
+<div id="answer_post_form">
     @csrf
     <h3> Answer this question </h3>
-    <label for="title">Title:</label>
-    <input type="text" id="title" name="title" required>
-    <label for="content">Content:</label>
-    <textarea id="content" name="content" rows="4" required></textarea>
-    <button type="submit">Create Answer</button>
-</form>
+    <label for="answer-title-input">Title:</label>
+    <input type="text" id="answer-title-input" name="answer-title-input" required>
+    <label for="answer-content-input">Content:</label>
+    <textarea id="answer-content-input" name="answer-content-input" rows="4" required></textarea>
+    <button type="button" id="answer-post-btn" data-question-id="{{ $question->id }}">Create Answer</button>
+</div>
 @endif
-@if ($question->answers->count() > 0)
-<article class="card text-center" data-id="{{ $question->id }}">
+
+@if ($answers->count() > 0)
+<article id="question_answers" class="card text-center" data-id="{{ $question->id }}">
     <div>
         <h3 class="py-5">Answers:</h3>
-        <ol>
-            @foreach ($question->answers as $answer)
-                @include ('partials.answer', ['answer' => $answer])
-            @endforeach
+        <ol style="list-style-type: none;" id="answer-section">
+            @include ('partials.answer', ['answers' => $answers])
         </ol>
     </div>
-    @if ($question->answers->count() > 10)
+    @if ($answers->count() > 10)
     <div class="pagination">
-        {{ $question->answers()->paginate(10)->links() }}
+        {{ $answers->paginate(10)->links() }}
     </div>
-    @else
-    <h2 class="py-5 text-center">No answers yet!</h2>
+    @endif
+</article>
+@else
+<h2 class="py-5 text-center">No answers yet!</h2>
+<article id="question_answers" class="card text-center" data-id="{{ $question->id }}" style="display: none;">
+    <div>
+        <h3 class="py-5">Answers:</h3>
+        <ol style="list-style-type: none;" id="answer-section">
+            @include ('partials.answer', ['answers' => $answers])
+        </ol>
+    </div>
+    @if ($answers->count() > 10)
+    <div class="pagination">
+        {{ $answers->paginate(10)->links() }}
+    </div>
     @endif
 </article>
 @endif

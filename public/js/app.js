@@ -205,6 +205,70 @@ function decreaseScore(question_id) {
   .catch(error => console.error('Error updating score:', error));
 }
 
+const question_answers = document.getElementById('question_answers');
+if(question_answers) {
+  question_answers.addEventListener('click', function(event) {
+    if(event.target.classList.contains('increase-answer-score-btn')) {
+      console.log('inc btn ans pressed');
+      increaseScoreAns(event.target.getAttribute('data-id'));
+    }
+    else if(event.target.classList.contains('decrease-answer-score-btn')) {
+      console.log('dec btn ans pressed');
+      decreaseScoreAns(event.target.getAttribute('data-id'));
+    }
+  })
+}
+
+function increaseScoreAns(answer_id) {
+  fetch('/increase_score_ans', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+    },
+    body: JSON.stringify({ answer_id : answer_id }),
+  })
+  .then(response => {
+    if(response.ok) {
+      console.log('succesfully updated score');
+      return response.text();
+    }
+    else {
+      console.log('could not update the score');
+    }
+  })
+  .then(data => {
+    console.log(answer_id);
+    document.getElementById('answer_score_' + answer_id).innerHTML = data;
+  })
+  .catch(error => console.error('Error updating score:', error));
+}
+
+function decreaseScoreAns(answer_id) {
+  fetch('/decrease_score_ans', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+    },
+    body: JSON.stringify({ answer_id : answer_id }),
+  })
+  .then(response => {
+    if(response.ok) {
+      console.log('succesfully updated score');
+      return response.text();
+    }
+    else {
+      console.log('could not update the score');
+    }
+  })
+  .then(data => {
+    console.log(answer_id);
+    document.getElementById('answer_score_' + answer_id).innerHTML = data;
+  })
+  .catch(error => console.error('Error updating score:', error));
+}
+
 // END SECTION
 
 // START SECTION: FUNCTIONS RELATED TO MARKING AN ANSWER AS CORRECT
@@ -231,10 +295,86 @@ function validateAnswer(answer_id) {
   .then(response => {
     if(response.ok) {
       document.getElementById('validate-answer-btn-' + answer_id).classList.add('hidden');
-      document.getElementById('valid_answer_' + answer_id).removeAttribute('class');
+      document.getElementById('valid_answer_' + answer_id).classList.remove('hidden');
     }
   })
   .catch(error => console.error('Error updating tags:', error));
+}
+
+// END SECTION
+
+// START SECTION: FUNCTIONS RELATED TO COMMENTING UNDER A QUESTION
+
+const question_comment_post_btn = document.getElementById('question-comment-post-btn');
+
+if(question_comment_post_btn) {
+  question_comment_post_btn.addEventListener('click', function() {
+    console.log('question-comment-post-btn pressed');
+    question_comment_post();
+  });
+}
+
+function question_comment_post() {
+  const question_id = question_comment_post_btn.getAttribute('data-question-id');
+  const question_comment_body = document.getElementById('question_comment_body').value;
+  console.log(question_comment_body);
+  fetch('/questions/' + question_id + '/comment', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+    },
+    body: JSON.stringify({ 
+      question_id : question_id,
+      question_comment_body : question_comment_body
+    }),
+  })
+  .then(response => {
+    return response.text();
+  })
+  .then(data => {
+    document.getElementById('comment-section').innerHTML = data;
+    document.getElementById('question_comment_body').value = '';
+  })
+  .catch(error => console.error('Error posting comment:', error));
+}
+
+// END SECTION
+
+// START SECTION: FUNCTIONS RELATED TO ANSWERING A QUESTION
+
+const answer_post_btn = document.getElementById('answer-post-btn');
+
+if(answer_post_btn) {
+  answer_post_btn.addEventListener('click', function() {
+    answer_post();
+  });
+}
+
+function answer_post() {
+  const title = document.getElementById('answer-title-input').value;
+  const content = document.getElementById('answer-content-input').value;
+  const question_id = answer_post_btn.getAttribute('data-question-id');
+  fetch('/questions/' + question_id + '/answer', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+    },
+    body: JSON.stringify({ 
+      title : title,
+      content: content
+    }),
+  })
+  .then(response => {
+    return response.text();
+  })
+  .then(data => {
+    document.getElementById('answer-section').innerHTML = data;
+    document.getElementById('answer-title-input').value = '';
+    document.getElementById('answer-content-input').value = '';
+  })
+  .catch(error => console.error('Error posting question:', error));
 }
 
 // END SECTION

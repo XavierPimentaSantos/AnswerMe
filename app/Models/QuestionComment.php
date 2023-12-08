@@ -6,21 +6,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Answer extends Model
+class QuestionComment extends Model
 {
     use HasFactory;
 
+    protected $table = 'comments_questions';
+
     protected $fillable = [
-        'title',
-        'content',
-        'correct',
-        'score',
-        'edited',
+        'body',
         'question_id',
+        'edited',
         'user_id',
     ];
+
+    //Relationships
 
     public function user() : BelongsTo
     {
@@ -30,15 +30,5 @@ class Answer extends Model
     public function question() : BelongsTo
     {
         return $this->belongsTo(Question::class);
-    }
-
-    public function upvoters() : BelongsToMany
-    {
-        return $this->belongsToMany(User::class, 'answer_up_votes', 'answer_id', 'user_id');
-    }
-
-    public function downvoters() : BelongsToMany
-    {
-        return $this->belongsToMany(User::class, 'answer_down_votes', 'answer_id', 'user_id');
     }
 }

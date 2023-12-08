@@ -17,7 +17,8 @@ class QuestionController extends Controller
 
     public function index()
     {
-        $questions = Question::latest()->paginate(10); // Assuming you want to display 10 questions per page
+        // $questions = Question::latest()->paginate(10); // Assuming you want to display 10 questions per page
+        $questions = Question::orderByDesc('score')->orderBy('created_at', 'desc')/* ->get() */->paginate(10);
         return view('pages.home', compact('questions'));
     }
 

@@ -78,15 +78,15 @@ CREATE TABLE IF NOT EXISTS answers (
 DROP TABLE IF EXISTS comments_questions;
 CREATE TABLE IF NOT EXISTS comments_questions (
     id SERIAL NOT NULL,
-    referred_question_id INTEGER NOT NULL,
+    question_id INTEGER NOT NULL,
     body VARCHAR NOT NULL,
-    creation_date TIMESTAMP DEFAULT NOW() NOT NULL,
-    edit_date TIMESTAMP DEFAULT NOW() NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMP DEFAULT NOW() NOT NULL,
     edited BOOLEAN NOT NULL,
     user_id INTEGER NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (referred_question_id) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table: comments_answer
@@ -95,8 +95,8 @@ CREATE TABLE IF NOT EXISTS comments_answers (
     id SERIAL NOT NULL,
     referred_answer_id INTEGER NOT NULL,
     body VARCHAR NOT NULL,
-    creation_date TIMESTAMP DEFAULT NOW() NOT NULL,
-    edit_date TIMESTAMP DEFAULT NOW() NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMP DEFAULT NOW() NOT NULL,
     edited BOOLEAN NOT NULL,
     user_id INTEGER NOT NULL,
     PRIMARY KEY (id),
@@ -281,9 +281,19 @@ CREATE TABLE IF NOT EXISTS question_down_votes (
     FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Table: answer_votes
-DROP TABLE IF EXISTS answer_votes;
-CREATE TABLE IF NOT EXISTS answer_votes (
+-- Table: answer_up_votes
+DROP TABLE IF EXISTS answer_up_votes;
+CREATE TABLE IF NOT EXISTS answer_up_votes (
+    user_id INTEGER NOT NULL,
+    answer_id INTEGER NOT NULL,
+    PRIMARY KEY (user_id, answer_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (answer_id) REFERENCES answers(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- Table: answer_down_votes
+DROP TABLE IF EXISTS answer_down_votes;
+CREATE TABLE IF NOT EXISTS answer_down_votes (
     user_id INTEGER NOT NULL,
     answer_id INTEGER NOT NULL,
     PRIMARY KEY (user_id, answer_id),
