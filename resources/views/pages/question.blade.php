@@ -9,6 +9,8 @@
     foreach($question->tags as $tag) {
         $question_tags[] = $tag->name;
     }
+
+    $answers = $question->answers()->orderByDesc('score')->orderBy('correct', 'desc')->get();
 ?>
 
 <article class="card" data-id="{{ $question->id }}">
@@ -108,19 +110,19 @@
     <button type="submit">Create Answer</button>
 </form>
 @endif
-@if ($question->answers->count() > 0)
+@if ($answers->count() > 0)
 <article id="question_answers" class="card text-center" data-id="{{ $question->id }}">
     <div>
         <h3 class="py-5">Answers:</h3>
-        <ol>
-            @foreach ($question->answers as $answer)
+        <ol style="list-style-type: none;">
+            @foreach ($answers as $answer)
                 @include ('partials.answer', ['answer' => $answer])
             @endforeach
         </ol>
     </div>
-    @if ($question->answers->count() > 10)
+    @if ($answers->count() > 10)
     <div class="pagination">
-        {{ $question->answers()->paginate(10)->links() }}
+        {{ $answers->paginate(10)->links() }}
     </div>
     @endif
 @else
