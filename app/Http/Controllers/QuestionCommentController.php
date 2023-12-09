@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Validator;
 
 class QuestionCommentController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request, $question_id)
     {
-        $question_id = $request->input('question_id');
+        // $question_id = $request->input('question_id');
         $question_comment_body = $request->input('question_comment_body');
         $question = Question::findOrFail($question_id);
 

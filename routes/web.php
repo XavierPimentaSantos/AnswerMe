@@ -64,6 +64,10 @@ Route::controller(QuestionCommentController::class)->group(function () {
     Route::post('/questions/{question_id}/comment/edit', [QuestionCommentController::class, 'edit'])->name('questioncomment.edit');
 });
 
+Route::controller(AnswerCommentController::class)->group(function () {
+    Route::post('/answers/{answer_id}/comment', [AnswerCommentController::class, 'store'])->name('answercomment.store');
+});
+
 Route::post('/tag', [TagController::class, 'store'])->name('tag.store');
 Route::delete('/tag/{tag_id}', [TagController::class, 'delete'])->name('tag.delete');
 Route::put('/tag/{tag_id}', [TagController::class, 'edit'])->name('tag.edit');
