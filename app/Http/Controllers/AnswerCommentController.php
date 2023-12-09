@@ -4,6 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\Answer;
+use App\Models\AnswerComment;
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+
 class AnswerCommentController extends Controller
 {
     public function store(Request $request, $answer_id)
@@ -24,6 +30,6 @@ class AnswerCommentController extends Controller
 
         $answerComment->save();
 
-        return view('partials.answer', )
+        return view('partials.answer_comment_section', ['answer' => $answer])->render();
     }
 }

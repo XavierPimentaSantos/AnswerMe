@@ -49,5 +49,15 @@
             <button class="button" type="submit" id="update-answer-btn">Update Answer</button>
         </form>
     </div>
+
+    <div class="answer-comment-form">
+        <input type="text" name="answer_comment_body" id="answer_comment_body_{{ $answer->id }}">
+        <button type="button" class="answer-comment-post-btn" data-id="{{ $answer->id }}">Comment</button>
+    </div>
+
+    <div id="comment-section-{{ $answer->id }}">
+        @include ('partials.answer_comment_section', ['answer_id' => $answer->id])
+    </div>
 </li>
+
 @endforeach

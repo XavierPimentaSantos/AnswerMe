@@ -324,8 +324,7 @@ function question_comment_post() {
         'Content-Type': 'application/json',
         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
     },
-    body: JSON.stringify({ 
-      question_id : question_id,
+    body: JSON.stringify({
       question_comment_body : question_comment_body
     }),
   })
@@ -373,8 +372,47 @@ function answer_post() {
     document.getElementById('answer-section').innerHTML = data;
     document.getElementById('answer-title-input').value = '';
     document.getElementById('answer-content-input').value = '';
+    document.getElementById('no_answers').dataList.add('hidden');
+    document.getElementById('has_answers').dataList.remove('hidden');
   })
   .catch(error => console.error('Error posting question:', error));
+}
+
+// END SECTION
+
+// START SECTION: FUNCTIONS RELATED TO COMMENTING UNDER AN ANSWER
+
+const answer_section = document.getElementById('answer-section');
+
+if(answer_section) {
+  answer_section.addEventListener('click', function(event) {
+    if(event.target.classList.contains('answer-comment-post-btn')) {
+      answer_comment_post(event.target.getAttribute('data-id'));
+    }
+  });
+}
+
+function answer_comment_post(answer_id) {
+  const answer_comment_body = document.getElementById('answer_comment_body_' + answer_id).value;
+  console.log(answer_comment_body);
+  fetch('/answers/' + answer_id + '/comment', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+    },
+    body: JSON.stringify({
+      answer_comment_body : answer_comment_body
+    }),
+  })
+  .then(response => {
+    return response.text();
+  })
+  .then(data => {
+    document.getElementById('comment-section-' + answer_id).innerHTML = data;
+    document.getElementById('answer_comment_body_' + answer_id).value = '';
+  })
+  .catch(error => console.error('Error posting comment:', error)); 
 }
 
 // END SECTION
