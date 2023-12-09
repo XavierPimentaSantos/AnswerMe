@@ -85,6 +85,7 @@
                     @endforeach
                 </datalist>
                 <button id="add_tag" type="button">Add tag</button>
+                <button id="add_image" type="button">Add Image</button>
             </div>
 
             <button class = "button" type="submit" id="update-question-btn">Update Question</button>

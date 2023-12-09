@@ -26,7 +26,7 @@ CREATE TABLE users (
   nationality VARCHAR,
   user_type CHAR(1) NOT NULL DEFAULT '1',
   remember_token VARCHAR,
-  profile_picture varchar not null default 'default.jpeg'
+  profile_picture varchar not null default 'default.png'
 );
 
 
