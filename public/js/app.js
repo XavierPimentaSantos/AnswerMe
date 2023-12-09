@@ -338,6 +338,16 @@ function question_comment_post() {
   .catch(error => console.error('Error posting comment:', error));
 }
 
+const has_answers = document.getElementById('has_answers');
+
+if(has_answers) {
+  has_answers.addEventistener('click', function(event) {
+    if(event.target.classList.contains('question-comment-edit-btn')) {
+      
+    }
+  });
+}
+
 // END SECTION
 
 // START SECTION: FUNCTIONS RELATED TO ANSWERING A QUESTION
