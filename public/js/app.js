@@ -216,7 +216,7 @@ if(question_answers) {
       console.log('dec btn ans pressed');
       decreaseScoreAns(event.target.getAttribute('data-id'));
     }
-  })
+  });
 }
 
 function increaseScoreAns(answer_id) {
@@ -280,7 +280,7 @@ validate_answer_btn_array.forEach(function(element) {
     let ans_id = element.getAttribute('data-id');
     console.log('btn pressed, id =' + ans_id);
     validateAnswer(ans_id);
-  })
+  });
 });
 
 function validateAnswer(answer_id) {
@@ -338,14 +338,49 @@ function question_comment_post() {
   .catch(error => console.error('Error posting comment:', error));
 }
 
-const has_answers = document.getElementById('has_answers');
+const comment_section = document.getElementById('comment-section');
 
-if(has_answers) {
-  has_answers.addEventistener('click', function(event) {
+if(comment_section) {
+  comment_section.addEventListener('click', function(event) {
     if(event.target.classList.contains('question-comment-edit-btn')) {
-      
+      const question_id = event.target.getAttribute('data-question-id');
+      const comment_id = event.target.getAttribute('data-comment-id');
+
+      document.getElementById('question_comment_card_' +  comment_id).classList.add('hidden');
+      document.getElementById('question_comment_edit_form_' +  comment_id).classList.remove('hidden');
+
+      document.getElementById('question_comment_edit_btn_' + comment_id).addEventListener('click', function() {
+        question_comment_edit(comment_id, question_id);
+      });
     }
   });
+}
+
+function question_comment_edit(comment_id, question_id) {
+  const question_comment_body = document.getElementById('question_comment_body_edit_input_' + comment_id).value;
+  console.log('/questions/' + question_id + '/comment/' + comment_id + '/edit');
+  console.log(question_comment_body);
+  fetch('/questions/' + question_id + '/comment/' + comment_id + '/edit', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+    },
+    body: JSON.stringify({
+      question_comment_body : question_comment_body
+    }),
+  })
+  .then(response => {
+    return response.text();
+  })
+  .then(data => {
+    console.log('question_commment_body_' + comment_id);
+    document.getElementById('question_comment_body_' + comment_id).textContent = data;
+    document.getElementById('question_comment_body_edit_input_' + comment_id).value = data;
+    document.getElementById('question_comment_card_' +  comment_id).classList.remove('hidden');
+    document.getElementById('question_comment_edit_form_' +  comment_id).classList.add('hidden');
+  })
+  .catch(error => console.error('Error posting comment:', error)); 
 }
 
 // END SECTION

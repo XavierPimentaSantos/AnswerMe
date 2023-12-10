@@ -34,21 +34,20 @@ class QuestionCommentController extends Controller
         return view('partials.comment_section', ['questioncomments' => $question->comments()->get()])->render();
     }
 
-    public function edit(Request $request)
+    public function edit(Request $request, $question_id, $comment_id)
     {
-        $questionComment = QuestionComment::findOrFail($request->input('question_comment_id'));
+        $questionComment = QuestionComment::findOrFail($comment_id);
 
         $request->validate([
             'question_comment_body' => 'required|max:100',
         ]);
         
-        $questionComment->body = $request->input('body');
+        $questionComment->body = $request->input('question_comment_body');
         $questionComment->edited = true;
 
         $questionComment->save();
 
-        return redirect()->route('questions.show', $request->input('question_id'))
-            ->with('success', 'Comment created successfully');
+        return $request->input('question_comment_body');
     }
 
     public function delete(Request $request)
