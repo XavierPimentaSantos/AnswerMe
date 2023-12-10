@@ -354,7 +354,7 @@ if(comment_section) {
       });
 
       document.getElementById('question_comment_cancel_btn_' + comment_id).addEventListener('click', function() {
-        retract_edit(comment_id);
+        retract_question_comment_edit(comment_id);
       });
     }
 
@@ -374,7 +374,7 @@ function question_comment_edit(comment_id, question_id) {
   console.log('/questions/' + question_id + '/comment/' + comment_id + '/edit');
   console.log(question_comment_body);
   fetch('/questions/' + question_id + '/comment/' + comment_id + '/edit', {
-    method: 'POST',
+    method: 'PUT',
     headers: {
         'Content-Type': 'application/json',
         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
@@ -395,7 +395,7 @@ function question_comment_edit(comment_id, question_id) {
   .catch(error => console.error('Error editing comment:', error));
 }
 
-function retract_edit(comment_id) {
+function retract_question_comment_edit(comment_id) {
   document.getElementById('question_comment_body_edit_input_' + comment_id).value = document.getElementById('question_comment_body_' + comment_id).textContent;
   document.getElementById('question_comment_card_' +  comment_id).classList.remove('hidden');
   document.getElementById('question_comment_edit_form_' +  comment_id).classList.add('hidden');
@@ -403,7 +403,7 @@ function retract_edit(comment_id) {
 
 function question_comment_delete(question_id, comment_id) {
   fetch('/questions/' + question_id + '/comment/' + comment_id + '/delete', {
-    method: 'POST',
+    method: 'DELETE',
     headers: {
         'Content-Type': 'application/json',
         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
@@ -468,6 +468,20 @@ if(answer_section) {
     if(event.target.classList.contains('answer-comment-post-btn')) {
       answer_comment_post(event.target.getAttribute('data-id'));
     }
+    else if(event.target.classList.contains('answer-comment-edit-btn')) {
+      document.getElementById('answer_comment_edit_form_' + event.target.getAttribute('data-comment-id')).classList.remove('hidden');
+      
+      document.getElementById('answer_comment_edit_btn_' + event.target.getAttribute('data-comment-id')).addEventListener('click', function() {
+        answer_comment_edit(event.target.getAttribute('data-answer-id'), event.target.getAttribute('data-comment-id'));
+      });
+
+      document.getElementById('answer_comment_cancel_btn_' + event.target.getAttribute('data-comment-id')).addEventListener('click', function() {
+        retract_answer_comment_edit(event.target.getAttribute('data-comment-id'));
+      });
+    }
+    else if(event.target.classList.contains('answer-comment-delete-btn')) {
+      answer_comment_delete(event.target.getAttribute('data-answer-id'), event.target.getAttribute('data-comment-id'));
+    }
   });
 }
 
@@ -492,6 +506,52 @@ function answer_comment_post(answer_id) {
     document.getElementById('answer_comment_body_' + answer_id).value = '';
   })
   .catch(error => console.error('Error posting comment:', error)); 
+}
+
+function answer_comment_edit(answer_id, comment_id) {
+  const answer_comment_body = document.getElementById('answer_comment_body_edit_input_' + comment_id).value;
+  fetch('/answers/' + answer_id + '/comment/' + comment_id + '/edit', {
+    method: 'PUT',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+    },
+    body: JSON.stringify({
+      answer_comment_body : answer_comment_body
+    }),
+  })
+  .then(response => {
+    return response.text();
+  })
+  .then(data => {
+    document.getElementById('answer_comment_body_' + comment_id).textContent = data;
+    document.getElementById('answer_comment_body_edit_input_' + comment_id).value = data;
+    document.getElementById('answer_comment_card_' +  comment_id).classList.remove('hidden');
+    document.getElementById('answer_comment_edit_form_' +  comment_id).classList.add('hidden');
+  })
+  .catch(error => console.error('Error editing comment:', error));
+}
+
+function retract_answer_comment_edit(comment_id) {
+  document.getElementById('answer_comment_body_edit_input_' + comment_id).value = document.getElementById('answer_comment_body_' + comment_id).textContent;
+  document.getElementById('answer_comment_card_' +  comment_id).classList.remove('hidden');
+  document.getElementById('answer_comment_edit_form_' +  comment_id).classList.add('hidden');
+}
+
+function answer_comment_delete(answer_id, comment_id) {
+  fetch('/answers/' + answer_id + '/comment/' + comment_id + '/delete', {
+    method: 'DELETE',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+    },
+    body: JSON.stringify({
+    }),
+  })
+  .then(response => {
+    return response.text();
+  })
+  .catch(error => console.error('Error deleting comment:', error));
 }
 
 // END SECTION

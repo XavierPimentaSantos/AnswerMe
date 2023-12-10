@@ -102,7 +102,7 @@
 
 <div id="comment-section">
     @csrf
-    @include ('partials.comment_section', ['questioncomments' => $questioncomments])
+    @include ('partials.comment_section', ['comments' => $questioncomments])
 </div>
 
 @if (Auth::check())
