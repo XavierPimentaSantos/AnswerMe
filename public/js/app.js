@@ -352,6 +352,19 @@ if(comment_section) {
       document.getElementById('question_comment_edit_btn_' + comment_id).addEventListener('click', function() {
         question_comment_edit(comment_id, question_id);
       });
+
+      document.getElementById('question_comment_cancel_btn_' + comment_id).addEventListener('click', function() {
+        retract_edit(comment_id);
+      });
+    }
+
+    else if(event.target.classList.contains('question-comment-delete-btn')) {
+      const comment_id = event.target.getAttribute('data-comment-id');
+      const question_id = event.target.getAttribute('data-question-id');
+
+      document.getElementById('question_comment_card_' + comment_id).remove();
+
+      question_comment_delete(question_id, comment_id);
     }
   });
 }
@@ -374,13 +387,34 @@ function question_comment_edit(comment_id, question_id) {
     return response.text();
   })
   .then(data => {
-    console.log('question_commment_body_' + comment_id);
     document.getElementById('question_comment_body_' + comment_id).textContent = data;
     document.getElementById('question_comment_body_edit_input_' + comment_id).value = data;
     document.getElementById('question_comment_card_' +  comment_id).classList.remove('hidden');
     document.getElementById('question_comment_edit_form_' +  comment_id).classList.add('hidden');
   })
-  .catch(error => console.error('Error posting comment:', error)); 
+  .catch(error => console.error('Error editing comment:', error));
+}
+
+function retract_edit(comment_id) {
+  document.getElementById('question_comment_body_edit_input_' + comment_id).value = document.getElementById('question_comment_body_' + comment_id).textContent;
+  document.getElementById('question_comment_card_' +  comment_id).classList.remove('hidden');
+  document.getElementById('question_comment_edit_form_' +  comment_id).classList.add('hidden');
+}
+
+function question_comment_delete(question_id, comment_id) {
+  fetch('/questions/' + question_id + '/comment/' + comment_id + '/delete', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+    },
+    body: JSON.stringify({
+    }),
+  })
+  .then(response => {
+    return response.text();
+  })
+  .catch(error => console.error('Error deleting comment:', error));
 }
 
 // END SECTION

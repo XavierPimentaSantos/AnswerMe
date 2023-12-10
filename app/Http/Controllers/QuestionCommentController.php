@@ -50,17 +50,14 @@ class QuestionCommentController extends Controller
         return $request->input('question_comment_body');
     }
 
-    public function delete(Request $request)
+    public function delete(Request $request, $question_id, $comment_id)
     {
-        $questionComment = QuestionComment::findOrFail($request->input('question_comment_id'));
+        $questionComment = QuestionComment::findOrFail($comment_id);
 
         if($questionComment->user_id !== Auth::user()->id) {
             abort(403, 'Unauthorized');
         }
 
         $questionComment->delete();
-
-        return redirect()->route('questions.show', $request->input('question_id'))
-            ->with('success', 'Comment created successfully');
     }
 }

@@ -63,6 +63,7 @@ Route::controller(ProfileController::class)->group(function () {
 Route::controller(QuestionCommentController::class)->group(function () {
     Route::post('/questions/{question_id}/comment', [QuestionCommentController::class, 'store'])->name('questioncomment.store');
     Route::post('/questions/{question_id}/comment/{comment_id}/edit', [QuestionCommentController::class, 'edit'])->name('questioncomment.edit');
+    Route::post('/questions/{question_id}/comment/{comment_id}/delete', [QuestionCommentController::class, 'delete'])->name('questioncomment.delete');
 });
 
 Route::controller(AnswerCommentController::class)->group(function () {
