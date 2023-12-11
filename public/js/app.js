@@ -345,10 +345,7 @@ function question_comment_edit(comment_id, question_id) {
     return response.text();
   })
   .then(data => {
-    document.getElementById('question_comment_body_' + comment_id).textContent = data;
-    document.getElementById('question_comment_body_edit_input_' + comment_id).value = data;
-    document.getElementById('question_comment_card_' +  comment_id).classList.remove('hidden');
-    document.getElementById('question_comment_edit_form_' +  comment_id).classList.add('hidden');
+    document.getElementById('question_comment_card_' +  comment_id).innerHTML = data;
   })
   .catch(error => console.error('Error editing comment:', error));
 }
@@ -485,10 +482,7 @@ function answer_comment_edit(answer_id, comment_id) {
     return response.text();
   })
   .then(data => {
-    document.getElementById('answer_comment_body_' + comment_id).textContent = data;
-    document.getElementById('answer_comment_body_edit_input_' + comment_id).value = data;
-    document.getElementById('answer_comment_card_' +  comment_id).classList.remove('hidden');
-    document.getElementById('answer_comment_edit_form_' +  comment_id).classList.add('hidden');
+    document.getElementById('answer_comment_card_' + comment_id).innerHTML = data;
   })
   .catch(error => console.error('Error editing comment:', error));
 }

@@ -50,7 +50,7 @@ class AnswerCommentController extends Controller
 
         $answerComment->save();
 
-        return $request->input('answer_comment_body');
+        return view('partials.answer_comment', ['comment' => $answerComment])->render();
     }
 
     public function delete(Request $request, $answer_id, $comment_id)

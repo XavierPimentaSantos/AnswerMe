@@ -31,7 +31,7 @@ class QuestionCommentController extends Controller
 
         $questionComment->save();
 
-        return view('partials.comment_section', ['questioncomments' => $question->comments()->get()])->render();
+        return view('partials.comment_section', ['comments' => $question->comments()->get()])->render();
     }
 
     public function edit(Request $request, $question_id, $comment_id)
@@ -51,7 +51,7 @@ class QuestionCommentController extends Controller
 
         $questionComment->save();
 
-        return $request->input('question_comment_body');
+        return view('partials.question_comment', ['comment' => $questionComment])->render();
     }
 
     public function delete(Request $request, $question_id, $comment_id)
