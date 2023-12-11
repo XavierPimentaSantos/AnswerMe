@@ -100,7 +100,6 @@ if(add_tag) {
     else {
       tag_checkbox.checked = true;
     }
-    console.log('that\'s crazy...');
     updateTags();
   });
 }
@@ -109,7 +108,6 @@ const checkboxes = document.querySelectorAll('.tag-checkbox');
 
 checkboxes.forEach(function(checkbox) {
     checkbox.addEventListener('change', function() {
-        console.log('checkbox ticked');
         updateTags(); // when any checkbox is ticked/unticked, we want to update the tags that are shown
     });
 }); 
@@ -118,9 +116,6 @@ function updateTags() {
   const checkedTags = document.querySelectorAll('.tag-checkbox:checked');
   const selectedTags = Array.from(checkedTags).map(checkbox => checkbox.value);
 
-  // console.log('mensagem iai');
-
-  // Make an AJAX request using the fetch API
   fetch('/update_tags', {
       method: 'POST',
       headers: {
@@ -145,11 +140,9 @@ const score_container = document.getElementById('question_score');
 if(score_container) {
   score_container.addEventListener('click', function(event) {
     if(event.target.classList.contains('increase-question-score-btn')) {
-      console.log('inc btn pressed');
       increaseScore(event.target.getAttribute('data-id'));
     }
     else if(event.target.classList.contains('decrease-question-score-btn')) {
-      console.log('dec btn pressed');
       decreaseScore(event.target.getAttribute('data-id'));
     }
   });  
@@ -165,16 +158,9 @@ function increaseScore(question_id) {
     body: JSON.stringify({ question_id : question_id }),
   })
   .then(response => {
-    if(response.ok) {
-      console.log('succesfully updated score');
-      return response.text();
-    }
-    else {
-      console.log('could not update the score');
-    }
+    return response.text();
   })
   .then(data => {
-    console.log(question_id);
     document.getElementById('question_score').innerHTML = data;
   })
   .catch(error => console.error('Error updating score:', error));
@@ -190,16 +176,9 @@ function decreaseScore(question_id) {
     body: JSON.stringify({ question_id : question_id }),
   })
   .then(response => {
-    if(response.ok) {
-      console.log('succesfully updated score');
-      return response.text();
-    }
-    else {
-      console.log('could not update the score');
-    }
+    return response.text();
   })
   .then(data => {
-    console.log(question_id);
     document.getElementById('question_score').innerHTML = data;
   })
   .catch(error => console.error('Error updating score:', error));
@@ -209,11 +188,9 @@ const question_answers = document.getElementById('question_answers');
 if(question_answers) {
   question_answers.addEventListener('click', function(event) {
     if(event.target.classList.contains('increase-answer-score-btn')) {
-      console.log('inc btn ans pressed');
       increaseScoreAns(event.target.getAttribute('data-id'));
     }
     else if(event.target.classList.contains('decrease-answer-score-btn')) {
-      console.log('dec btn ans pressed');
       decreaseScoreAns(event.target.getAttribute('data-id'));
     }
   });
@@ -229,16 +206,9 @@ function increaseScoreAns(answer_id) {
     body: JSON.stringify({ answer_id : answer_id }),
   })
   .then(response => {
-    if(response.ok) {
-      console.log('succesfully updated score');
-      return response.text();
-    }
-    else {
-      console.log('could not update the score');
-    }
+    return response.text();
   })
   .then(data => {
-    console.log(answer_id);
     document.getElementById('answer_score_' + answer_id).innerHTML = data;
   })
   .catch(error => console.error('Error updating score:', error));
@@ -254,16 +224,9 @@ function decreaseScoreAns(answer_id) {
     body: JSON.stringify({ answer_id : answer_id }),
   })
   .then(response => {
-    if(response.ok) {
-      console.log('succesfully updated score');
-      return response.text();
-    }
-    else {
-      console.log('could not update the score');
-    }
+    return response.text();
   })
   .then(data => {
-    console.log(answer_id);
     document.getElementById('answer_score_' + answer_id).innerHTML = data;
   })
   .catch(error => console.error('Error updating score:', error));
@@ -278,7 +241,6 @@ const validate_answer_btn_array = Array.from(document.getElementsByClassName('va
 validate_answer_btn_array.forEach(function(element) {
   element.addEventListener('click', function() {
     let ans_id = element.getAttribute('data-id');
-    console.log('btn pressed, id =' + ans_id);
     validateAnswer(ans_id);
   });
 });
@@ -309,7 +271,6 @@ const question_comment_post_btn = document.getElementById('question-comment-post
 
 if(question_comment_post_btn) {
   question_comment_post_btn.addEventListener('click', function() {
-    console.log('question-comment-post-btn pressed');
     question_comment_post();
   });
 }
@@ -317,7 +278,6 @@ if(question_comment_post_btn) {
 function question_comment_post() {
   const question_id = question_comment_post_btn.getAttribute('data-question-id');
   const question_comment_body = document.getElementById('question_comment_body').value;
-  console.log(question_comment_body);
   fetch('/questions/' + question_id + '/comment', {
     method: 'POST',
     headers: {
@@ -371,8 +331,6 @@ if(comment_section) {
 
 function question_comment_edit(comment_id, question_id) {
   const question_comment_body = document.getElementById('question_comment_body_edit_input_' + comment_id).value;
-  console.log('/questions/' + question_id + '/comment/' + comment_id + '/edit');
-  console.log(question_comment_body);
   fetch('/questions/' + question_id + '/comment/' + comment_id + '/edit', {
     method: 'PUT',
     headers: {
@@ -412,6 +370,10 @@ function question_comment_delete(question_id, comment_id) {
     }),
   })
   .then(response => {
+    if(response.ok) {
+      document.getElementById('question_comment_card_' + comment_id).remove();
+      document.getElementById('question_comment_edit_form_' + comment_id).remove();
+    }
     return response.text();
   })
   .catch(error => console.error('Error deleting comment:', error));
@@ -451,8 +413,8 @@ function answer_post() {
     document.getElementById('answer-section').innerHTML = data;
     document.getElementById('answer-title-input').value = '';
     document.getElementById('answer-content-input').value = '';
-    document.getElementById('no_answers').dataList.add('hidden');
-    document.getElementById('has_answers').dataList.remove('hidden');
+    document.getElementById('no_answers').classList.add('hidden');
+    document.getElementById('has_answers').classList.remove('hidden');
   })
   .catch(error => console.error('Error posting question:', error));
 }
@@ -486,8 +448,7 @@ if(answer_section) {
 }
 
 function answer_comment_post(answer_id) {
-  const answer_comment_body = document.getElementById('answer_comment_body_' + answer_id).value;
-  console.log(answer_comment_body);
+  const answer_comment_body = document.getElementById('answer_comment_body_input_' + answer_id).value;
   fetch('/answers/' + answer_id + '/comment', {
     method: 'POST',
     headers: {
@@ -503,7 +464,7 @@ function answer_comment_post(answer_id) {
   })
   .then(data => {
     document.getElementById('comment-section-' + answer_id).innerHTML = data;
-    document.getElementById('answer_comment_body_' + answer_id).value = '';
+    document.getElementById('answer_comment_body_input' + answer_id).value = '';
   })
   .catch(error => console.error('Error posting comment:', error)); 
 }
@@ -549,6 +510,10 @@ function answer_comment_delete(answer_id, comment_id) {
     }),
   })
   .then(response => {
+    if(response.ok) {
+      document.getElementById('answer_comment_card_' + comment_id).remove();
+      document.getElementById('answer_comment_edit_form_' + comment_id).remove();
+    }
     return response.text();
   })
   .catch(error => console.error('Error deleting comment:', error));

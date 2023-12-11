@@ -20,11 +20,11 @@
     </div>
 </div>
 
-<div id="answer_comment_edit_form_{{ $comment->id }}">
+<div id="answer_comment_edit_form_{{ $comment->id }}" class="hidden">
     @csrf
     <h5>Edit</h5>
-    <input type="text" name="answer_comment_body" id="answer_comment_body_edit_{{ $comment->id }}" value="{{ $comment->body }}" required>
+    <input type="text" name="answer_comment_body" id="answer_comment_body_edit_input_{{ $comment->id }}" value="{{ $comment->body }}" required>
     <button type="button" id="answer_comment_edit_btn_{{ $comment->id }}">Edit</button>
-    <button type="button" id="answer_comment_cancel_btn_{{ $comment->id }}">Delete</button>
+    <button type="button" id="answer_comment_cancel_btn_{{ $comment->id }}">Cancel</button>
 </div>
 @endforeach

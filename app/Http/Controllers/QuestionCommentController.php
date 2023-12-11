@@ -38,6 +38,10 @@ class QuestionCommentController extends Controller
     {
         $questionComment = QuestionComment::findOrFail($comment_id);
 
+        if($questionComment->user_id !== Auth::user()->id) {
+            abort(403, 'Unauthorized');
+        }
+
         $request->validate([
             'question_comment_body' => 'required|max:100',
         ]);

@@ -32,4 +32,35 @@ class AnswerCommentController extends Controller
 
         return view('partials.answer_comment_section', ['answer' => $answer])->render();
     }
+
+    public function edit(Request $request, $answer_id, $comment_id)
+    {
+        $answerComment = AnswerComment::findOrFail($comment_id);
+
+        if($answerComment->user_id !== Auth::user()->id) {
+            abort(403, 'Unauthorized');
+        }
+
+        $request->validate([
+            'answer_comment_body' => 'required|max:100',
+        ]);
+        
+        $answerComment->body = $request->input('answer_comment_body');
+        $answerComment->edited = true;
+
+        $answerComment->save();
+
+        return $request->input('answer_comment_body');
+    }
+
+    public function delete(Request $request, $answer_id, $comment_id)
+    {
+        $answerComment = AnswerComment::findOrFail($comment_id);
+
+        if($answerComment->user_id !== Auth::user()->id) {
+            abort(403, 'Unauthorized');
+        }
+
+        $answerComment->delete();
+    }
 }

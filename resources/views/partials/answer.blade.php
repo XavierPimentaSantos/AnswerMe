@@ -51,7 +51,7 @@
     </div>
 
     <div class="answer-comment-form">
-        <input type="text" name="answer_comment_body" id="answer_comment_body_{{ $answer->id }}">
+        <input type="text" name="answer_comment_body" id="answer_comment_body_input_{{ $answer->id }}">
         <button type="button" class="answer-comment-post-btn" data-id="{{ $answer->id }}">Comment</button>
     </div>
 
