@@ -27,7 +27,10 @@
             <header class="bg-black flex justify-between items-center">
                 <h1 class="text-white"><a href="{{ url('/login') }}">AnswerMe!</a></h1>
                 @if (Auth::check())
-                    <a class="button" href="{{ route('questions.create') }}">ASK A QUESTION</a>
+                    <a class="button" href="{{ route('questions.create') }}" onclick="event.preventDefault(); {{ Auth::user()->isBlocked() ? '' : 'window.location.href=this.href;' }}">ASK A QUESTION</a>
+                    @if (Auth::check() && Auth::user()->isAdmin())
+                    <a href="{{ route('admin.show') }}" class="button mr-2">Admin Page</a>
+                    @endif
                     <div class="flex items-center">
                         <a class="button mr-2" href="{{ url('/logout') }}">Logout</a>
                         <a href="{{ route('profile.show')}}"><span class="text-white">{{ Auth::user()->name }}</span></a>

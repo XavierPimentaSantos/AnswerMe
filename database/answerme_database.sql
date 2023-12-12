@@ -90,30 +90,30 @@ CREATE TABLE IF NOT EXISTS answers (
 DROP TABLE IF EXISTS comments_questions;
 CREATE TABLE IF NOT EXISTS comments_questions (
     id SERIAL NOT NULL,
-    referred_question_id INTEGER NOT NULL,
+    question_id INTEGER NOT NULL,
     body VARCHAR NOT NULL,
-    creation_date TIMESTAMP DEFAULT NOW() NOT NULL,
-    edit_date TIMESTAMP DEFAULT NOW() NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMP DEFAULT NOW() NOT NULL,
     edited BOOLEAN NOT NULL,
     user_id INTEGER NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (referred_question_id) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table: comments_answer
 DROP TABLE IF EXISTS comments_answers;
 CREATE TABLE IF NOT EXISTS comments_answers (
     id SERIAL NOT NULL,
-    referred_answer_id INTEGER NOT NULL,
+    answer_id INTEGER NOT NULL,
     body VARCHAR NOT NULL,
-    creation_date TIMESTAMP DEFAULT NOW() NOT NULL,
-    edit_date TIMESTAMP DEFAULT NOW() NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMP DEFAULT NOW() NOT NULL,
     edited BOOLEAN NOT NULL,
     user_id INTEGER NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (referred_answer_id) REFERENCES answers(id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (answer_id) REFERENCES answers(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table: following_questions
@@ -273,9 +273,9 @@ CREATE TABLE IF NOT EXISTS notification_answer_votes (
     FOREIGN KEY (answer_id) REFERENCES answers(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Table: question_votes
-DROP TABLE IF EXISTS question_votes;
-CREATE TABLE IF NOT EXISTS question_votes (
+-- Table: question_up_votes
+DROP TABLE IF EXISTS question_up_votes;
+CREATE TABLE IF NOT EXISTS question_up_votes (
     user_id INTEGER NOT NULL,
     question_id INTEGER NOT NULL,
     PRIMARY KEY (user_id, question_id),
@@ -283,9 +283,29 @@ CREATE TABLE IF NOT EXISTS question_votes (
     FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Table: answer_votes
-DROP TABLE IF EXISTS answer_votes;
-CREATE TABLE IF NOT EXISTS answer_votes (
+-- Table: question_down_votes
+DROP TABLE IF EXISTS question_down_votes;
+CREATE TABLE IF NOT EXISTS question_down_votes (
+    user_id INTEGER NOT NULL,
+    question_id INTEGER NOT NULL,
+    PRIMARY KEY (user_id, question_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- Table: answer_up_votes
+DROP TABLE IF EXISTS answer_up_votes;
+CREATE TABLE IF NOT EXISTS answer_up_votes (
+    user_id INTEGER NOT NULL,
+    answer_id INTEGER NOT NULL,
+    PRIMARY KEY (user_id, answer_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (answer_id) REFERENCES answers(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- Table: answer_down_votes
+DROP TABLE IF EXISTS answer_down_votes;
+CREATE TABLE IF NOT EXISTS answer_down_votes (
     user_id INTEGER NOT NULL,
     answer_id INTEGER NOT NULL,
     PRIMARY KEY (user_id, answer_id),
@@ -298,12 +318,8 @@ CREATE TABLE IF NOT EXISTS answer_votes (
 -- Insert value.
 --
 
-INSERT INTO users VALUES (
-  DEFAULT,
-  'Mestre Fu',
-  'admin@example.com',
-  '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W'
-); -- Password is 1234. Generated using Hash::make('1234')
+INSERT INTO users (name, email, password, user_type)
+VALUES ('Mestre Fu', 'admin@example.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 4);-- Password is 1234. Generated using Hash::make('1234')
 
 
 INSERT INTO users VALUES (
@@ -321,6 +337,7 @@ INSERT INTO users VALUES (
   'b@example.com',
   '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W'
 ); 
+
 
 -- Question 1
 INSERT INTO questions VALUES (DEFAULT, 'If algorithms had personalities, which one would be your best friend?', 'Imagine spending a day with your favorite algorithm and discuss its characteristics.', DEFAULT, DEFAULT, DEFAULT, DEFAULT, 1);

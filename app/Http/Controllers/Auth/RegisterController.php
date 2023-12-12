@@ -48,6 +48,10 @@ class RegisterController extends Controller
             'user_type' => 1,
         ]);
 
+        if ($request->input('admin_create')) {
+            return redirect()->route('admin.show')->with('success', 'User created successfully');
+        }
+
         $credentials = $request->only('email', 'password');
         Auth::attempt($credentials);
         $request->session()->regenerate();

@@ -8,11 +8,13 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\TagController;
-
+use App\Http\Controllers\QuestionCommentController;
+use App\Http\Controllers\AnswerCommentController;
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ProfileController;
+use App\Http\Controllers\Auth\AdminController;
 
 
 /*
@@ -56,8 +58,29 @@ Route::controller(AnswerController::class)->group(function () {
 
 Route::controller(ProfileController::class)->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-    Route::post('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-}); 
+    Route::post('/profile/{username}/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile/{username}', [ProfileController::class, 'showUser'])->name('profile.showUser');
+    Route::delete('/profile/{username}/delete', [ProfileController::class, 'delete'])->name('profile.delete');
+});
+
+Route::controller(AdminController::class)->group(function () {
+    Route::get('/admin', [AdminController::class, 'show'])->name('admin.show');
+    Route::post('/admin/submit', [AdminController::class, 'submit'])->name('admin.submit');
+    Route::post('/admin/block-user/{username}', [AdminController::class, 'blockUser'])->name('admin.blockUser');
+    Route::post('/admin/unblock-user/{username}', [AdminController::class, 'unblockUser'])->name('admin.unblockUser');
+});
+
+Route::controller(QuestionCommentController::class)->group(function () {
+    Route::post('/questions/{question_id}/comment', [QuestionCommentController::class, 'store'])->name('questioncomment.store');
+    Route::put('/questions/{question_id}/comment/{comment_id}/edit', [QuestionCommentController::class, 'edit'])->name('questioncomment.edit');
+    Route::delete('/questions/{question_id}/comment/{comment_id}/delete', [QuestionCommentController::class, 'delete'])->name('questioncomment.delete');
+});
+
+Route::controller(AnswerCommentController::class)->group(function () {
+    Route::post('/answers/{answer_id}/comment', [AnswerCommentController::class, 'store'])->name('answercomment.store');
+    Route::put('/answers/{answer_id}/comment/{comment_id}/edit', [AnswerCommentController::class, 'edit'])->name('answercomment.edit');
+    Route::delete('/answers/{answer_id}/comment/{comment_id}/delete', [AnswerCommentController::class, 'delete'])->name('answercomment.delete');
+});
 
 Route::post('/tag', [TagController::class, 'store'])->name('tag.store');
 Route::delete('/tag/{tag_id}', [TagController::class, 'delete'])->name('tag.delete');
@@ -65,6 +88,13 @@ Route::put('/tag/{tag_id}', [TagController::class, 'edit'])->name('tag.edit');
 
 // route for updating a question's tags
 Route::post('/update_tags', [TagController::class, 'updateTags']);
+
+// route for validating an answer
+Route::post('/validate_answer', [AnswerController::class, 'validate_answer']);
+// route for increasing a question's score
+Route::post('/increase_score', [QuestionController::class, 'inc_score']);
+// route for decreasing a question's score
+Route::post('/decrease_score', [QuestionController::class, 'dec_score']);
 
 /*
 

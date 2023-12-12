@@ -21,22 +21,39 @@ class ProfileController extends Controller
         return view('pages.profile', compact('user'));
     }
 
+    public function showUser($username)
+    {
+        $user = User::where('name', $username)->first();
+    
+        if ($user) {
+            return view('pages.profile', compact('user'));
+        } else {
+            return redirect('/')->with('error', 'User not found');
+        }
+    }
+
     public function index()
     {
         $users = User::all();
         return view('pages.users', compact('users'));
     }
 
-    public function edit(Request $request)
+    public function edit(Request $request, $username)
     {
         $user = Auth::user();
 
+        $user = User::where('name', $username)->first();
+    
+        if (!$user) {
+            return redirect('/')->with('error', 'User not found');
+        }
+    
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'profile_picture' => 'image|mimetypes:image/jpeg,image/png,image/jpg,image/gif|max:2048',
         ]);
-
+    
         if ($validator->fails()) {
             return redirect()
                 ->route('questions.show')
@@ -47,14 +64,26 @@ class ProfileController extends Controller
         $profilePicture = $request->file('profile_picture');
         $newFileName = 'profile_' . auth()->user()->id . '.' . $profilePicture->getClientOriginalExtension();
         $profilePicture->move(public_path('profile_pictures'), $newFileName);
-        
+    
         $user->update([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'profile_picture' => $newFileName,
         ]);
-
-        return redirect()->route('profile.show')->with('success', 'Profile updated successfully');
+        $user->save();
+    
+        return redirect()->route('profile.showUser', ['username' => $username])->with('success', 'Profile updated successfully');
     }
+    
 
+    public function delete($username)
+    {
+        $user = User::where('name', $username)->first();
+    
+        if ($user && $user->delete()) {
+            return redirect()->route('login')->with('message', 'The account has been deleted.');
+        } else {
+            return redirect()->route('profile.show', ['username' => $username])->with('error', 'There was a problem deleting the account.');
+        }
+    }
 }
