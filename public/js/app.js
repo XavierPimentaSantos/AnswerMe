@@ -398,6 +398,9 @@ if(answer_post_btn) {
 function answer_post() {
   const title = document.getElementById('answer-title-input').value;
   const content = document.getElementById('answer-content-input').value;
+  if(title=="" || content=="") {
+    throw new error("ERROR: Title and Content form fields cannot be empty.");
+  }
   const question_id = answer_post_btn.getAttribute('data-question-id');
   fetch('/questions/' + question_id + '/answer', {
     method: 'POST',
