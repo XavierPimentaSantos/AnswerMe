@@ -193,6 +193,10 @@ if(question_answers) {
     else if(event.target.classList.contains('decrease-answer-score-btn')) {
       decreaseScoreAns(event.target.getAttribute('data-id'));
     }
+    else if(event.target.classList.contains('validate_answer_btn')) {
+      console.log('piriquito' + event.target.getAttribute('data-id'));
+      validateAnswer(event.target.getAttribute('data-id'));
+    }
   });
 }
 
@@ -235,15 +239,6 @@ function decreaseScoreAns(answer_id) {
 // END SECTION
 
 // START SECTION: FUNCTIONS RELATED TO MARKING AN ANSWER AS CORRECT
-
-const validate_answer_btn_array = Array.from(document.getElementsByClassName('validate_answer_btn'));
-
-validate_answer_btn_array.forEach(function(element) {
-  element.addEventListener('click', function() {
-    let ans_id = element.getAttribute('data-id');
-    validateAnswer(ans_id);
-  });
-});
 
 function validateAnswer(answer_id) {
   fetch('/validate_answer', {
