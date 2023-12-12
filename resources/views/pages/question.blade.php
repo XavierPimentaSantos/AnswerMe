@@ -12,7 +12,7 @@
 ?>
 
 <article class="card" data-id="{{ $question->id }}">
-    <div id = "question-view" class="questions bg-gray-200 mb-3 p-4" style="display: block;">
+    <div id = "question-view" class="questions bg-gray-200 m-6 p-4" style="display: block;">
         <div class="question-card-body">
             <div class="question-title">
                 <div style="display: flex; flex-direction: row;">
@@ -36,6 +36,13 @@
             </div>
             <p class="card-content">{{ $question->content }}</p>
         </div>
+        <div id="images-container" class="m-2 flex overflow-x-auto">
+            @foreach($question->images as $image)
+                <img src="{{ asset($image->picture_path) }}" alt="Question Image"  style = "max-width: 15%;">
+            @endforeach
+        </div>
+
+
         <div>
             @if (Auth::check() && $question->user_id === auth()->user()->id)                          
             <a id = "edit-question-btn" class="button bg-blue-500 text-white px-4 py-2 rounded mt-1 inline-block">Edit Question</a>
@@ -85,7 +92,18 @@
                     @endforeach
                 </datalist>
                 <button id="add_tag" type="button">Add tag</button>
-                <button id="add_image" type="button">Add Image</button>
+            </div>
+
+            <div id="images-container" class="m-2 flex overflow-x-auto">
+            @foreach($question->images as $image)
+                <img src="{{ asset($image->picture_path) }}" alt="Question Image"  style = "max-width: 5%;">
+            @endforeach
+            </div>
+
+            <div class="form-group">
+                <label for="images">Add Images:</label>
+                <input type="file" name="images[]" id="images" multiple accept="image/*" class="mt-1 p-2 border rounded-md">
+                <div id="image-preview-container" class="m-5 flex space-x-2"></div>
             </div>
 
             <button class = "button" type="submit" id="update-question-btn">Update Question</button>

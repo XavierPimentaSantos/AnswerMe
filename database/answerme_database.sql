@@ -58,6 +58,17 @@ CREATE TABLE IF NOT EXISTS questions (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+-- Table: questions_images
+DROP TABLE IF EXISTS question_images;
+CREATE TABLE IF NOT EXISTS question_images (
+    id SERIAL PRIMARY KEY,
+    picture_path VARCHAR NOT NULL,
+    question_id INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 -- Table: answers
 DROP TABLE IF EXISTS answers;
 CREATE TABLE IF NOT EXISTS answers (

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Tag;
 use App\Models\Answer;
+use App\Models\QuestionImage;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,5 +37,10 @@ class Question extends Model
     public function tags() : BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    public function images()
+    {
+        return $this->hasMany(QuestionImage::class);
     }
 }

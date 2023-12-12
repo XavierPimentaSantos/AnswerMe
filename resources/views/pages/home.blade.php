@@ -15,6 +15,11 @@
                         </div>
                     </a>
                     <p class="card-content">{{ $question->content }}</p>
+                    <div id="images-container" class="m-2 flex overflow-x-auto">
+                        @foreach($question->images as $image)
+                            <img src="{{ asset($image->picture_path) }}" alt="Question Image"  style = "max-width: 10%;">
+                        @endforeach
+                    </div>
                 </div>
                 <div style="display: flex; flex-direction: row; gap: 4px;">
                     @foreach ($question->tags as $tag)

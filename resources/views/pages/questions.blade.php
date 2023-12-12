@@ -37,7 +37,14 @@
                 @endforeach
             </div>
 
-            <div class="form-group" id="question_tag_container">
+            <div class="form-group">
+                <label for="images">Images (Up to 3):</label>
+                <input type="file" name="images[]" id="image1" accept="image/*" class="mt-1 p-2 border rounded-md">
+                <input type="file" name="images[]" id="image2" accept="image/*" class="mt-1 p-2 border rounded-md">
+                <input type="file" name="images[]" id="image3" accept="image/*" class="mt-1 p-2 border rounded-md">
+                <div id="image-preview-container" class="mt-2 flex space-x-2"></div>
+            </div>
+            <div class="form-group mt-10" id="question_tag_container">
                 <input type="text" name="tag_input" id="tag_input" list="tag_listing">
                 <datalist id="tag_listing">
                     @foreach ($available_tags as $available_tag)
@@ -45,7 +52,6 @@
                     @endforeach
                 </datalist>
                 <button id="add_tag" type="button">Add tag</button>
-                <button id="add_image" type="button">Add Image</button>
             </div>
 
             <button type="submit" class="btn btn-primary">Submit</button>
@@ -53,3 +59,5 @@
     </div>
 
 @endsection
+
+

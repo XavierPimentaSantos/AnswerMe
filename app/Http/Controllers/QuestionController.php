@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Question; 
+use App\Models\QuestionImage;
 use Illuminate\Support\Facades\View;
 use App\Models\User;
 
@@ -49,6 +50,17 @@ class QuestionController extends Controller
             $actual_tag = $tagID->id;
             $question->tags()->attach($actual_tag);
         }
+        
+        foreach ($request->file('images') as $image) {
+            $uploadedPath = 'question_images/' . $image->hashName();
+            $image->move(public_path('question_images'), $image->hashName());
+            QuestionImage::create([
+                'picture_path' => $uploadedPath,
+                'question_id' => $question->id,
+            ]);   
+        }
+        
+        
 
         return redirect()->route('questions.show', $question->id)
             ->with('success', 'Question created successfully');
