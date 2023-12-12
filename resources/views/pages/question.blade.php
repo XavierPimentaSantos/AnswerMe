@@ -132,7 +132,7 @@
     <button type="button" id="question-comment-post-btn" data-question-id="{{ $question->id }}">Post comment</button>
 </div>
 
-<div id="answer_post_form">
+<form id="answer_post_form">
     @csrf
     <h3> Answer this question </h3>
     <label for="answer-title-input">Title:</label>
@@ -140,7 +140,7 @@
     <label for="answer-content-input">Content:</label>
     <textarea id="answer-content-input" name="answer-content-input" rows="4" required></textarea>
     <button type="button" id="answer-post-btn" data-question-id="{{ $question->id }}">Create Answer</button>
-</div>
+</form>
 @endif
 
 <article id="question_answers" class="card text-center" data-id="{{ $question->id }}">

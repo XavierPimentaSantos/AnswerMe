@@ -95,6 +95,10 @@ Route::post('/validate_answer', [AnswerController::class, 'validate_answer']);
 Route::post('/increase_score', [QuestionController::class, 'inc_score']);
 // route for decreasing a question's score
 Route::post('/decrease_score', [QuestionController::class, 'dec_score']);
+// route for increasing an answer's score
+Route::post('/increase_score_ans', [AnswerController::class, 'inc_score']);
+// route for decreasing an answer's score
+Route::post('/decrease_score_ans', [AnswerController::class, 'dec_score']);
 
 /*
 
