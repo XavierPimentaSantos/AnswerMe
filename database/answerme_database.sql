@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS comments_questions (
 DROP TABLE IF EXISTS comments_answers;
 CREATE TABLE IF NOT EXISTS comments_answers (
     id SERIAL NOT NULL,
-    referred_answer_id INTEGER NOT NULL,
+    answer_id INTEGER NOT NULL,
     body VARCHAR NOT NULL,
     created_at TIMESTAMP DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMP DEFAULT NOW() NOT NULL,
@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS comments_answers (
     user_id INTEGER NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (referred_answer_id) REFERENCES answers(id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (answer_id) REFERENCES answers(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table: following_questions

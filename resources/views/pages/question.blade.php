@@ -102,7 +102,7 @@
 
 <div id="comment-section">
     @csrf
-    @include ('partials.comment_section', ['questioncomments' => $questioncomments])
+    @include ('partials.comment_section', ['comments' => $questioncomments])
 </div>
 
 @if (Auth::check())
@@ -124,9 +124,13 @@
 </div>
 @endif
 
-@if ($answers->count() > 0)
 <article id="question_answers" class="card text-center" data-id="{{ $question->id }}">
-    <div>
+    @if ($answers->count() == 0)
+    <h2 class="py-5 text-center" id="no_answers">No answers yet!</h2>
+    <div id="has_answers" class="hidden">
+    @else
+    <div id="has_answers">
+    @endif
         <h3 class="py-5">Answers:</h3>
         <ol style="list-style-type: none;" id="answer-section">
             @include ('partials.answer', ['answers' => $answers])
@@ -138,21 +142,5 @@
     </div>
     @endif
 </article>
-@else
-<h2 class="py-5 text-center">No answers yet!</h2>
-<article id="question_answers" class="card text-center" data-id="{{ $question->id }}" style="display: none;">
-    <div>
-        <h3 class="py-5">Answers:</h3>
-        <ol style="list-style-type: none;" id="answer-section">
-            @include ('partials.answer', ['answers' => $answers])
-        </ol>
-    </div>
-    @if ($answers->count() > 10)
-    <div class="pagination">
-        {{ $answers->paginate(10)->links() }}
-    </div>
-    @endif
-</article>
-@endif
 
 @endsection

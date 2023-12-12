@@ -8,7 +8,8 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\TagController;
-
+use App\Http\Controllers\QuestionCommentController;
+use App\Http\Controllers\AnswerCommentController;
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -67,6 +68,18 @@ Route::controller(AdminController::class)->group(function () {
     Route::post('/admin/submit', [AdminController::class, 'submit'])->name('admin.submit');
     Route::post('/admin/block-user/{username}', [AdminController::class, 'blockUser'])->name('admin.blockUser');
     Route::post('/admin/unblock-user/{username}', [AdminController::class, 'unblockUser'])->name('admin.unblockUser');
+});
+
+Route::controller(QuestionCommentController::class)->group(function () {
+    Route::post('/questions/{question_id}/comment', [QuestionCommentController::class, 'store'])->name('questioncomment.store');
+    Route::put('/questions/{question_id}/comment/{comment_id}/edit', [QuestionCommentController::class, 'edit'])->name('questioncomment.edit');
+    Route::delete('/questions/{question_id}/comment/{comment_id}/delete', [QuestionCommentController::class, 'delete'])->name('questioncomment.delete');
+});
+
+Route::controller(AnswerCommentController::class)->group(function () {
+    Route::post('/answers/{answer_id}/comment', [AnswerCommentController::class, 'store'])->name('answercomment.store');
+    Route::put('/answers/{answer_id}/comment/{comment_id}/edit', [AnswerCommentController::class, 'edit'])->name('answercomment.edit');
+    Route::delete('/answers/{answer_id}/comment/{comment_id}/delete', [AnswerCommentController::class, 'delete'])->name('answercomment.delete');
 });
 
 Route::post('/tag', [TagController::class, 'store'])->name('tag.store');
