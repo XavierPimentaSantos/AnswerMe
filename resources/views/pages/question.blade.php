@@ -25,6 +25,12 @@
                 
                 <div style="display: flex; flex-direction: row;">
                     <h2 style="margin: 0; margin-right: 5px;">{{ $question->title }}</h2>
+                    @if ($question->user_id === Auth::user()->id)
+                    <button type="button" class="material-symbols-outlined">archive</button>
+                    @else
+                    <button type="button" class="material-symbols-outlined">report</button>
+                    <button type="button" class="material-symbols-outlined">notifications</button>
+                    @endif
                     @if ($question->edited == 1)
                         <h3 style= "margin: 0; align-self: center;">(edited)</h3>
                     @endif
