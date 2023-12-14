@@ -16,6 +16,8 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\AdminController;
 
+use App\Http\Controllers\FAQController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -99,6 +101,9 @@ Route::post('/decrease_score', [QuestionController::class, 'dec_score']);
 Route::post('/increase_score_ans', [AnswerController::class, 'inc_score']);
 // route for decreasing an answer's score
 Route::post('/decrease_score_ans', [AnswerController::class, 'dec_score']);
+
+Route::get('/faq', [FAQController::class, 'show'])->name('faq.show');
+
 
 /*
 

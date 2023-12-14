@@ -165,4 +165,26 @@ body {
     border-color: gray;
   }
 
+.faq-card {
+  margin: 0;
+  padding: 1rem 3rem;
+  border: none;
+  border-bottom: solid 2px black;
+}
 
+.faq-card h2 {
+  margin: none;
+  margin-bottom: 0.5rem;
+}
+
+.faq-card p {
+  margin: 0;
+}
+
+.faq-card p span {
+  vertical-align: middle;
+}
+
+.faq-card:last-of-type {
+  border-bottom: none;
+}
