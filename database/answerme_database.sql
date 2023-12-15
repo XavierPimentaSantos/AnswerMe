@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS questions (
 DROP TABLE IF EXISTS question_images;
 CREATE TABLE IF NOT EXISTS question_images (
     id SERIAL PRIMARY KEY,
+    format Integer NOT NULL,
     picture_path VARCHAR NOT NULL,
     question_id INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

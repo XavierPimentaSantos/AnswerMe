@@ -6,7 +6,7 @@
             <h2 id="profile-header">User Profile</h2>
             <h2 id="edit-profile-header" style="display: none;">Edit Profile</h2>
             <div id = "profile-picture">
-                <img src="{{ asset('profile_pictures/' . $user->profile_picture) }}" alt="Profile Picture" class="rounded-full profile-size border-4 border-black m-4"> 
+            <img src="{{ asset('profile_pictures/' . $user->profile_picture) }}" alt="Profile Picture" class="rounded-full border-4 border-black m-4 block mx-auto" style="width: 200px; height: 200px;">
             </div>    
             <a class="button text-sm rounded px-1 py-1 my-1" id="edit-profile-btn">Edit User Profile</a>
 
