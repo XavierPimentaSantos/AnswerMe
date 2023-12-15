@@ -197,4 +197,17 @@ class QuestionController extends Controller
 
         return view('partials.question_score', ['question_id' => $question->id])->render();
     }
+
+    public function toggleFollow ($question_id)
+    {
+        if(Auth::user()->followedQuestions()->where('question_id', $question_id)->exists()) {
+            Auth::user()->followedQuestions()->detach($question_id);
+            return response()->json(['color' => 'black']);
+        }
+        else {
+            Auth::user()->followedQuestions()->attach($question_id);
+            return response()->json(['color' => 'green']);
+        }
+        // return response()->json(['message' => 'Toggled follow status successfully.']);
+    }
 }

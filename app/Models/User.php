@@ -77,4 +77,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Answer::class, 'answer_down_votes', 'user_id', 'answer_id');
     }
+
+    public function followedQuestions() : BelongsToMany
+    {
+        return $this->belongsToMany(Question::class, 'following_questions', 'user_id', 'question_id');
+    }
 }
