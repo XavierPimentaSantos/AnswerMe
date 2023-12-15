@@ -37,6 +37,24 @@ class ProfileController extends Controller
         $users = User::all();
         return view('pages.users', compact('users'));
     }
+    
+    public function updateProfilePicture(Request $request)  
+    {
+        $user = Auth::user();
+        $profilePicture = $request->file('newProfilePicture');
+
+        if ($profilePicture) {
+            $newFileName = 'profile_' . auth()->user()->id . '.' . $profilePicture->getClientOriginalExtension();
+            $profilePicture->move(public_path('profile_pictures'), $newFileName);
+
+            $user->update(['profile_picture' => $newFileName]);
+            $user->save();
+
+            return response()->json(['profile_picture' => asset('profile_pictures/' . $newFileName)], 200);
+        }
+
+        return response()->json(['error' => 'Failed to update profile picture'], 500);
+    }
 
     public function edit(Request $request, $username)
     {
@@ -62,9 +80,11 @@ class ProfileController extends Controller
         }
 
         $profilePicture = $request->file('profile_picture');
-        $newFileName = 'profile_' . auth()->user()->id . '.' . $profilePicture->getClientOriginalExtension();
-        $profilePicture->move(public_path('profile_pictures'), $newFileName);
-    
+        $newFileName = $user->profile_picture;
+        if ($profilePicture) {
+            $newFileName = 'profile_' . auth()->user()->id . '.' . $profilePicture->getClientOriginalExtension();
+            $profilePicture->move(public_path('profile_pictures'), $newFileName);
+        }    
         $user->update([
             'name' => $request->input('name'),
             'email' => $request->input('email'),

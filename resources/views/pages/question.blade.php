@@ -66,7 +66,7 @@
     <div id="question-edit" class="questions bg-gray-200 mb-3 p-4" style="display: none;">
         <h2>Edit Question</h2>
 
-        <form id="edit-question-form" action="{{ route('questions.edit', $question->id) }}" method="POST" class="inline-block">
+        <form id="edit-question-form" action="{{ route('questions.edit', $question->id) }}" method="POST" class="inline-block" enctype="multipart/form-data">
             @csrf
             @method('POST')
             <label for="title">Title:</label>
@@ -101,18 +101,20 @@
                 </datalist>
                 <button id="add_tag" type="button">Add tag</button>
             </div>
-
-            <div id="images-container" class="m-2 flex overflow-x-auto">
-            @foreach($question->images as $image)
-                <img src="{{ asset($image->picture_path) }}" alt="Question Image"  style = "max-width: 5%;">
-            @endforeach
-            </div>
-
             <div class="form-group">
-                <label for="images">Add Images:</label>
-                <input type="file" name="images[]" id="images" multiple accept="image/*" class="mt-1 p-2 border rounded-md">
-                <div id="image-preview-container" class="m-5 flex space-x-2"></div>
+                <label for="images">Edit Images (Up to 3):</label>
+                <input type="file" name="images[]" id="image1" accept="image/*" class="mt-1 p-2 border rounded-md">
+                <input type="file" name="images[]" id="image2" accept="image/*" class="mt-1 p-2 border rounded-md">
+                <input type="file" name="images[]" id="image3" accept="image/*" class="mt-1 p-2 border rounded-md">
+                <div id="images-container" class="m-2 flex overflow-x-auto">
+                    @foreach($question->images as $key => $image)
+                        <div id="image-{{ $key + 1 }}" class="p-2">
+                            <img src="{{ asset($image->picture_path) }}" alt="Question Image" style="width: 100px; marginRight: 5px">
+                        </div>
+                    @endforeach
+                </div>
             </div>
+
 
             <button class = "button" type="submit" id="update-question-btn">Update Question</button>
         </form>
