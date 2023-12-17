@@ -161,6 +161,10 @@ class QuestionController extends Controller
     {
         $question = Question::findOrFail($request->input('question_id'));
         
+        if ($question->user_id === Auth::user()->id) {
+            return view('partials.question_score', ['question_id' => $question->id])->render();            
+        }
+
         if(Auth::user()->questionUpVotes()->where('question_id', $question->id)->exists()) {
             Auth::user()->questionUpVotes()->detach($question->id);
             $score = $question->score;
@@ -189,6 +193,10 @@ class QuestionController extends Controller
     public function dec_score(Request $request)
     {
         $question = Question::findOrFail($request->input('question_id'));
+
+        if ($question->user_id === Auth::user()->id) {
+            return view('partials.question_score', ['question_id' => $question->id])->render();            
+        }
 
         if(Auth::user()->questionDownVotes()->where('question_id', $question->id)->exists()) {
             Auth::user()->questionDownVotes()->detach($question->id);
