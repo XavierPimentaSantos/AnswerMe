@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="flex items-center justify-center">
+<div id = "profile-info" class="flex items-center justify-center">
     <div class="text-center justify-center">
             <h2 id="profile-header">User Profile</h2>
             <h2 id="edit-profile-header" style="display: none;">Edit Profile</h2>

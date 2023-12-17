@@ -1,3 +1,32 @@
+  document.getElementById('update-profile-btn').addEventListener('click', function () {
+    const name = document.getElementById('name-input').value;
+    const email = document.getElementById('email-input').value;
+    const profile_picture = document.getElementById('profile-picture').files[0];
+    const formData = {
+      name: name,
+      email: email,
+      profile_picture: profile_picture,
+    };
+
+    fetch('/profile/' + name + '/edit', {
+        method: 'PUT',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        // Handle success, e.g., update UI
+    })
+    .catch(error => {
+        // Handle errors, e.g., display validation errors
+        console.log(error);
+    });
+  });
+
+    
   const edit_profile_btn = document.getElementById('edit-profile-btn');
   if(edit_profile_btn) {
     edit_profile_btn.addEventListener('click', function() {
@@ -63,6 +92,7 @@ function updateProfileData(newName, newEmail) {
   fname.textContent = newName;
   email.textContent = newEmail;
 }
+
 
 function updateProfile() {
   console.log('update profile');

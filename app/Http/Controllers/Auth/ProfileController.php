@@ -73,10 +73,7 @@ class ProfileController extends Controller
         ]);
     
         if ($validator->fails()) {
-            return redirect()
-                ->route('questions.show')
-                ->withErrors($validator)
-                ->withInput();
+            return response()->json(['error' => $validator->errors()->first()], 422);
         }
 
         $profilePicture = $request->file('profile_picture');
@@ -91,8 +88,8 @@ class ProfileController extends Controller
             'profile_picture' => $newFileName,
         ]);
         $user->save();
-    
-        return redirect()->route('profile.showUser', ['username' => $username])->with('success', 'Profile updated successfully');
+
+        return view('pages.profile', compact('user'))->render();
     }
     
 
