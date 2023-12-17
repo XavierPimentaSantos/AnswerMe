@@ -20,25 +20,19 @@ class QuestionController extends Controller
 
     public function index()
     {
-        // $questions = Question::latest()->paginate(10); // Assuming you want to display 10 questions per page
         if(Auth::user()) {
             $followedQuestionIDs = Auth::user()->followedQuestions()->pluck('question_id');
 
-            $actualFollowedQuestions = Question::whereIn('id', $followedQuestionIDs)->paginate(10);//->orderByDesc('score')->orderByDesc('created_at');
-            $otherQuestions = Question::whereNotIn('id', $followedQuestionIDs)->paginate(10);//->orderByDesc('score')->orderByDesc('created_at');
+            $actualFollowedQuestions = Question::whereIn('id', $followedQuestionIDs)->get();
+            $otherQuestions = Question::whereNotIn('id', $followedQuestionIDs)->get();
 
-            $questions = $actualFollowedQuestions->merge($otherQuestions)/* ->paginate(10) */;//->orderByDesc('score')->orderByDesc('created_at')->paginate(10);
-
-            /* Paginator::currentPageResolver(function () use ($questions) {
-                return $questions->currentPage();
-            }); */
+            $questions = $actualFollowedQuestions->merge($otherQuestions);
         }
         else {
             $questions = Question::orderByDesc('score')->orderBy('created_at', 'desc')->paginate(10);
         }
 
-        // Paginate the merged collection
-        $perPage = 10;
+        $perPage = 6;
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $currentPageItems = $questions->slice(($currentPage - 1) * $perPage, $perPage)->all();
         $questions = new LengthAwarePaginator($currentPageItems, $questions->count(), $perPage, $currentPage);
