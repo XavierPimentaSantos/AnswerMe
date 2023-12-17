@@ -46,7 +46,7 @@
         </div>
         <div id="images-container" class="m-2 flex overflow-x-auto">
             @foreach($question->images as $image)
-                <img src="{{ asset($image->picture_path) }}" alt="Question Image"  style = "max-width: 15%;">
+                <img src="{{ asset($image->picture_path) }}" alt="Question Image"  style = "max-width: 15%;  padding: 5px">
             @endforeach
         </div>
 
@@ -109,7 +109,7 @@
                 <div id="images-container" class="m-2 flex overflow-x-auto">
                     @foreach($question->images as $key => $image)
                         <div id="image-{{ $key + 1 }}" class="p-2">
-                            <img src="{{ asset($image->picture_path) }}" alt="Question Image" style="width: 100px; marginRight: 5px">
+                            <img src="{{ asset($image->picture_path) }}" alt="Question Image" style="width: 100px; padding: 5px">
                         </div>
                     @endforeach
                 </div>
