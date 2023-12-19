@@ -32,7 +32,7 @@
             @endif
 
             <button type="submit">
-                Recover Password
+                Confirm New Password
             </button>
             @if (session('success'))
                 <p class="success">
