@@ -266,8 +266,8 @@ function validateAnswer(answer_id) {
   })
   .then(response => {
     if(response.ok) {
-      document.getElementById('validate-answer-btn-' + answer_id).classList.add('hidden');
-      document.getElementById('valid_answer_' + answer_id).classList.remove('hidden');
+      document.getElementById('validate-answer-btn-' + answer_id).style.display = 'none';
+      document.getElementById('valid_answer_' + answer_id).style.display = 'block';
     }
   })
   .catch(error => console.error('Error updating tags:', error));

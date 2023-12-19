@@ -186,22 +186,22 @@ body {
   border-bottom: none;
 }
 
-.question-title div button.material-symbols-outlined {
+.question-title div button.material-symbols-outlined, .validate_answer_btn {
   width: fit-content;
   height: fit-content;
   padding: 0;
   margin: 0;
   text-align: center;
-  font-size: 3rem;
+  font-size: 3rem !important;
   border: 2px solid black;
   border-radius: 2px;
   color: black;
 }
 
-#question_follow_btn:hover, #question_report_btn:hover {
+#question_archive_btn:hover, #question_follow_btn:hover, #question_report_btn:hover, .validate_answer_btn:hover {
   background-color: rgb(229 231 235 / var(--tw-bg-opacity)) !important;
 }
 
-#question_follow_btn:focus, #question_report_btn:focus {
+#question_archive_btn:focus, #question_follow_btn:focus, #question_report_btn:focus, .validate_answer_btn:focus {
   background-color: rgb(229 231 235 / var(--tw-bg-opacity)) !important;
 }

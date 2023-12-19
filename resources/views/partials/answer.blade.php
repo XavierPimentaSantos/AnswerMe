@@ -14,15 +14,20 @@
                 @csrf
                 @include ('partials.answer_score', ['answer_id' => $answer->id])
             </div>
-            <h4 class="font-bold">{{ $answer->title }}</h4>
-            @if (Auth::user()->id === $question->user_id && $answer->correct === false)
-            <button type="button" id="validate-answer-btn-{{ $answer->id }}" class="validate_answer_btn" data-id="{{ $answer->id }}">Validate answer</button>
-            @endif
-            @if ($answer->correct === true)
-            <p id="valid_answer_{{ $answer->id }}">this answer has been marked as correct</p>
-            @else
-            <p id="valid_answer_{{ $answer->id }}" class="hidden">this answer has been marked as correct</p>
-            @endif
+
+            <div style="display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: space-between; width: -webkit-fill-available;">
+                <div style="display: flex; flex-direction: row;">
+                    <h4 class="font-bold">{{ $answer->title }}</h4>
+                    @if ($answer->correct === true)
+                    <h4 id="valid_answer_{{ $answer->id }}" class="material-symbols-outlined" style="color: green;">check</h4>
+                    @else
+                    <h4 id="valid_answer_{{ $answer->id }}" class="material-symbols-outlined" style="display: none; color: green;">check</h4>
+                    @endif
+                </div>
+                @if (Auth::user()->id === $question->user_id && $answer->correct === false)
+                <button type="button" id="validate-answer-btn-{{ $answer->id }}" class="validate_answer_btn material-symbols-outlined bg-gray-200" data-id="{{ $answer->id }}" style="border: 2px solid black; border-radius: 2px; color: green;">check</button>
+                @endif
+            </div>
         </div>
         <p>{{ $answer->content }}</p>
         <div>
