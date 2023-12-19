@@ -17,7 +17,7 @@
             @endif
 
             <button type="submit">
-                Recover Password
+                Reset Password
             </button>
             @if (session('success'))
                 <p class="success">
