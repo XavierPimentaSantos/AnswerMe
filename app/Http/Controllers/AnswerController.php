@@ -27,6 +27,10 @@ class AnswerController extends Controller
 
         $question = Question::findOrFail($question_id);
 
+        if($question->user_id === Auth::user()->id) {
+            return view('partials.answer', ['answers' => $question->answers()->get()])->render();
+        }
+
         $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
@@ -153,6 +157,10 @@ class AnswerController extends Controller
     {
         $answer = Answer::findOrFail($request->input('answer_id'));
         
+        if ($answer->user_id === Auth::user()->id) {
+            return view('partials.answer_score', ['answer_id' => $answer->id])->render();            
+        }
+
         if(Auth::user()->answerUpVotes()->where('answer_id', $answer->id)->exists()) {
             Auth::user()->answerUpVotes()->detach($answer->id);
             $score = $answer->score;
@@ -181,6 +189,10 @@ class AnswerController extends Controller
     public function dec_score(Request $request)
     {
         $answer = answer::findOrFail($request->input('answer_id'));
+
+        if ($answer->user_id === Auth::user()->id) {
+            return view('partials.answer_score', ['answer_id' => $answer->id])->render();            
+        }
 
         if(Auth::user()->answerDownVotes()->where('answer_id', $answer->id)->exists()) {
             Auth::user()->answerDownVotes()->detach($answer->id);

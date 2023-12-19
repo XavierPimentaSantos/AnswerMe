@@ -10,6 +10,8 @@ use App\Models\User;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 use App\Models\Tag;
 
@@ -18,8 +20,23 @@ class QuestionController extends Controller
 
     public function index()
     {
-        // $questions = Question::latest()->paginate(10); // Assuming you want to display 10 questions per page
-        $questions = Question::orderByDesc('score')->orderBy('created_at', 'desc')/* ->get() */->paginate(10);
+        if(Auth::user()) {
+            $followedQuestionIDs = Auth::user()->followedQuestions()->pluck('question_id');
+
+            $actualFollowedQuestions = Question::whereIn('id', $followedQuestionIDs)->get();
+            $otherQuestions = Question::whereNotIn('id', $followedQuestionIDs)->get();
+
+            $questions = $actualFollowedQuestions->merge($otherQuestions);
+        }
+        else {
+            $questions = Question::orderByDesc('score')->orderBy('created_at', 'desc')->paginate(10);
+        }
+
+        $perPage = 6;
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $currentPageItems = $questions->slice(($currentPage - 1) * $perPage, $perPage)->all();
+        $questions = new LengthAwarePaginator($currentPageItems, $questions->count(), $perPage, $currentPage);
+
         return view('pages.home', compact('questions'));
     }
 
@@ -209,6 +226,10 @@ class QuestionController extends Controller
     {
         $question = Question::findOrFail($request->input('question_id'));
         
+        if ($question->user_id === Auth::user()->id) {
+            return view('partials.question_score', ['question_id' => $question->id])->render();            
+        }
+
         if(Auth::user()->questionUpVotes()->where('question_id', $question->id)->exists()) {
             Auth::user()->questionUpVotes()->detach($question->id);
             $score = $question->score;
@@ -238,6 +259,10 @@ class QuestionController extends Controller
     {
         $question = Question::findOrFail($request->input('question_id'));
 
+        if ($question->user_id === Auth::user()->id) {
+            return view('partials.question_score', ['question_id' => $question->id])->render();            
+        }
+
         if(Auth::user()->questionDownVotes()->where('question_id', $question->id)->exists()) {
             Auth::user()->questionDownVotes()->detach($question->id);
             $score = $question->score;
@@ -263,6 +288,16 @@ class QuestionController extends Controller
         return view('partials.question_score', ['question_id' => $question->id])->render();
     }
 
-    
-    
+    public function toggleFollow ($question_id)
+    {
+        if(Auth::user()->followedQuestions()->where('question_id', $question_id)->exists()) {
+            Auth::user()->followedQuestions()->detach($question_id);
+            return response()->json(['color' => 'black']);
+        }
+        else {
+            Auth::user()->followedQuestions()->attach($question_id);
+            return response()->json(['color' => 'green']);
+        }
+        // return response()->json(['message' => 'Toggled follow status successfully.']);
+    }
 }

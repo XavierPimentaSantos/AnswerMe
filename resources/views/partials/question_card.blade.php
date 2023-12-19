@@ -7,7 +7,12 @@
         <h2>{{ $question->score }}</h2>
         <a href="{{ route('questions.show', $question->id) }}">
             <div class="question-title">
-                <h2>{{ $question->title }}</h2>
+                <div style="display: flex; flex-direction: row; gap: 2rem;">
+                    <h2>{{ $question->title }}</h2>
+                    @if (Auth::user()->followedQuestions->contains($question->id))
+                    <h4 class="material-symbols-outlined" style="color: green;">notifications</h4>
+                    @endif
+                </div>
                 @if ($question->user_id)
                 <p class="card-content text-red-700">Asked by: {{ $question->user->name }}</p>
                 @endif

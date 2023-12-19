@@ -59,4 +59,9 @@ class Question extends Model
     {
         return $this->hasMany(QuestionComment::class);
     }
+
+    public function followers() : BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'following_questions', 'question_id', 'user_id');
+    }
 }

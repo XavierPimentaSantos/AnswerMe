@@ -53,6 +53,8 @@ Route::controller(QuestionController::class)->group(function () {
     Route::get('/questions/{id}', [QuestionController::class, 'show'])->name('questions.show');
     Route::delete('/questions/{question_id}/delete', [QuestionController::class, 'delete'])->name('questions.delete');
     Route::post('/questions/{question_id}/edit', [QuestionController::class, 'edit'])->name('questions.edit');
+
+    Route::post('/questions/{question_id}/toggle_follow', [QuestionController::class, 'toggleFollow'])->name('questions.toggleFollow');
 });
 
 Route::controller(AnswerController::class)->group(function () {
