@@ -91,6 +91,18 @@ CREATE TABLE IF NOT EXISTS answers (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+-- Table: answer_images
+DROP TABLE IF EXISTS answer_images;
+CREATE TABLE IF NOT EXISTS answer_images (
+    id SERIAL PRIMARY KEY,
+    format Integer NOT NULL,
+    picture_path VARCHAR NOT NULL,
+    answer_id INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (answer_id) REFERENCES answers(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 -- Table: comments_question
 DROP TABLE IF EXISTS comments_questions;
 CREATE TABLE IF NOT EXISTS comments_questions (

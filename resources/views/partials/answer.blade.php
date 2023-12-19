@@ -25,6 +25,10 @@
             @endif
         </div>
         <p>{{ $answer->content }}</p>
+        <div id="images-container" class="m-2 flex overflow-x-auto">
+            @foreach($answer->images as $image)
+                <img src="{{ asset($image->picture_path) }}" alt="Answer Image" style="width: 100px; padding: 5px">
+            @endforeach
         <div>
             @if ($answer->user_id === Auth::user()->id)
             <a id="edit-answer-btn" class="button bg-blue-500 text-white px-4 py-2 rounded mt-1 inline-block">Edit Answer</a>                  
@@ -48,6 +52,19 @@
             <input type="text" name="content" value="{{ $answer->content }}" required>
             <button class="button" type="submit" id="update-answer-btn">Update Answer</button>
         </form>
+    </div>
+    <div class="form-group">
+                <label for="images">Edit Images (Up to 3):</label>
+                <input type="file" name="images[]" id="image1" accept="image/*" class="mt-1 p-2 border rounded-md">
+                <input type="file" name="images[]" id="image2" accept="image/*" class="mt-1 p-2 border rounded-md">
+                <input type="file" name="images[]" id="image3" accept="image/*" class="mt-1 p-2 border rounded-md">
+                <div id="images-container" class="m-2 flex overflow-x-auto">
+                    @foreach($answer->images as $key => $image)
+                        <div id="image-{{ $key + 1 }}" class="p-2">
+                            <img src="{{ asset($image->picture_path) }}" alt="Answer Image" style="width: 100px; padding: 5px">
+                        </div>
+                    @endforeach
+                </div>
     </div>
 
     <div class="answer-comment-form">
