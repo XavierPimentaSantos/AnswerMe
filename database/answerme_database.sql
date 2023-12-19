@@ -6,15 +6,11 @@ SET search_path TO lbaw2392;
 -- Drop any existing tables.
 --
 
-DROP TABLE IF EXISTS cards CASCADE;
-DROP TABLE IF EXISTS items CASCADE;
-DROP TABLE IF EXISTS questions CASCADE;
-DROP TABLE IF EXISTS answers CASCADE;
-DROP TABLE IF EXISTS users CASCADE;
 
 --
 -- Create tables.
 --
+DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   name VARCHAR NOT NULL,
@@ -27,6 +23,14 @@ CREATE TABLE users (
   user_type CHAR(1) NOT NULL DEFAULT '1',
   remember_token VARCHAR,
   profile_picture varchar not null default 'default.png'
+);
+
+-- Table: forget_passwords
+DROP TABLE IF EXISTS password_resets;
+CREATE TABLE password_resets (
+    id SERIAL,
+    email VARCHAR UNIQUE NOT NULL,
+    token VARCHAR
 );
 
 
