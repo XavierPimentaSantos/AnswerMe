@@ -10,7 +10,7 @@
 <li>
     <div id="answer-view-{{ $answer->id }}"  class="answers bg-gray-100 mb-3 p-4">
         <div style="display: flex; flex-direcion: row; gap: 5px;">
-            <div id="answer_score_{{ $answer->id }}" data-id="{{ $answer->id }}" style="display: flex; flex-direction: column;">
+            <div id="answer_score_{{ $answer->id }}" data-id="{{ $answer->id }}" style="display: flex; flex-direction: column; width: 3rem; justify-content: space-around;">
                 @csrf
                 @include ('partials.answer_score', ['answer_id' => $answer->id])
             </div>

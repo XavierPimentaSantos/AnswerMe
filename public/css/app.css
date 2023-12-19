@@ -197,3 +197,11 @@ body {
   border-radius: 2px;
   color: black;
 }
+
+#question_follow_btn:hover, #question_report_btn:hover {
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity)) !important;
+}
+
+#question_follow_btn:focus, #question_report_btn:focus {
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity)) !important;
+}
