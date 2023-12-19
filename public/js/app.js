@@ -636,3 +636,34 @@ function updateProfilePicture() {
   });
 }*/
 
+
+
+// START SECTION: FUNCTIONS RELATED TO FOLLOWING A QUESTION
+
+const question_follow_btn = document.getElementById('question_follow_btn');
+if(question_follow_btn) {
+  question_follow_btn.addEventListener('click', function() {
+    console.log('stupid button pressed');
+    toggle_question_follow(question_follow_btn.getAttribute('data-question-id'));
+  })
+}
+
+function toggle_question_follow(question_id) {
+  fetch('/questions/' + question_id + '/toggle_follow' , {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+    },
+  })
+  .then(response => {
+    return response.json();
+  })
+  .then(data => {
+    document.getElementById('question_follow_btn').style.color = data.color;
+    console.log('changed color');
+  })
+  .catch(error => console.error('Error following question:', error));
+}
+
+// END SECTION 

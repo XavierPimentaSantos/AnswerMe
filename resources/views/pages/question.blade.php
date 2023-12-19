@@ -8,6 +8,15 @@
     $question_tags = array();
     foreach($question->tags as $tag) {
         $question_tags[] = $tag->name;
+    }  
+
+    $followed;
+
+    if(Auth::user()->followedQuestions()->where('question_id', $question->id)->exists()) {
+        $followed = TRUE;
+    }
+    else {
+        $followed = FALSE;
     }
 
     $answers = $question->answers()->orderByDesc('score')->orderBy('correct', 'desc')->get();
@@ -25,6 +34,12 @@
                 
                 <div style="display: flex; flex-direction: row;">
                     <h2 style="margin: 0; margin-right: 5px;">{{ $question->title }}</h2>
+                    @if ($question->user_id === Auth::user()->id)
+                    <button type="button" class="material-symbols-outlined" id="question_archive_btn">archive</button>
+                    @else
+                    <button type="button" class="material-symbols-outlined" id="question_report_btn">report</button>
+                    <button type="button" class="material-symbols-outlined" id="question_follow_btn" data-question-id="{{ $question->id }}" style="@if ($followed) color: green; @else color: black; @endif">notifications</button>
+                    @endif
                     @if ($question->edited == 1)
                         <h3 style= "margin: 0; align-self: center;">(edited)</h3>
                     @endif

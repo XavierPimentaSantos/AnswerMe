@@ -141,10 +141,7 @@ body {
       border-bottom: 1px solid rgba(96, 108, 118, 0.4);
     }
   }
-  /**
-   * Override milligram colors
-   * Some styles might be missing
-   **/
+
   button {
     background-color: black;
     border-color: gray;
@@ -167,13 +164,13 @@ body {
 
 .faq-card {
   margin: 0;
-  padding: 1rem 3rem;
+  padding: 1rem 2rem;
   border: none;
   border-bottom: solid 2px black;
 }
 
-.faq-card h2 {
-  margin: none;
+.faq-card h3 {
+  margin: 0;
   margin-bottom: 0.5rem;
 }
 
@@ -187,4 +184,16 @@ body {
 
 .faq-card:last-of-type {
   border-bottom: none;
+}
+
+.question-title div button.material-symbols-outlined {
+  width: fit-content;
+  height: fit-content;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  font-size: 3rem;
+  border: 2px solid black;
+  border-radius: 2px;
+  color: black;
 }

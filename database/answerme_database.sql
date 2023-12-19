@@ -169,6 +169,16 @@ CREATE TABLE IF NOT EXISTS following_users (
     FOREIGN KEY (followed_user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+-- Table: following_questions
+DROP TABLE IF EXISTS following_questions;
+CREATE TABLE IF NOT EXISTS following_questions (
+    user_id INTEGER NOT NULL,
+    question_id INTEGER NOT NULL,
+    PRIMARY KEY (user_id, question_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 -- Table: notifications
 DROP TABLE IF EXISTS notifications;
 CREATE TABLE IF NOT EXISTS notifications (
