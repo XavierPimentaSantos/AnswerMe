@@ -46,16 +46,22 @@ class AnswerController extends Controller
             'user_id' => Auth::user()->id,
         ]);
 
+        
+
         $answerImagePath = 'answer_images/' . $answer->id . '/';
-        foreach ($request->file('images') as $index => $image) {
-            $format = $index + 1; // 1.format, 2.format, etc.
-            $uploadedPath = $answerImagePath . $format . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path($answerImagePath), $format . '.' . $image->getClientOriginalExtension());
-            AnswerImage::create([
-                'format' => $format, // '1', '2', '3
-                'picture_path' => $uploadedPath,
-                'answer_id' => $answer->id,
-            ]);
+        $images = $request->file('images');
+
+        if ($images) {
+            foreach ($images as $index => $image) {
+                $format = $index + 1; // 1.format, 2.format, etc.
+                $uploadedPath = $answerImagePath . $format . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path($answerImagePath), $format . '.' . $image->getClientOriginalExtension());
+                AnswerImage::create([
+                    'format' => $format, // '1', '2', '3
+                    'picture_path' => $uploadedPath,
+                    'answer_id' => $answer->id,
+                ]);
+            }
         }
 
         $answer->save();
@@ -94,32 +100,34 @@ class AnswerController extends Controller
             'title' => $request->input('title'),
             'content' => $request->input('content'),
         ]);
-        
+        dd($request->all());
 
         if ($request->has('images')) {
-
             $answerImagePath = 'answer_images/' . $answer->id . '/';
-        
+            
             // Add new images
-            foreach ($request->file('images') as $index => $image) {
-                $format = $index + 1; // 1.format, 2.format, etc.
-        
-                // If an image is provided, update or add it
-                if ($image) {
-                    $uploadedPath = $answerImagePath . $format . '.' . $image->getClientOriginalExtension();
-                    $image->move(public_path($answerImagePath), $format . '.' . $image->getClientOriginalExtension());
-        
-                    // Update existing image if it exists, otherwise create a new one
-                    if ($existingImage = $answer->images()->where('format', $format)->first()) {
-                        $existingImage->update([
-                            'picture_path' => $uploadedPath,
-                        ]);
-                    } else {
-                        AnswerImage::create([
-                            'picture_path' => $uploadedPath,
-                            'answer_id' => $answer->id,
-                            'format' => $format,
-                        ]);
+            $images = $request->file('images');
+            if ($images) {
+                foreach ($images as $index => $image) {
+                    $format = $index + 1; // 1.format, 2.format, etc.
+            
+                    // If an image is provided, update or add it
+                    if ($image) {
+                        $uploadedPath = $answerImagePath . $format . '.' . $image->getClientOriginalExtension();
+                        $image->move(public_path($answerImagePath), $format . '.' . $image->getClientOriginalExtension());
+            
+                        // Update existing image if it exists, otherwise create a new one
+                        if ($existingImage = $answer->images()->where('format', $format)->first()) {
+                            $existingImage->update([
+                                'picture_path' => $uploadedPath,
+                            ]);
+                        } else {
+                            AnswerImage::create([
+                                'picture_path' => $uploadedPath,
+                                'answer_id' => $answer->id,
+                                'format' => $format,
+                            ]);
+                        }
                     }
                 }
             }

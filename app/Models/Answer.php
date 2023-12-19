@@ -51,4 +51,9 @@ class Answer extends Model
     {
         return $this->hasMany(AnswerComment::class);
     }
+
+    public function images()
+    {
+        return $this->hasMany(AnswerImage::class);
+    }
 }

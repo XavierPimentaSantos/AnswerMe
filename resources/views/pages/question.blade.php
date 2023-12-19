@@ -149,14 +149,27 @@
     <button type="button" id="question-comment-post-btn" data-question-id="{{ $question->id }}">Post comment</button>
 </div>
 
-<form id="answer_post_form">
+<form id="answer_post_form" action="{{ route('answers.store', ['question_id' => $question->id]) }}" style="max-width: 50%; padding: 20px;" method="POST" class="inline-block" enctype="multipart/form-data">
+    @method('POST')
     @csrf
     <h3> Answer this question </h3>
     <label for="answer-title-input">Title:</label>
     <input type="text" id="answer-title-input" name="answer-title-input" required>
     <label for="answer-content-input">Content:</label>
     <textarea id="answer-content-input" name="answer-content-input" rows="4" required></textarea>
+    <div class="form-group">
+            <label for="images">Images (Up to 3):</label>
+            <input type="file" name="images[]" id="image1" accept="image/*" class="mt-1 p-2 border rounded-md">
+            <input type="file" name="images[]" id="image2" accept="image/*" class="mt-1 p-2 border rounded-md">
+            <input type="file" name="images[]" id="image3" accept="image/*" class="mt-1 p-2 border rounded-md">
+            <div id="image-preview-container" class="mt-2 flex space-x-2">
+                <div id="answer-image-1" class="p-2"></div>
+                <div id="answer-image-2" class="p-2"></div>
+                <div id="answer-image-3" class="p-2"></div>
+            </div>
+    </div>
     <button type="button" id="answer-post-btn" data-question-id="{{ $question->id }}">Create Answer</button>
+
 </form>
 @endif
 

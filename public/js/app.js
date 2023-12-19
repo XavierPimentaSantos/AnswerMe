@@ -8,6 +8,7 @@
   const edit_answer_btn = document.getElementById('edit-answer-btn');
   if(edit_answer_btn) {
     edit_answer_btn.addEventListener('click', function () {
+      console.log('edit answer');
       toggleAnswerSections(true);
     });  
   }
@@ -529,7 +530,6 @@ function answer_comment_delete(answer_id, comment_id) {
 // END SECTION
 
 // multiple pictures in question
-document.addEventListener("DOMContentLoaded", function() {
   const imageInput1 = document.getElementById('image1');
   const imageInput2 = document.getElementById('image2');
   const imageInput3 = document.getElementById('image3');
@@ -606,7 +606,6 @@ function previewImage3(input) {
   imageInput3.addEventListener('change', function() {
     previewImage3(imageInput3);
   });
-});
 
 /*
 

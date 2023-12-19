@@ -19,7 +19,7 @@
             </div>
         </a>
         <p class="card-content" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $question->content }}</p>
-        <div id="images-container" class="m-2 flex overflow-x-auto">
+        <div id="answer-images-container" class="m-2 flex overflow-x-auto">
             @foreach($question->images as $image)
                 <img src="{{ asset($image->picture_path) }}" alt="Question Image"  style = "max-width: 10%; padding: 5px">
             @endforeach
