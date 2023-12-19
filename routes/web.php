@@ -109,13 +109,6 @@ Route::post('/decrease_score_ans', [AnswerController::class, 'dec_score']);
 
 Route::get('/faq', [FAQController::class, 'show'])->name('faq.show');
 
-Route::get('/testroute', function() {
-    $name = "Funny Coder";
-
-    // The email sending is done using the to method on the Mail facade
-    Mail::to('up202109260@g.uporto.pt')->send(new MyTestEmail($name));
-});
-
 Route::get('/forgot-password', [ForgetPasswordController::class, 'forgetPassword'])->name('forget.password');
 Route::post('/forgot-password', [ForgetPasswordController::class, 'forgetPasswordPost'])->name('forget.password.post');
 Route::get('/reset-password/{token}', [ForgetPasswordController::class, 'resetPassword'])->name('reset.password');
