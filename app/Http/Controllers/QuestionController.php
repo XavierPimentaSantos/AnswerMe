@@ -10,6 +10,8 @@ use App\Models\User;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 use App\Models\Tag;
 
@@ -18,8 +20,23 @@ class QuestionController extends Controller
 
     public function index()
     {
-        // $questions = Question::latest()->paginate(10); // Assuming you want to display 10 questions per page
-        $questions = Question::orderByDesc('score')->orderBy('created_at', 'desc')/* ->get() */->paginate(10);
+        if(Auth::user()) {
+            $followedQuestionIDs = Auth::user()->followedQuestions()->pluck('question_id');
+
+            $actualFollowedQuestions = Question::whereIn('id', $followedQuestionIDs)->get();
+            $otherQuestions = Question::whereNotIn('id', $followedQuestionIDs)->get();
+
+            $questions = $actualFollowedQuestions->merge($otherQuestions);
+        }
+        else {
+            $questions = Question::orderByDesc('score')->orderBy('created_at', 'desc')->paginate(10);
+        }
+
+        $perPage = 6;
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $currentPageItems = $questions->slice(($currentPage - 1) * $perPage, $perPage)->all();
+        $questions = new LengthAwarePaginator($currentPageItems, $questions->count(), $perPage, $currentPage);
+
         return view('pages.home', compact('questions'));
     }
 
@@ -28,7 +45,7 @@ class QuestionController extends Controller
     {
         return view('pages.questions');
     }
-
+    
     public function store(Request $request)
     {
         $request->validate([
@@ -52,13 +69,16 @@ class QuestionController extends Controller
             $question->tags()->attach($actual_tag);
         }
         
-        foreach ($request->file('images') as $image) {
-            $uploadedPath = 'question_images/' . $image->hashName();
-            $image->move(public_path('question_images'), $image->hashName());
+        $questionImagePath = 'question_images/' . $question->id . '/';
+        foreach ($request->file('images') as $index => $image) {
+            $format = $index + 1; // 1.format, 2.format, etc.
+            $uploadedPath = $questionImagePath . $format . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path($questionImagePath), $format . '.' . $image->getClientOriginalExtension());
             QuestionImage::create([
+                'format' => $format, // '1', '2', '3
                 'picture_path' => $uploadedPath,
                 'question_id' => $question->id,
-            ]);   
+            ]);
         }
         
         
@@ -88,6 +108,39 @@ class QuestionController extends Controller
         $question->delete();
 
         return redirect(url('/'))->withSuccess('You have successfully deleted your question!');
+    }
+
+    public function updateImages(Request $request)
+    {
+        
+        $questionImagePath = 'question_images/' . $question->id . '/';
+
+        dd($request->file('images'));
+    
+        // Add new images
+        foreach ($request->file('images') as $index => $image) {
+            $format = $index + 1; // 1.format, 2.format, etc.
+    
+            // If an image is provided, update or add it
+            if ($image) {
+                $uploadedPath = $questionImagePath . $format . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path($questionImagePath), $format . '.' . $image->getClientOriginalExtension());
+    
+                // Update existing image if it exists, otherwise create a new one
+                if ($existingImage = $question->images()->where('format', $format)->first()) {
+                    $existingImage->update([
+                        'picture_path' => $uploadedPath,
+                    ]);
+                } else {
+                    QuestionImage::create([
+                        'format' => $format, // '1', '2', '3
+                        'picture_path' => $uploadedPath,
+                        'question_id' => $question->id,
+                        'format' => $format,
+                    ]);
+                }
+            }
+        }
     }
     
 
@@ -123,6 +176,35 @@ class QuestionController extends Controller
             $actual_tag = $tagID->id;
             $question->tags()->attach($actual_tag);
         }
+        
+       if ($request->has('images')) {
+
+            $questionImagePath = 'question_images/' . $question->id . '/';
+        
+            // Add new images
+            foreach ($request->file('images') as $index => $image) {
+                $format = $index + 1; // 1.format, 2.format, etc.
+        
+                // If an image is provided, update or add it
+                if ($image) {
+                    $uploadedPath = $questionImagePath . $format . '.' . $image->getClientOriginalExtension();
+                    $image->move(public_path($questionImagePath), $format . '.' . $image->getClientOriginalExtension());
+        
+                    // Update existing image if it exists, otherwise create a new one
+                    if ($existingImage = $question->images()->where('format', $format)->first()) {
+                        $existingImage->update([
+                            'picture_path' => $uploadedPath,
+                        ]);
+                    } else {
+                        QuestionImage::create([
+                            'picture_path' => $uploadedPath,
+                            'question_id' => $question->id,
+                            'format' => $format,
+                        ]);
+                    }
+                }
+            }
+        }
 
 
         if ($question->user_id !== $user->id) {
@@ -144,6 +226,10 @@ class QuestionController extends Controller
     {
         $question = Question::findOrFail($request->input('question_id'));
         
+        if ($question->user_id === Auth::user()->id) {
+            return view('partials.question_score', ['question_id' => $question->id])->render();            
+        }
+
         if(Auth::user()->questionUpVotes()->where('question_id', $question->id)->exists()) {
             Auth::user()->questionUpVotes()->detach($question->id);
             $score = $question->score;
@@ -173,6 +259,10 @@ class QuestionController extends Controller
     {
         $question = Question::findOrFail($request->input('question_id'));
 
+        if ($question->user_id === Auth::user()->id) {
+            return view('partials.question_score', ['question_id' => $question->id])->render();            
+        }
+
         if(Auth::user()->questionDownVotes()->where('question_id', $question->id)->exists()) {
             Auth::user()->questionDownVotes()->detach($question->id);
             $score = $question->score;
@@ -196,5 +286,18 @@ class QuestionController extends Controller
         }
 
         return view('partials.question_score', ['question_id' => $question->id])->render();
+    }
+
+    public function toggleFollow ($question_id)
+    {
+        if(Auth::user()->followedQuestions()->where('question_id', $question_id)->exists()) {
+            Auth::user()->followedQuestions()->detach($question_id);
+            return response()->json(['color' => 'black']);
+        }
+        else {
+            Auth::user()->followedQuestions()->attach($question_id);
+            return response()->json(['color' => 'green']);
+        }
+        // return response()->json(['message' => 'Toggled follow status successfully.']);
     }
 }

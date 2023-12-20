@@ -8,6 +8,15 @@
     $question_tags = array();
     foreach($question->tags as $tag) {
         $question_tags[] = $tag->name;
+    }  
+
+    $followed;
+
+    if(Auth::user()->followedQuestions()->where('question_id', $question->id)->exists()) {
+        $followed = TRUE;
+    }
+    else {
+        $followed = FALSE;
     }
 
     $answers = $question->answers()->orderByDesc('score')->orderBy('correct', 'desc')->get();
@@ -25,6 +34,12 @@
                 
                 <div style="display: flex; flex-direction: row;">
                     <h2 style="margin: 0; margin-right: 5px;">{{ $question->title }}</h2>
+                    @if ($question->user_id === Auth::user()->id)
+                    <button type="button" class="material-symbols-outlined" id="question_archive_btn">archive</button>
+                    @else
+                    <button type="button" class="material-symbols-outlined" id="question_report_btn">report</button>
+                    <button type="button" class="material-symbols-outlined" id="question_follow_btn" data-question-id="{{ $question->id }}" style="@if ($followed) color: green; @else color: black; @endif">notifications</button>
+                    @endif
                     @if ($question->edited == 1)
                         <h3 style= "margin: 0; align-self: center;">(edited)</h3>
                     @endif
@@ -44,7 +59,7 @@
         </div>
         <div id="images-container" class="m-2 flex overflow-x-auto">
             @foreach($question->images as $image)
-                <img src="{{ asset($image->picture_path) }}" alt="Question Image"  style = "max-width: 15%;">
+                <img src="{{ asset($image->picture_path) }}" alt="Question Image"  style = "max-width: 15%;  padding: 5px">
             @endforeach
         </div>
 
@@ -64,7 +79,7 @@
     <div id="question-edit" class="questions bg-gray-200 mb-3 p-4" style="display: none;">
         <h2>Edit Question</h2>
 
-        <form id="edit-question-form" action="{{ route('questions.edit', $question->id) }}" method="POST" class="inline-block">
+        <form id="edit-question-form" action="{{ route('questions.edit', $question->id) }}" method="POST" class="inline-block" enctype="multipart/form-data">
             @csrf
             @method('POST')
             <label for="title">Title:</label>
@@ -99,18 +114,20 @@
                 </datalist>
                 <button id="add_tag" type="button">Add tag</button>
             </div>
-
-            <div id="images-container" class="m-2 flex overflow-x-auto">
-            @foreach($question->images as $image)
-                <img src="{{ asset($image->picture_path) }}" alt="Question Image"  style = "max-width: 5%;">
-            @endforeach
-            </div>
-
             <div class="form-group">
-                <label for="images">Add Images:</label>
-                <input type="file" name="images[]" id="images" multiple accept="image/*" class="mt-1 p-2 border rounded-md">
-                <div id="image-preview-container" class="m-5 flex space-x-2"></div>
+                <label for="images">Edit Images (Up to 3):</label>
+                <input type="file" name="images[]" id="image1" accept="image/*" class="mt-1 p-2 border rounded-md">
+                <input type="file" name="images[]" id="image2" accept="image/*" class="mt-1 p-2 border rounded-md">
+                <input type="file" name="images[]" id="image3" accept="image/*" class="mt-1 p-2 border rounded-md">
+                <div id="images-container" class="m-2 flex overflow-x-auto">
+                    @foreach($question->images as $key => $image)
+                        <div id="image-{{ $key + 1 }}" class="p-2">
+                            <img src="{{ asset($image->picture_path) }}" alt="Question Image" style="width: 100px; padding: 5px">
+                        </div>
+                    @endforeach
+                </div>
             </div>
+
 
             <button class = "button" type="submit" id="update-question-btn">Update Question</button>
         </form>

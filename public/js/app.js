@@ -5,12 +5,13 @@
     });
   }
 
-  const edit_answer_btn = document.getElementById('edit-answer-btn');
-  if(edit_answer_btn) {
-    edit_answer_btn.addEventListener('click', function () {
-      toggleAnswerSections(true);
-    });  
-  }
+  document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('button')) {
+        const answerId = event.target.dataset.id;
+        toggleAnswerSections(answerId, true);
+    }
+});
+
 
   const edit_question_btn = document.getElementById('edit-question-btn');
   if(edit_question_btn) {
@@ -24,14 +25,21 @@
     document.getElementById('question-view').style.display = editMode ? 'none' : 'block';
   }
 
-  function toggleAnswerSections(editMode) {
-    document.getElementById('answer-edit').style.display = editMode ? 'block' : 'none';
-    document.getElementById('answer-view').style.display = editMode ? 'none' : 'block';
-  }
+  function toggleAnswerSections(answerId, editMode) {
+    console.log(answerId);
+    const viewSection = document.getElementById(`answer-view-${answerId}`);
+    const editSection = document.getElementById(`answer-edit-${answerId}`);
+
+    console.log(viewSection);
+    console.log(editSection);
+
+    viewSection.style.display = editMode ? 'none' : 'block';
+    editSection.style.display = editMode ? 'block' : 'none';
+}
 
   function toggleProfileSections(editMode) {
     document.getElementById('profile-view').style.display = editMode ? 'none' : 'block';
-    document.getElementById('profile-picture').style.display = editMode ? 'none' : 'block';
+    //document.getElementById('profile-picture').style.display = editMode ? 'none' : 'block';
     document.getElementById('profile-edit').style.display = editMode ? 'block' : 'none';
     document.getElementById('edit-profile-btn').style.display = editMode ? 'none' : 'inline-block';
     document.getElementById('profile-header').style.display = editMode ? 'none' : 'block';
@@ -41,11 +49,6 @@
 function toggleQuestionSections(editMode) {
   document.getElementById('question-edit').style.display = editMode ? 'block' : 'none';
   document.getElementById('question-view').style.display = editMode ? 'none' : 'block';
-}
-
-function toggleAnswerSections(editMode) {
-  document.getElementById('answer-edit').style.display = editMode ? 'block' : 'none';
-  document.getElementById('answer-view').style.display = editMode ? 'none' : 'block';
 }
 
 function encodeForAjax(data) {
@@ -74,6 +77,8 @@ function updateProfile() {
     toggleProfileSections(false);
   });
 }
+
+
 function updateQuestion() {
   titleInput = document.getElementById('title-input');
   contentInput = document.getElementById('content-input');
@@ -530,10 +535,14 @@ document.addEventListener("DOMContentLoaded", function() {
   const imageInput1 = document.getElementById('image1');
   const imageInput2 = document.getElementById('image2');
   const imageInput3 = document.getElementById('image3');
-  const imagePreviewContainer = document.getElementById('image-preview-container');
+  const imagePreviewContainer1 = document.getElementById('image-1');
+  const imagePreviewContainer2 = document.getElementById('image-2');
+  const imagePreviewContainer3 = document.getElementById('image-3');
   const MAX_IMAGES = 3;
 
-  function previewImages(input) {
+  function previewImage1(input) {
+
+      imagePreviewContainer1.innerHTML = '';
 
       Array.from(input.files).slice(0, MAX_IMAGES).forEach(function(file) {
           const reader = new FileReader();
@@ -543,20 +552,120 @@ document.addEventListener("DOMContentLoaded", function() {
               preview.src = e.target.result;
               preview.style.width = '100px';
               preview.style.marginRight = '5px';
-              imagePreviewContainer.appendChild(preview);
+              imagePreviewContainer1.appendChild(preview);
           };
 
           reader.readAsDataURL(file);
       });
   }
+
+  function previewImage2(input) {
+
+    imagePreviewContainer2.innerHTML = '';
+
+    Array.from(input.files).slice(0, MAX_IMAGES).forEach(function(file) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const preview = document.createElement('img');
+            preview.src = e.target.result;
+            preview.style.width = '100px';
+            preview.style.marginRight = '5px';
+            imagePreviewContainer2.appendChild(preview);
+        };
+
+        reader.readAsDataURL(file);
+    });
+}
+
+function previewImage3(input) {
+
+  imagePreviewContainer3.innerHTML = '';
+
+  Array.from(input.files).slice(0, MAX_IMAGES).forEach(function(file) {
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+          const preview = document.createElement('img');
+          preview.src = e.target.result;
+          preview.style.width = '100px';
+          preview.style.marginRight = '5px';
+          imagePreviewContainer3.appendChild(preview);
+      };
+
+      reader.readAsDataURL(file);
+  });
+}
+
+
   // Initial setup for existing images and trigger preview
   imageInput1.addEventListener('change', function() {
-      previewImages(imageInput1);
+      previewImage1(imageInput1);
   });
   imageInput2.addEventListener('change', function() {
-    previewImages(imageInput2);
+    previewImage2(imageInput2);
   });
   imageInput3.addEventListener('change', function() {
-    previewImages(imageInput3);
+    previewImage3(imageInput3);
   });
 });
+
+/*
+
+function updateProfilePicture() {
+  let newProfilePicture = document.getElementById('newProfilePicture').files[0];
+
+  let data = {'newProfilePicture': newProfilePicture};
+
+  fetch('/profile/update-picture', {
+    method: 'POST',
+    body: data
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    // Update the profile picture on success
+    document.getElementById('profilePicture').src = data.profile_picture;
+    document.getElementById('message').innerHTML = '<div class="alert alert-success">Profile picture updated successfully</div>';
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    document.getElementById('message').innerHTML = '<div class="alert alert-danger">Error updating profile picture</div>';
+  });
+}*/
+
+
+
+// START SECTION: FUNCTIONS RELATED TO FOLLOWING A QUESTION
+
+const question_follow_btn = document.getElementById('question_follow_btn');
+if(question_follow_btn) {
+  question_follow_btn.addEventListener('click', function() {
+    console.log('stupid button pressed');
+    toggle_question_follow(question_follow_btn.getAttribute('data-question-id'));
+  })
+}
+
+function toggle_question_follow(question_id) {
+  fetch('/questions/' + question_id + '/toggle_follow' , {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+    },
+  })
+  .then(response => {
+    return response.json();
+  })
+  .then(data => {
+    document.getElementById('question_follow_btn').style.color = data.color;
+    console.log('changed color');
+  })
+  .catch(error => console.error('Error following question:', error));
+}
+
+// END SECTION 

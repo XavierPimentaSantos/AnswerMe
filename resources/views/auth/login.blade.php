@@ -24,6 +24,11 @@
         <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember Me
     </label>
 
+    <div>
+
+        <a href = "{{route('forget.password')}}" class="text-black"> Forgot Password? </a>
+
+    </div>
     <button type="submit">
         Login
     </button>

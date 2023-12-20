@@ -6,15 +6,11 @@ SET search_path TO lbaw2392;
 -- Drop any existing tables.
 --
 
-DROP TABLE IF EXISTS cards CASCADE;
-DROP TABLE IF EXISTS items CASCADE;
-DROP TABLE IF EXISTS questions CASCADE;
-DROP TABLE IF EXISTS answers CASCADE;
-DROP TABLE IF EXISTS users CASCADE;
 
 --
 -- Create tables.
 --
+DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   name VARCHAR NOT NULL,
@@ -27,6 +23,14 @@ CREATE TABLE users (
   user_type CHAR(1) NOT NULL DEFAULT '1',
   remember_token VARCHAR,
   profile_picture varchar not null default 'default.png'
+);
+
+-- Table: forget_passwords
+DROP TABLE IF EXISTS password_resets;
+CREATE TABLE password_resets (
+    id SERIAL,
+    email VARCHAR UNIQUE NOT NULL,
+    token VARCHAR
 );
 
 
@@ -64,6 +68,7 @@ ALTER TABLE questions ALTER COLUMN user_id DROP NOT NULL;
 DROP TABLE IF EXISTS question_images;
 CREATE TABLE IF NOT EXISTS question_images (
     id SERIAL PRIMARY KEY,
+    format Integer NOT NULL,
     picture_path VARCHAR NOT NULL,
     question_id INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -164,6 +169,16 @@ CREATE TABLE IF NOT EXISTS following_users (
     PRIMARY KEY (user_id, followed_user_id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE, 
     FOREIGN KEY (followed_user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- Table: following_questions
+DROP TABLE IF EXISTS following_questions;
+CREATE TABLE IF NOT EXISTS following_questions (
+    user_id INTEGER NOT NULL,
+    question_id INTEGER NOT NULL,
+    PRIMARY KEY (user_id, question_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table: notifications

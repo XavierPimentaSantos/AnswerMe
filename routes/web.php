@@ -15,8 +15,12 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\AdminController;
+use App\Http\Controllers\Auth\ForgetPasswordController;
 
 use App\Http\Controllers\FAQController;
+
+use App\Mail\MyTestEmail;
+
 
 
 /*
@@ -49,6 +53,9 @@ Route::controller(QuestionController::class)->group(function () {
     Route::get('/questions/{id}', [QuestionController::class, 'show'])->name('questions.show');
     Route::delete('/questions/{question_id}/delete', [QuestionController::class, 'delete'])->name('questions.delete');
     Route::post('/questions/{question_id}/edit', [QuestionController::class, 'edit'])->name('questions.edit');
+    Route::post('/questions/{question_id}/toggle_follow', [QuestionController::class, 'toggleFollow'])->name('questions.toggleFollow');
+    Route::post('/questions', [QuestionController::class, 'search'])->name('questions.search');
+    Route::post('/', [QuestionController::class, 'filter'])->name('questions.filter');
 });
 
 Route::controller(AnswerController::class)->group(function () {
@@ -61,6 +68,7 @@ Route::controller(AnswerController::class)->group(function () {
 Route::controller(ProfileController::class)->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::post('/profile/{username}/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    //Route::post('/profile/update-picture', [ProfileController::class, 'updateProfilePicture'])->name('profile.updateProfilePicture');
     Route::get('/profile/{username}', [ProfileController::class, 'showUser'])->name('profile.showUser');
     Route::delete('/profile/{username}/delete', [ProfileController::class, 'delete'])->name('profile.delete');
 });
@@ -107,6 +115,19 @@ Route::post('/increase_score_ans', [AnswerController::class, 'inc_score']);
 Route::post('/decrease_score_ans', [AnswerController::class, 'dec_score']);
 
 Route::get('/faq', [FAQController::class, 'show'])->name('faq.show');
+
+Route::get('/testroute', function() {
+    $name = "Funny Coder";
+
+    // The email sending is done using the to method on the Mail facade
+    Mail::to('up202109260@g.uporto.pt')->send(new MyTestEmail($name));
+});
+
+Route::get('/forgot-password', [ForgetPasswordController::class, 'forgetPassword'])->name('forget.password');
+Route::post('/forgot-password', [ForgetPasswordController::class, 'forgetPasswordPost'])->name('forget.password.post');
+Route::get('/reset-password/{token}', [ForgetPasswordController::class, 'resetPassword'])->name('reset.password');
+Route::post('/reset-password', [ForgetPasswordController::class, 'resetPasswordPost'])->name('reset.password.post');
+
 
 
 /*

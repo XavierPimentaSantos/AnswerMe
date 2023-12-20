@@ -42,7 +42,11 @@
                 <input type="file" name="images[]" id="image1" accept="image/*" class="mt-1 p-2 border rounded-md">
                 <input type="file" name="images[]" id="image2" accept="image/*" class="mt-1 p-2 border rounded-md">
                 <input type="file" name="images[]" id="image3" accept="image/*" class="mt-1 p-2 border rounded-md">
-                <div id="image-preview-container" class="mt-2 flex space-x-2"></div>
+                <div id="image-preview-container" class="mt-2 flex space-x-2">
+                    <div id="image-1" class="p-2"></div>
+                    <div id="image-2" class="p-2"></div>
+                    <div id="image-3" class="p-2"></div>
+                </div>
             </div>
             <div class="form-group mt-10" id="question_tag_container">
                 <input type="text" name="tag_input" id="tag_input" list="tag_listing">
