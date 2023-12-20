@@ -5,12 +5,13 @@
     });
   }
 
-  const edit_answer_btn = document.getElementById('edit-answer-btn');
-  if(edit_answer_btn) {
-    edit_answer_btn.addEventListener('click', function () {
-      toggleAnswerSections(true);
-    });  
-  }
+  document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('button')) {
+        const answerId = event.target.dataset.id;
+        toggleAnswerSections(answerId, true);
+    }
+});
+
 
   const edit_question_btn = document.getElementById('edit-question-btn');
   if(edit_question_btn) {
@@ -24,10 +25,17 @@
     document.getElementById('question-view').style.display = editMode ? 'none' : 'block';
   }
 
-  function toggleAnswerSections(editMode) {
-    document.getElementById('answer-edit').style.display = editMode ? 'block' : 'none';
-    document.getElementById('answer-view').style.display = editMode ? 'none' : 'block';
-  }
+  function toggleAnswerSections(answerId, editMode) {
+    console.log(answerId);
+    const viewSection = document.getElementById(`answer-view-${answerId}`);
+    const editSection = document.getElementById(`answer-edit-${answerId}`);
+
+    console.log(viewSection);
+    console.log(editSection);
+
+    viewSection.style.display = editMode ? 'none' : 'block';
+    editSection.style.display = editMode ? 'block' : 'none';
+}
 
   function toggleProfileSections(editMode) {
     document.getElementById('profile-view').style.display = editMode ? 'none' : 'block';
@@ -42,12 +50,6 @@ function toggleQuestionSections(editMode) {
   document.getElementById('question-edit').style.display = editMode ? 'block' : 'none';
   document.getElementById('question-view').style.display = editMode ? 'none' : 'block';
 }
-
-function toggleAnswerSections(editMode) {
-  document.getElementById('answer-edit').style.display = editMode ? 'block' : 'none';
-  document.getElementById('answer-view').style.display = editMode ? 'none' : 'block';
-}
-
 
 function encodeForAjax(data) {
   if (data == null) return null;

@@ -9,7 +9,7 @@
             <div class="question-title">
                 <div style="display: flex; flex-direction: row; gap: 2rem;">
                     <h2>{{ $question->title }}</h2>
-                    @if (Auth::user()->followedQuestions->contains($question->id))
+                    @if (Auth::check() && Auth::user()->followedQuestions->contains($question->id))
                     <h4 class="material-symbols-outlined" style="color: green;">notifications</h4>
                     @endif
                 </div>
