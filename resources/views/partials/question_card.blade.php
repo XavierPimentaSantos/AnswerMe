@@ -14,7 +14,7 @@
                     @endif
                 </div>
                 @if ($question->user_id)
-                <p class="card-content text-red-700">Asked by: {{ $question->user->name }}</p>
+                <p class="card-content text-red-700">Asked by: {{ $question->user ? $question->user->name : '[deleted]' }}</p>
                 @endif
             </div>
         </a>
