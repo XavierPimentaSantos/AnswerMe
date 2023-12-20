@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\View\View;
 
@@ -49,6 +50,20 @@ class AdminController extends Controller
         return redirect()->route('admin.show')->with('success', 'User blocked');
     }
 
+    public function promoteUser($username)
+    {
+        $user = User::where('name', $username)->first();
+    
+        if (!$user) {
+            return redirect('/')->with('error', 'User not found');
+        }
+    
+        $user->user_type = 3;
+        $user->save();
+    
+        return redirect()->route('admin.show')->with('success', 'User promoted');
+    }
+
     public function unblockUser($username)
     {
         $user = User::where('name', $username)->first();
@@ -62,4 +77,35 @@ class AdminController extends Controller
     
         return redirect()->route('admin.show')->with('success', 'User unblocked');
     }
+
+    public function demoteUser($username){
+        $user = User::where('name', $username)->first();
+    
+        if (!$user) {
+            return redirect('/')->with('error', 'User not found');
+        }
+    
+        $user->user_type = 1;
+        $user->save();
+    
+        return redirect()->route('admin.show')->with('success', 'User demoted');        
+    }
+    
+    public function addTag(Request $request)
+{
+    $request->validate([
+        'tag' => 'required|unique:tags,name',
+    ]);
+
+    $tag = $request->input('tag');
+    DB::table('tags')->insert(['name' => $tag]);
+
+    return redirect()->back()->with('success', 'Tag added successfully');
+}
+    
+    public function create()
+    {
+        return view('pages.create');
+    }
+
 }

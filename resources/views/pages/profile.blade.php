@@ -10,11 +10,22 @@
             </div>    
             <a class="button text-sm rounded px-1 py-1 my-1" id="edit-profile-btn">Edit User Profile</a>
 
-        @if (Auth::user()->isAdmin() && !$user->isBlocked()) <!-- Check if the authenticated user is an admin -->
+        @if (Auth::user()->isAdmin() && !$user->isBlocked() && !$user->isAdmin()) <!-- Check if the authenticated user is an admin -->
             <form method="POST" action="{{ route('admin.blockUser', ['username' => $user->name]) }}">
                 @csrf
                 <button type="submit">Block User</button>
             </form>
+            @if (!$user->isModerator())
+            <form method="POST" action="{{ route('admin.promoteUser', ['username' => $user->name]) }}">
+                @csrf
+                <button type="submit">Promote to Moderator</button>
+            </form>
+            @else
+            <form method="POST" action="{{ route('admin.demoteUser', ['username' => $user->name]) }}">
+                @csrf
+                <button type="submit">Demote from Moderator</button>
+            </form>
+            @endif
         @endif
 
         @if (Auth::user()->isAdmin() && $user->isBlocked()) <!-- Check if the authenticated user is an admin -->

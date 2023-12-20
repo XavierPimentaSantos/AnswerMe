@@ -23,6 +23,10 @@ class ProfileController extends Controller
 
     public function showUser($username)
     {
+        if (!Auth::user()->isAdmin()) {
+            return redirect('/');
+        }
+
         $user = User::where('name', $username)->first();
     
         if ($user) {

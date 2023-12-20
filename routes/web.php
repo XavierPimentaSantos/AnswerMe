@@ -69,7 +69,11 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('/admin', [AdminController::class, 'show'])->name('admin.show');
     Route::post('/admin/submit', [AdminController::class, 'submit'])->name('admin.submit');
     Route::post('/admin/block-user/{username}', [AdminController::class, 'blockUser'])->name('admin.blockUser');
+    Route::post('/admin/promote-user/{username}', [AdminController::class, 'promoteUser'])->name('admin.promoteUser');
     Route::post('/admin/unblock-user/{username}', [AdminController::class, 'unblockUser'])->name('admin.unblockUser');
+    Route::post('/admin/demote-user/{username}', [AdminController::class, 'demoteUser'])->name('admin.demoteUser');
+    Route::post('/admin/addTag', [AdminController::class, 'addTag'])->name('admin.addTag');
+    Route::get('/admin/create', [AdminController::class, 'create'])->name('admin.create');
 });
 
 Route::controller(QuestionCommentController::class)->group(function () {

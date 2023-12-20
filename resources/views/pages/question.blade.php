@@ -38,9 +38,7 @@
                         @endif
                     </div>
                 </div>
-                @if ($question->user_id)
-                <p class="card-content text-red-700">Asked by: {{ $question->user->name }}</p>
-                @endif
+                <p class="card-content text-red-700">Asked by: {{ $question->user ? $question->user->name : '[deleted]' }}</p>
             </div>
             <p class="card-content">{{ $question->content }}</p>
         </div>
