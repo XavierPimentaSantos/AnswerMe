@@ -6,6 +6,8 @@
 @foreach ($answers as $answer)
 <?php
     $question = Question::find($answer->question_id);
+
+    $answercomments = $answer->comments()->latest()->paginate(4);
 ?>
 <li>
     <div id="answer-view-{{ $answer->id }}"  class="answers bg-gray-100 mb-3 p-4">
@@ -61,7 +63,7 @@
     </div>
 
     <div id="comment-section-{{ $answer->id }}">
-        @include ('partials.answer_comment_section', ['answer_id' => $answer->id])
+        @include ('partials.answer_comment_section', ['answercomments' => $answercomments])
     </div>
 </li>
 

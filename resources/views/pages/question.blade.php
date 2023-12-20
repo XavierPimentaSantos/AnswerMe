@@ -20,7 +20,7 @@
     }
 
     $answers = $question->answers()->orderByDesc('score')->orderBy('correct', 'desc')->get();
-    $questioncomments = $question->comments()->latest()->get(); // paginate aqui?
+    $questioncomments = $question->comments()->latest()->paginate(4);
 ?>
 
 <article class="card" data-id="{{ $question->id }}">
@@ -138,7 +138,7 @@
 
 <div id="comment-section">
     @csrf
-    @include ('partials.comment_section', ['comments' => $questioncomments])
+    @include ('partials.comment_section', ['questioncomments' => $questioncomments])
 </div>
 
 @if (Auth::check())

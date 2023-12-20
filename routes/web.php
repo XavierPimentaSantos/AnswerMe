@@ -80,12 +80,14 @@ Route::controller(AdminController::class)->group(function () {
 });
 
 Route::controller(QuestionCommentController::class)->group(function () {
+    Route::get('/questions/{question_id}/comments', [QuestionCommentController::class, 'index'])->name('questioncomment.index');
     Route::post('/questions/{question_id}/comment', [QuestionCommentController::class, 'store'])->name('questioncomment.store');
     Route::put('/questions/{question_id}/comment/{comment_id}/edit', [QuestionCommentController::class, 'edit'])->name('questioncomment.edit');
     Route::delete('/questions/{question_id}/comment/{comment_id}/delete', [QuestionCommentController::class, 'delete'])->name('questioncomment.delete');
 });
 
 Route::controller(AnswerCommentController::class)->group(function () {
+    Route::get('/answers/{answer_id}/comments', [AnswerCommentController::class, 'index'])->name('answercomment.index');
     Route::post('/answers/{answer_id}/comment', [AnswerCommentController::class, 'store'])->name('answercomment.store');
     Route::put('/answers/{answer_id}/comment/{comment_id}/edit', [AnswerCommentController::class, 'edit'])->name('answercomment.edit');
     Route::delete('/answers/{answer_id}/comment/{comment_id}/delete', [AnswerCommentController::class, 'delete'])->name('answercomment.delete');
