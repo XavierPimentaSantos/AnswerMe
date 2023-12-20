@@ -22,6 +22,7 @@
         <script type="text/javascript" src={{ url('js/app.js') }} defer>
             
         </script>
+        <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     </head>
     <body class="flex flex-col min-h-screen">
         <main class="flex-grow">

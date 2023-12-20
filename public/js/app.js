@@ -1,3 +1,15 @@
+  Pusher.logToConsole = true;
+
+  var pusher = new Pusher('4fc151dc2ba70eed2c92', {
+    cluster: 'eu'
+  });
+
+  var channel = pusher.subscribe('answerme-channel');
+  channel.bind('user-register', function(data) {
+    alert(JSON.stringify(data));
+  });  
+  
+  
   const edit_profile_btn = document.getElementById('edit-profile-btn');
   if(edit_profile_btn) {
     edit_profile_btn.addEventListener('click', function() {
