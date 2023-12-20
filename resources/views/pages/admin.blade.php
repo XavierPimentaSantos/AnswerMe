@@ -15,12 +15,12 @@
 <div id="TagManagement" class="tabcontent">
     <h2>All Tags:</h2>
     @foreach ($tags as $tag)
-        <div>
+        <div class="tag">
             {{ $tag->name }}
             <form method="POST" action="{{ route('tag.delete', $tag->id) }}" onsubmit="return confirm('Are you sure you want to delete this tag?')">
                 @csrf
                 @method('DELETE')
-                <button type="submit">Delete</button>
+                <button class="delete-button" type="submit">X</button>
             </form>
         </div>
     @endforeach
@@ -30,7 +30,7 @@
     <label for="tag">Add a New Tag:</label>
     <input type="text" id="tag" name="tag">
     <button type="submit">Add Tag</button>
-</form>
+    </form>
 
 </div>
 
@@ -46,8 +46,7 @@
     </datalist>
     <button type="submit">Search</button>
 </form>
-
-<a href="{{ route('admin.create') }}" class="button button-outline">Create an Account</a>
+<a href="{{ route('admin.create') }}" class="button">Create an Account</a>
 </div>
 
 <script>

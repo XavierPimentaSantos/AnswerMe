@@ -188,3 +188,51 @@ body {
 .faq-card:last-of-type {
   border-bottom: none;
 }
+
+.tabs {
+  width: 100%;
+  overflow: auto;
+}
+
+.tabcontent{
+  margin: 1em; 
+}
+
+.tabcontent form {
+  max-width: 500px;
+}
+
+.tablink {
+  float: left;
+  width: 50%;
+  text-align: center;
+  cursor: pointer;
+} 
+.tablink:hover {
+  background-color: gray;
+}
+.tablink.active {
+  background-color: black;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid gray;
+  border-radius: 5px;
+}
+.delete-button {
+  background-color: transparent;
+  color: darkred; 
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+  font-size: 0.8em;
+  padding: 0;
+  line-height: 1;
+  height: auto;
+  width: auto;
+  overflow: visible; 
+}
