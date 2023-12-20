@@ -46,6 +46,42 @@ class QuestionController extends Controller
         return view('pages.questions');
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        $questions = Question::where('title', 'like', "%$query%")
+                     ->orWhere('content', 'like', "%$query%")
+                     ->paginate(10); 
+
+
+        return view('pages.home', compact('questions'));
+
+    }
+
+    public function filter(Request $request)
+    {
+        $tagId = $request->input('tagFilter');
+        $authorId = $request->input('authorId');
+
+        $questions = Question::query();
+
+        if ($tagId) {
+            $questions->whereHas('tags', function ($subQuery) use ($tagId) {
+                $subQuery->where('id', $tagId);
+            });
+        }
+
+        if ($authorId) {
+            $questions->where('user_id', $authorId);
+        }
+
+        $questions = $questions->paginate(10);
+
+        return view('pages.home', compact('questions'));
+    }
+
+
     public function store(Request $request)
     {
         $request->validate([
