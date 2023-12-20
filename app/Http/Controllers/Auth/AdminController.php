@@ -17,7 +17,7 @@ class AdminController extends Controller
 {
     public function show()
     {
-        if (Auth::user()->isAdmin()) {
+        if (Auth::user()->isModerator()) {
             return view('pages.admin');
         } else {
             return redirect('/');

@@ -8,10 +8,13 @@
 ?>
 
 <div class="tabs">
-    <button class="tablink" onclick="openTab('TagManagement', this)">Tag Management</button>
-    <button class="tablink" onclick="openTab('UserManagement', this)">User Management</button>
+@if (Auth::user()->isAdmin())
+        <button class="tablink active" onclick="openTab('TagManagement', this)">Tag Management</button>
+        <button class="tablink" onclick="openTab('UserManagement', this)">User Management</button>
+@endif
 </div>
 
+@if (Auth::user()->isModerator())
 <div id="TagManagement" class="tabcontent">
     <h2>All Tags:</h2>
     @foreach ($tags as $tag)
@@ -33,7 +36,9 @@
     </form>
 
 </div>
+@endif
 
+@if (Auth::user()->isAdmin())
 <div id="UserManagement" class="tabcontent">
 <form method="POST" action="{{ route('admin.submit') }}">
     @csrf
@@ -48,6 +53,7 @@
 </form>
 <a href="{{ route('admin.create') }}" class="button">Create an Account</a>
 </div>
+@endif
 
 <script>
     function openTab(tabId, elmnt) {
