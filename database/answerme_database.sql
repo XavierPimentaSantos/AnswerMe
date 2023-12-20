@@ -333,25 +333,29 @@ CREATE TABLE IF NOT EXISTS answer_down_votes (
 -- Insert value.
 --
 
-INSERT INTO users (name, email, password, user_type)
-VALUES ('Mestre Fu', 'admin@example.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 4);-- Password is 1234. Generated using Hash::make('1234')
+INSERT INTO users (name, email, password, username, user_type)
+VALUES ('Mestre Fu', 'admin@example.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'mestrefu_33', 4);-- Password is 1234. Generated using Hash::make('1234')
 
 
-INSERT INTO users VALUES (
+/* INSERT INTO users VALUES (
   DEFAULT,
   'João Silva',
   'jsilva@example.com',
   '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W'
-); 
+); */
 
+INSERT INTO users (name, email, password, username, user_type)
+VALUES ('João Silva', 'jsilva@example.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'jo4o_silv4', 4);-- Password is 1234. Generated using Hash::make('1234')
 
-
-INSERT INTO users VALUES (
+/* INSERT INTO users VALUES (
   DEFAULT,
   'Lourenço Silva',
   'b@example.com',
   '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W'
-); 
+); */
+
+INSERT INTO users (name, email, password, username, user_type)
+VALUES ('Lourenço Silva', 'b@example.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'lourenço_mickey_delas', 4);-- Password is 1234. Generated using Hash::make('1234')
 
 
 -- Question 1

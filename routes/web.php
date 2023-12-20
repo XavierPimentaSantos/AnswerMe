@@ -53,15 +53,23 @@ Route::controller(QuestionController::class)->group(function () {
     Route::get('/questions/{id}', [QuestionController::class, 'show'])->name('questions.show');
     Route::delete('/questions/{question_id}/delete', [QuestionController::class, 'delete'])->name('questions.delete');
     Route::post('/questions/{question_id}/edit', [QuestionController::class, 'edit'])->name('questions.edit');
-
     Route::post('/questions/{question_id}/toggle_follow', [QuestionController::class, 'toggleFollow'])->name('questions.toggleFollow');
+    // route for increasing a question's score
+    Route::post('/increase_score', [QuestionController::class, 'inc_score']);
+    // route for decreasing a question's score
+    Route::post('/decrease_score', [QuestionController::class, 'dec_score']);
 });
 
 Route::controller(AnswerController::class)->group(function () {
     Route::post('/questions/{question_id}/answer', [AnswerController::class, 'store'])->name('answers.store');
     Route::post('/questions/{question_id}/answer/{answer_id}/edit', [AnswerController::class, 'edit'])->name('answers.edit');
     Route::delete('/questions/{question_id}/answer/{answer_id}/delete', [AnswerController::class, 'delete'])->name('answers.delete');
-
+    // route for validating an answer
+    Route::post('/validate_answer', [AnswerController::class, 'validate_answer']);
+    // route for increasing an answer's score
+    Route::post('/increase_score_ans', [AnswerController::class, 'inc_score']);
+    // route for decreasing an answer's score
+    Route::post('/decrease_score_ans', [AnswerController::class, 'dec_score']);
 });
 
 Route::controller(ProfileController::class)->group(function () {
@@ -99,17 +107,6 @@ Route::put('/tag/{tag_id}', [TagController::class, 'edit'])->name('tag.edit');
 
 // route for updating a question's tags
 Route::post('/update_tags', [TagController::class, 'updateTags']);
-
-// route for validating an answer
-Route::post('/validate_answer', [AnswerController::class, 'validate_answer']);
-// route for increasing a question's score
-Route::post('/increase_score', [QuestionController::class, 'inc_score']);
-// route for decreasing a question's score
-Route::post('/decrease_score', [QuestionController::class, 'dec_score']);
-// route for increasing an answer's score
-Route::post('/increase_score_ans', [AnswerController::class, 'inc_score']);
-// route for decreasing an answer's score
-Route::post('/decrease_score_ans', [AnswerController::class, 'dec_score']);
 
 Route::get('/faq', [FAQController::class, 'show'])->name('faq.show');
 

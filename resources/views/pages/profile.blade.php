@@ -32,12 +32,13 @@
 
         <div id="profile-view">
             <p id = "name"><strong>Name:</strong> {{ $user->name }}</p>
+            <p><strong>Username:</strong>{{ $user->username }}</p>
             <p id = "email"><strong>Email:</strong> {{ $user->email }}</p>
         </div>
 
         <div id="profile-edit" style="display: none;">
 
-            <form id="edit-profile-form" enctype="multipart/form-data" method="POST" action="{{ route('profile.edit', ['username' => $user->name]) }}">                
+            <form id="edit-profile-form" enctype="multipart/form-data" method="POST" action="{{ route('profile.edit', ['username' => $user->username]) }}">                
                 @csrf
                 @method('POST')
 
@@ -46,6 +47,9 @@
 
                 <label for="name">Name:</label>
                 <input type="text" id = "name-input" name="name" value="{{ $user->name }}" required>
+
+                <label for="username">Username:</label>
+                <input type="text" name="username" id="username-input" value="{{ $user->username }}" required>
 
                 <label for="email">Email:</label>
                 <input type="email" id = "email-input" name="email" value="{{ $user->email }}" required>

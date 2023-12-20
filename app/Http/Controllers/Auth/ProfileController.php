@@ -23,7 +23,7 @@ class ProfileController extends Controller
 
     public function showUser($username)
     {
-        $user = User::where('name', $username)->first();
+        $user = User::where('username', $username)->first();
     
         if ($user) {
             return view('pages.profile', compact('user'));
@@ -58,16 +58,19 @@ class ProfileController extends Controller
 
     public function edit(Request $request, $username)
     {
-        $user = Auth::user();
-
-        $user = User::where('name', $username)->first();
+        $user = User::where('username', $username)->first();
     
+        if((Auth::user()->id!==$user->id) && (Auth::user()->user_type!=4)) {
+            abort(403, 'Unauthorized');
+        }
+
         if (!$user) {
             return redirect('/')->with('error', 'User not found');
         }
     
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'profile_picture' => 'image|mimetypes:image/jpeg,image/png,image/jpg,image/gif|max:2048',
         ]);
@@ -87,12 +90,13 @@ class ProfileController extends Controller
         }    
         $user->update([
             'name' => $request->input('name'),
+            'username' => $request->input('username'),
             'email' => $request->input('email'),
             'profile_picture' => $newFileName,
         ]);
         $user->save();
     
-        return redirect()->route('profile.showUser', ['username' => $username])->with('success', 'Profile updated successfully');
+        return redirect()->route('profile.showUser', ['username' => $user->username])->with('success', 'Profile updated successfully');
     }
     
 
