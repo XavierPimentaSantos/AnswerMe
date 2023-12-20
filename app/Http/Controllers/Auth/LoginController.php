@@ -2,6 +2,9 @@
  
 namespace App\Http\Controllers\Auth;
 
+use App\Events\UserRegister;
+
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -35,6 +38,7 @@ class LoginController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
+
  
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
