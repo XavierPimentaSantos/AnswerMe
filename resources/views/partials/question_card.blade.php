@@ -13,9 +13,7 @@
                     <h4 class="material-symbols-outlined" style="color: green;">notifications</h4>
                     @endif
                 </div>
-                @if ($question->user_id)
                 <p class="card-content text-red-700">Asked by: {{ $question->user ? $question->user->name : '[deleted]' }}</p>
-                @endif
             </div>
         </a>
         <p class="card-content" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $question->content }}</p>
