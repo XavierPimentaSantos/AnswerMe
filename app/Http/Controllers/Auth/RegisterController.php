@@ -49,10 +49,6 @@ class RegisterController extends Controller
             'user_type' => 1,
         ]);
 
-        event(new UserRegister($request->name));
-
-        dd($request->input('admin_create'));
-
         if ($request->input('admin_create')) {
             return redirect()->route('admin.show')->with('success', 'User created successfully');
         }
@@ -60,6 +56,9 @@ class RegisterController extends Controller
         $credentials = $request->only('email', 'password');
         Auth::attempt($credentials);
         $request->session()->regenerate();
+
+        event(new UserRegister($request->username));
+
         return redirect(url('/'))
             ->withSuccess('You have successfully registered & logged in!');
     }

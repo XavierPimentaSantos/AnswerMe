@@ -7,6 +7,7 @@ use App\Models\Question;
 use App\Models\QuestionImage;
 use Illuminate\Support\Facades\View;
 use App\Models\User;
+use App\Events\UserRegister;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -43,44 +44,9 @@ class QuestionController extends Controller
 
     public function create()
     {
+        event(new UserRegister('lololol'));
         return view('pages.questions');
     }
-
-    public function search(Request $request)
-    {
-        $query = $request->input('query');
-
-        $questions = Question::where('title', 'like', "%$query%")
-                     ->orWhere('content', 'like', "%$query%")
-                     ->paginate(10); 
-
-
-        return view('pages.home', compact('questions'));
-
-    }
-
-    public function filter(Request $request)
-    {
-        $tagId = $request->input('tagFilter');
-        $authorId = $request->input('authorId');
-
-        $questions = Question::query();
-
-        if ($tagId) {
-            $questions->whereHas('tags', function ($subQuery) use ($tagId) {
-                $subQuery->where('id', $tagId);
-            });
-        }
-
-        if ($authorId) {
-            $questions->where('user_id', $authorId);
-        }
-
-        $questions = $questions->paginate(10);
-
-        return view('pages.home', compact('questions'));
-    }
-
 
     public function store(Request $request)
     {
@@ -107,11 +73,11 @@ class QuestionController extends Controller
         
         $questionImagePath = 'question_images/' . $question->id . '/';
         foreach ($request->file('images') as $index => $image) {
-            $format = $index + 1; // 1.format, 2.format, etc.
+            $format = $index + 1; 
             $uploadedPath = $questionImagePath . $format . '.' . $image->getClientOriginalExtension();
             $image->move(public_path($questionImagePath), $format . '.' . $image->getClientOriginalExtension());
             QuestionImage::create([
-                'format' => $format, // '1', '2', '3
+                'format' => $format, 
                 'picture_path' => $uploadedPath,
                 'question_id' => $question->id,
             ]);
@@ -153,23 +119,19 @@ class QuestionController extends Controller
 
         dd($request->file('images'));
     
-        // Add new images
         foreach ($request->file('images') as $index => $image) {
-            $format = $index + 1; // 1.format, 2.format, etc.
-    
-            // If an image is provided, update or add it
-            if ($image) {
+            $format = $index + 1; 
+                if ($image) {
                 $uploadedPath = $questionImagePath . $format . '.' . $image->getClientOriginalExtension();
                 $image->move(public_path($questionImagePath), $format . '.' . $image->getClientOriginalExtension());
     
-                // Update existing image if it exists, otherwise create a new one
                 if ($existingImage = $question->images()->where('format', $format)->first()) {
                     $existingImage->update([
                         'picture_path' => $uploadedPath,
                     ]);
                 } else {
                     QuestionImage::create([
-                        'format' => $format, // '1', '2', '3
+                        'format' => $format, 
                         'picture_path' => $uploadedPath,
                         'question_id' => $question->id,
                         'format' => $format,
@@ -217,16 +179,13 @@ class QuestionController extends Controller
 
             $questionImagePath = 'question_images/' . $question->id . '/';
         
-            // Add new images
             foreach ($request->file('images') as $index => $image) {
-                $format = $index + 1; // 1.format, 2.format, etc.
+                $format = $index + 1; 
         
-                // If an image is provided, update or add it
                 if ($image) {
                     $uploadedPath = $questionImagePath . $format . '.' . $image->getClientOriginalExtension();
                     $image->move(public_path($questionImagePath), $format . '.' . $image->getClientOriginalExtension());
         
-                    // Update existing image if it exists, otherwise create a new one
                     if ($existingImage = $question->images()->where('format', $format)->first()) {
                         $existingImage->update([
                             'picture_path' => $uploadedPath,
