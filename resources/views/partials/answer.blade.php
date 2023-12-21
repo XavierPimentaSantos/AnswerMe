@@ -27,7 +27,16 @@
                     @endif
                 </div>
                 @if (Auth::user()->id === $question->user_id && $answer->correct === false)
-                <button type="button" id="validate-answer-btn-{{ $answer->id }}" class="validate_answer_btn material-symbols-outlined bg-gray-200" data-id="{{ $answer->id }}" style="border: 2px solid black; border-radius: 2px; color: green;">check</button>
+                <div class="tooltip">
+                    <button type="button" id="validate-answer-btn-{{ $answer->id }}" class="validate_answer_btn material-symbols-outlined bg-gray-200" data-id="{{ $answer->id }}" style="border: 2px solid black; border-radius: 2px; color: green;">check</button>
+                    <p class="tooltiptext">Validate</p>
+                </div>
+                @endif
+                @if (Auth::user()->id !== $answer->user_id)
+                <div class="tooltip">
+                    <button type="button" class="material-symbols-outlined bg-gray-200" id="question_report_btn" data-question-id="{{ $question->id }}" style="border: 2px solid black; border-radius: 2px; color: red;">report</button>
+                    <p class="tooltiptext">Report</p>
+                </div>
                 @endif
             </div>
         </div>
