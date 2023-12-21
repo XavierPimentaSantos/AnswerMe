@@ -23,13 +23,13 @@ class QuestionController extends Controller
         if(Auth::user()) {
             $followedQuestionIDs = Auth::user()->followedQuestions()->pluck('question_id');
 
-            $actualFollowedQuestions = Question::whereIn('id', $followedQuestionIDs)->get();
-            $otherQuestions = Question::whereNotIn('id', $followedQuestionIDs)->get();
+            $actualFollowedQuestions = Question::whereIn('id', $followedQuestionIDs)->orderBy('score', 'desc')->orderBy('created_at', 'desc')->get();
+            $otherQuestions = Question::whereNotIn('id', $followedQuestionIDs)->orderBy('score', 'desc')->orderBy('created_at', 'desc')->get();
 
             $questions = $actualFollowedQuestions->merge($otherQuestions);
         }
         else {
-            $questions = Question::orderByDesc('score')->orderBy('created_at', 'desc')->paginate(10);
+            $questions = Question::orderByDesc('score')->orderBy('created_at', 'desc')->paginate(6);
         }
 
         $perPage = 6;
