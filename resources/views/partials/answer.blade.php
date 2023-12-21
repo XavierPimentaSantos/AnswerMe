@@ -26,7 +26,7 @@
         </div>
         <p>{{ $answer->content }}</p>
         <div>
-            @if ($answer->user_id === Auth::user()->id)
+            @if ($answer->user_id === Auth::user()->id || Auth::user()->isModerator())
             <a id="edit-answer-btn" class="button bg-blue-500 text-white px-4 py-2 rounded mt-1 inline-block" data-id="{{ $answer->id }}">Edit Answer</a>                  
             <form action="{{ route('answers.delete', ['question_id' => $question->id, 'answer_id' => $answer->id]) }}" method="POST" class="inline-block">
                 @csrf

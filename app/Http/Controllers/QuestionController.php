@@ -11,6 +11,7 @@ use App\Events\UserRegister;
 use App\Events\UpvoteQuestion;
 use App\Events\DownvoteQuestion;
 use App\Events\DeleteQuestion;
+use App\Events\EditQuestion;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -139,12 +140,16 @@ class QuestionController extends Controller
         
         $question = Question::findOrFail($question_id);
 
-        if ($question->user_id !== auth()->user()->id) {
+        if ($question->user_id !== auth()->user()->id && !auth()->user()->isModerator()) {
             abort(403, 'Unauthorized');
         }
     
 
         $question->delete();
+
+        if(auth()->user()->id !== $question->user_id){
+            event(new DeleteQuestion($question->user_id, $question->title));
+        }
 
         return redirect(url('/'))->withSuccess('You have successfully deleted your question!');
     }
@@ -241,13 +246,17 @@ class QuestionController extends Controller
         }
 
 
-        if ($question->user_id !== $user->id) {
+        if ($question->user_id !== $user->id && !auth()->user()->isModerator()) {
             return redirect()->route('questions.show', $question_id)->with('error', 'You are not authorized to edit this question');
         }
 
         $question->edited = 1;
 
         $question->save();
+
+        if(auth()->user()->id !== $question->user_id){
+            event(new EditQuestion($question->user_id, $question->title));
+        }
 
         return redirect()->route('questions.show', $question_id)->with('success', 'Question updated successfully');
     }

@@ -11,6 +11,7 @@ use App\Events\UpvoteAnswer;
 use App\Events\DownvoteAnswer;
 use App\Events\ValidateAnswer;
 use App\Events\DeleteAnswer;
+use App\Events\EditAnswer;
 use App\Events\AnswerQuestion;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -78,7 +79,7 @@ class AnswerController extends Controller
 
         $answer = Answer::findOrFail($answer_id);
 
-        if ($answer->user_id !== auth()->user()->id) {
+        if ($answer->user_id !== auth()->user()->id && !auth()->user()->isModerator()) {
             abort(403, 'Unauthorized');
         }
 
@@ -91,6 +92,10 @@ class AnswerController extends Controller
         $answer->edited = true;
         $answer->save();
 
+        if(auth()->user()->id !== $answer->user_id){
+            event(new EditAnswer($answer->user_id, $answer->title));
+        }
+
         return redirect()->route('questions.show', $question_id)->with('success', 'Question updated successfully');
     }
 
@@ -99,12 +104,16 @@ class AnswerController extends Controller
         
         $answer = Answer::findOrFail($answer_id);
 
-        if ($answer->user_id !== auth()->user()->id) {
+        if ($answer->user_id !== auth()->user()->id && !auth()->user()->isModerator()) {
             abort(403, 'Unauthorized');
         }
     
 
         $answer->delete();
+
+        if(auth()->user()->id !== $answer->user_id){
+            event(new DeleteAnswer($answer->user_id, $answer->title));
+        }
 
         return redirect()->route('questions.show', ['id' => $question_id]);
     }
