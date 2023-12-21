@@ -20,7 +20,7 @@
         @if ($preferences->hide_email==0)
         <p id="profile-view-email">{{ $user->email }}</p>
         @endif
-        <p id="profile-view-bio" style="margin-top: 1rem; text-align: left;">{{ $user->bio }}</p>
+        <p id="profile-view-bio" style="margin: 1rem; text-align: left;">Bio: {{ $user->bio }}</p>
         @if ($preferences->hide_nation==0)
         <p id="profile-view-nation">{{ $user->nationality }}</p>
         @endif
@@ -94,7 +94,7 @@
             <input type="checkbox" name="email_opt" id="email_opt">
             <label for="email_opt" class="material-symbols-outlined">visibility</label>
         </div>
-
+        <label for="bio">Bio:</label>
         <textarea name="bio_input" id="bio_input" cols="20" rows="6" maxlength="300" style="margin-top: 1rem;">{{ $user->bio }}</textarea>
 
         <div id="birthdate_opt_">
