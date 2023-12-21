@@ -6,9 +6,20 @@
 
   var channel = pusher.subscribe('answerme-channel');
   channel.bind('user-register', function(data) {
-    alert(JSON.stringify(data));
-  });  
-  
+    // Log the entire data object to the console
+    console.log(data);
+
+    // Access the username attribute from the JSON data
+    var username = data.username;
+
+    Swal.fire({
+      title: 'User Registered',
+      text: username + ' registered!',
+      icon: 'success',
+      confirmButtonText: 'OK'
+    });
+  });
+
   
   const edit_profile_btn = document.getElementById('edit-profile-btn');
   if(edit_profile_btn) {

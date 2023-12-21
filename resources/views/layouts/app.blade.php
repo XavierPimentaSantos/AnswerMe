@@ -23,6 +23,8 @@
             
         </script>
         <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+        <script src=" https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.all.min.js "></script>
+        <link href=" https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.min.css " rel="stylesheet">
         
     </head>
     <body class="flex flex-col min-h-screen">
