@@ -10,29 +10,6 @@ SET search_path TO lbaw2392;
 --
 -- Create tables.
 --
-DROP TABLE IF EXISTS users CASCADE;
-CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR NOT NULL,
-  email VARCHAR UNIQUE NOT NULL,
-  password VARCHAR NOT NULL,
-  username VARCHAR UNIQUE,
-  bio VARCHAR,
-  birth_date DATE,
-  nationality VARCHAR,
-  user_type CHAR(1) NOT NULL DEFAULT '1',
-  remember_token VARCHAR,
-  profile_picture varchar not null default 'default.png'
-);
-
--- Table: forget_passwords
-DROP TABLE IF EXISTS password_resets;
-CREATE TABLE password_resets (
-    id SERIAL,
-    email VARCHAR UNIQUE NOT NULL,
-    token VARCHAR
-);
-
 
 -- Table: settings
 DROP TABLE IF EXISTS settings;
@@ -43,10 +20,33 @@ CREATE TABLE IF NOT EXISTS settings (
     hide_birth_date BOOLEAN NOT NULL, 
     hide_email BOOLEAN NOT NULL, 
     hide_name BOOLEAN NOT NULL,
-    language BOOLEAN NOT NULL,
     PRIMARY KEY (id)
 );
 
+DROP TABLE IF EXISTS users CASCADE;
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR NOT NULL,
+  email VARCHAR UNIQUE NOT NULL,
+  password VARCHAR NOT NULL,
+  username VARCHAR UNIQUE,
+  bio VARCHAR,
+  birthdate DATE,
+  nationality VARCHAR,
+  user_type CHAR(1) NOT NULL DEFAULT '1',
+  remember_token VARCHAR,
+  profile_picture varchar not null default 'default.png',
+  preferences INTEGER NOT NULL,
+  FOREIGN KEY (preferences) REFERENCES settings(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- Table: forget_passwords
+DROP TABLE IF EXISTS password_resets;
+CREATE TABLE password_resets (
+    id SERIAL,
+    email VARCHAR UNIQUE NOT NULL,
+    token VARCHAR
+);
 
 -- Table: questions
 DROP TABLE IF EXISTS questions;
@@ -333,8 +333,11 @@ CREATE TABLE IF NOT EXISTS answer_down_votes (
 -- Insert value.
 --
 
-INSERT INTO users (name, email, password, username, user_type)
-VALUES ('Mestre Fu', 'admin@example.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'mestrefu_33', 4);-- Password is 1234. Generated using Hash::make('1234')
+insert into settings (dark_mode, hide_nation, hide_birth_date, hide_name, hide_email)
+values (true, false, true, false, false);
+
+INSERT INTO users (name, email, password, username, user_type, preferences)
+VALUES ('Mestre Fu', 'admin@example.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'mestrefu_33', 4, 1);-- Password is 1234. Generated using Hash::make('1234')
 
 
 /* INSERT INTO users VALUES (
@@ -344,8 +347,11 @@ VALUES ('Mestre Fu', 'admin@example.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy
   '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W'
 ); */
 
-INSERT INTO users (name, email, password, username, user_type)
-VALUES ('João Silva', 'jsilva@example.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'jo4o_silv4', 4);-- Password is 1234. Generated using Hash::make('1234')
+insert into settings (dark_mode, hide_nation, hide_birth_date, hide_name, hide_email)
+values (true, false, true, false, false);
+
+INSERT INTO users (name, email, password, username, user_type, preferences)
+VALUES ('João Silva', 'jsilva@example.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'jo4o_silv4', 4, 2);-- Password is 1234. Generated using Hash::make('1234')
 
 /* INSERT INTO users VALUES (
   DEFAULT,
@@ -354,8 +360,11 @@ VALUES ('João Silva', 'jsilva@example.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm
   '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W'
 ); */
 
-INSERT INTO users (name, email, password, username, user_type)
-VALUES ('Lourenço Silva', 'b@example.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'lourenço_mickey_delas', 4);-- Password is 1234. Generated using Hash::make('1234')
+insert into settings (dark_mode, hide_nation, hide_birth_date, hide_name, hide_email)
+values (true, false, true, false, false);
+
+INSERT INTO users (name, email, password, username, user_type, preferences)
+VALUES ('Lourenço Silva', 'b@example.com', '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W', 'lourenço_mickey_delas', 4, 3);-- Password is 1234. Generated using Hash::make('1234')
 
 
 -- Question 1

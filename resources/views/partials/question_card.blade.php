@@ -11,7 +11,7 @@
         @endif
     </div>
     <p class="question_card_content" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $question->content }}</p>
-    <p class="question_card_author">{{ $question->user->username }}</p>
+    <a class="question_card_author" href="{{ route('profile.showUser', $question->user->username) }}">{{ $question->user->username }}</a>
     <div class="question_card_tags" style="display: flex; flex-direction: row; gap: 4px;">
         @foreach ($question->tags as $tag)
         <div style="border: 1px solid black; border-radius: 2px; width: min-content; padding: 0 0.1rem">{{ $tag->name }}</div>

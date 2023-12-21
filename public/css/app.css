@@ -186,7 +186,7 @@ body {
   border-bottom: none;
 }
 
-.question-title div button.material-symbols-outlined, .validate_answer_btn {
+.question-title div button.material-symbols-outlined, .validate_answer_btn, #profile-view button, #profile-edit button {
   width: fit-content;
   height: fit-content;
   padding: 0;
@@ -198,12 +198,40 @@ body {
   color: black;
 }
 
-#question_archive_btn:hover, #question_follow_btn:hover, #question_report_btn:hover, .validate_answer_btn:hover {
+#question_archive_btn:hover, #question_follow_btn:hover, #question_report_btn:hover, .validate_answer_btn:hover, #profile-view-btns:hover {
   background-color: rgb(229 231 235 / var(--tw-bg-opacity)) !important;
 }
 
-#question_archive_btn:focus, #question_follow_btn:focus, #question_report_btn:focus, .validate_answer_btn:focus {
+#question_archive_btn:focus, #question_follow_btn:focus, #question_report_btn:focus, .validate_answer_btn:focus, #profile-view-btns:focus {
   background-color: rgb(229 231 235 / var(--tw-bg-opacity)) !important;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  height: fit-content;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: fit-content;
+  background-color: #696969;
+  color: #fff;
+  text-align: center;
+  padding: 0.2rem;
+  border-radius: 2px;
+  font-size: 1rem;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+
+  top: 100%;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }
 
 .question_card {
@@ -250,10 +278,99 @@ body {
 .question_card_author {
   grid-row: 3;
   grid-column: 1;
+  color: black;
+}
+
+.question_card_author:hover {
+  color: #696969;
 }
 
 .question_card_tags {
   grid-row: 4;
   grid-column: 1 / span 2;
   margin-top: 1rem;
+}
+
+#profile_main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 0 1rem;
+}
+
+#profile-view, #profile-edit {
+  grid-column: 1;
+  display: grid;
+  grid-template-columns: 20rem 30rem;
+  grid-template-rows: 8rem 6rem 6rem 3rem 20rem 5rem;
+}
+
+#profile-view *, #profile-edit * {
+  margin: 0;
+  height: fit-content;
+}
+
+#profile-view img, #profile-edit img {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+}
+
+#profile-view-name, #name_input_ {
+  grid-column: 2;
+  grid-row: 1;
+  text-align: left;
+  margin: auto 0;
+  margin-left: 1rem;
+}
+
+
+#profile-view-username, #username_input_ {
+  grid-column: 2;
+  grid-row: 2;
+  text-align: left;
+  margin: auto 0;
+  margin-left: 1rem;
+}
+
+#profile-view-email, #email_input_ {
+  grid-column: 2;
+  grid-row: 3;
+  text-align: left;
+  margin: auto 0;
+  margin-left: 1rem;
+}
+
+#profile-view-btns, #profile-edit-btns {
+  grid-column: 1;
+  grid-row: 4;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-evenly;
+}
+
+#profile-view-bio, #bio_input {
+  grid-row: 5;
+  grid-column: 1 / span 2;
+}
+
+#profile-view-birthdate, #birthdate_opt_ {
+  grid-row: 6;
+  grid-column: 1;
+}
+
+#profile-view-nation, #nationality_opt_ {
+  grid-row: 6;
+  grid-column: 2;
+}
+
+#pfp_input_ {
+  grid-column: 2;
+  grid-row: 4;
+}
+
+#name_input_, #username_input_, #email_input_, #birthdate_opt_, #nationality_opt_ {
+  display: flex;
+  flex-direction: row;
+  gap: 0.1rem;
+  align-items: center;
 }

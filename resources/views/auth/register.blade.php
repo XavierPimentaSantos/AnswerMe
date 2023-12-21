@@ -5,7 +5,7 @@
     {{ csrf_field() }}
 
     <label for="name">Name</label>
-    <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus>
+    <input id="name" type="text" name="name" maxlength="250" value="{{ old('name') }}" required autofocus>
     @if ($errors->has('name'))
       <span class="error">
           {{ $errors->first('name') }}
@@ -13,7 +13,7 @@
     @endif
 
     <label for="username">Username</label>
-    <input id="username" type="text" name="username" value="{{ old('username') }}" required>
+    <input id="username" type="text" name="username" maxlength="250" value="{{ old('username') }}" required>
     @if ($errors->has('username'))
       <span class="error">
           {{ $errors->first('username') }}
@@ -21,7 +21,7 @@
     @endif
 
     <label for="email">E-Mail Address</label>
-    <input id="email" type="email" name="email" value="{{ old('email') }}" required>
+    <input id="email" type="email" name="email" maxlength="250" value="{{ old('email') }}" required>
     @if ($errors->has('email'))
       <span class="error">
           {{ $errors->first('email') }}
@@ -281,10 +281,18 @@
     </select>
 
     <label for="bio">Bio</label>
-    <input id="bio" type="text" name="bio" value="{{ old('bio') }}" required>
+    <textarea name="bio" id="bio" cols="20" rows="6" maxlength="300" value="{{ old('bio') }}"></textarea>
     @if ($errors->has('bio'))
       <span class="error">
           {{ $errors->first('bio') }}
+      </span>
+    @endif
+
+    <label for="birthdate">Date of Birth</label>
+    <input type="date" name="birthdate" id="birthdate" value="{{ old('birthdate') }}" required>
+    @if ($errors->has('birthdate'))
+      <span class="error">
+        {{ $errors->first('brithdate') }}
       </span>
     @endif
 

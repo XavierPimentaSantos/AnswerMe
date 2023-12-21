@@ -11,6 +11,10 @@ use Laravel\Sanctum\HasApiTokens;
 // Added to define Eloquent relationships.
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+use App\Models\Question;
+use App\Models\Answer;
 
 class User extends Authenticatable
 {
@@ -24,9 +28,11 @@ class User extends Authenticatable
         'password',
         'username',
         'bio',
+        'birthdate',
         'nationality',
         'user_type',
         'profile_picture',
+        'preferences',
     ];
 
     protected $hidden = [
@@ -44,19 +50,30 @@ class User extends Authenticatable
         return $this->hasMany(Question::class);
     }
 
+    public function answers(): HasMany
+    {
+        return $this->hasMany(Answer::class);
+    }
+
+    public function preferences() : belongsTo
+    {
+        return $this->belongsTo(Setting::class);
+    }
+
     public function isModerator()
-{
-    return $this->user_type == 3 || $this->user_type == 4;
-}
+    {
+        return $this->user_type == 3 || $this->user_type == 4;
+    }
+
     public function isAdmin()
-{
-    return $this->user_type == 4;
-}
+    {
+        return $this->user_type == 4;
+    }
 
     public function isBlocked()
-{
-    return $this->user_type == 2;
-}
+    {
+        return $this->user_type == 2;
+    }
 
     public function questionUpVotes() : BelongsToMany
     {

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Setting;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Validator;
 
@@ -60,6 +61,16 @@ class ProfileController extends Controller
     {
         $user = User::where('username', $username)->first();
     
+        $settings = Setting::find($user->id);
+
+        $settings->update([
+            'hide_nation' => $request->input('show_nation'),
+            'hide_birth_date' => $request->input('show_birthdate'),
+            'hide_email' => $request->input('show_email'),
+            'hide_name' => $request->input('show_name'),
+        ]);
+        $settings->save();
+
         if((Auth::user()->id!==$user->id) && (Auth::user()->user_type!=4)) {
             abort(403, 'Unauthorized');
         }
@@ -69,10 +80,11 @@ class ProfileController extends Controller
         }
     
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'new_name' => 'required|string|max:25',
+            'new_username' => 'required|string|max:250|unique:users,username,' . $user->id,
+            'new_email' => 'required|string|email|max:250|unique:users,email,' . $user->id,
             'profile_picture' => 'image|mimetypes:image/jpeg,image/png,image/jpg,image/gif|max:2048',
+            'new_bio' => 'max:300',
         ]);
     
         if ($validator->fails()) {
@@ -89,14 +101,16 @@ class ProfileController extends Controller
             $profilePicture->move(public_path('profile_pictures'), $newFileName);
         }    
         $user->update([
-            'name' => $request->input('name'),
-            'username' => $request->input('username'),
-            'email' => $request->input('email'),
+            'name' => $request->input('new_name'),
+            'username' => $request->input('new_username'),
+            'email' => $request->input('new_email'),
+            'bio' => $request->input('new_bio'),
             'profile_picture' => $newFileName,
         ]);
         $user->save();
     
-        return redirect()->route('profile.showUser', ['username' => $user->username])->with('success', 'Profile updated successfully');
+        // return redirect()->route('profile.showUser', ['username' => $user->username])->with('success', 'Profile updated successfully');
+        return $user->username;
     }
     
 

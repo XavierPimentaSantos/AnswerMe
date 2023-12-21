@@ -35,10 +35,19 @@
                 <div style="display: flex; flex-direction: row;">
                     <h2 style="margin: 0; margin-right: 5px;">{{ $question->title }}</h2>
                     @if ($question->user_id === Auth::user()->id)
-                    <button type="button" class="material-symbols-outlined bg-gray-200" id="question_archive_btn" data-question-id="{{ $question->id }}" style="border: 2px solid black; border-radius: 2px; color: black;">archive</button>
+                    <div class="tooltip">
+                        <button type="button" class="material-symbols-outlined bg-gray-200" id="question_archive_btn" data-question-id="{{ $question->id }}" style="border: 2px solid black; border-radius: 2px; color: black;">archive</button>
+                        <p class="tooltiptext">Archive</p>
+                    </div>
                     @else
-                    <button type="button" class="material-symbols-outlined bg-gray-200" id="question_report_btn" data-question-id="{{ $question->id }}" style="border: 2px solid black; border-radius: 2px; color: red;">report</button>
-                    <button type="button" class="material-symbols-outlined bg-gray-200" id="question_follow_btn" data-question-id="{{ $question->id }}" style="border: 2px solid black; border-radius: 2px; @if ($followed) color: green; @else color: black; @endif">notifications</button>
+                    <div class="tooltip">
+                        <button type="button" class="material-symbols-outlined bg-gray-200" id="question_report_btn" data-question-id="{{ $question->id }}" style="border: 2px solid black; border-radius: 2px; color: red;">report</button>
+                        <p class="tooltiptext">Report</p>
+                    </div>
+                    <div class="tooltip">
+                        <button type="button" class="material-symbols-outlined bg-gray-200" id="question_follow_btn" data-question-id="{{ $question->id }}" style="border: 2px solid black; border-radius: 2px; @if ($followed) color: green; @else color: black; @endif">notifications</button>
+                        <p id="follow_btn_tooltip" class="tooltiptext">@if ($followed) Unfollow @else Follow @endif</p>
+                    </div>
                     @endif
                     @if ($question->edited == 1)
                         <h3 style= "margin: 0; align-self: center;">(edited)</h3>
