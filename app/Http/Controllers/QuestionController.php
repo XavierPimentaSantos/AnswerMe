@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\View;
 use App\Models\User;
 use App\Events\UserRegister;
 use App\Events\UpvoteQuestion;
+use App\Events\DownvoteQuestion;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -247,7 +248,8 @@ class QuestionController extends Controller
             }
         }
 
-        event(new UpvoteQuestion($question->user_id));
+
+        event(new UpvoteQuestion($question->user_id, $question->title));
 
         return view('partials.question_score', ['question_id' => $question->id])->render();
     }
@@ -281,6 +283,8 @@ class QuestionController extends Controller
                 $question->save();
             }
         }
+
+        event(new DownvoteQuestion($question->user_id, $question->title));
 
 
         return view('partials.question_score', ['question_id' => $question->id])->render();
