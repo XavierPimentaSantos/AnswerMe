@@ -12,7 +12,7 @@
 
     $followed;
 
-    if(Auth::user()->followedQuestions()->where('question_id', $question->id)->exists()) {
+    if( Auth::check() && Auth::user()->followedQuestions()->where('question_id', $question->id)->exists()) {
         $followed = TRUE;
     }
     else {
@@ -34,7 +34,7 @@
                 
                 <div style="display: flex; flex-direction: row;">
                     <h2 style="margin: 0; margin-right: 5px;">{{ $question->title }}</h2>
-                    @if ($question->user_id === Auth::user()->id)
+                    @if (Auth::check() && $question->user_id === Auth::user()->id)
                     <div class="tooltip">
                         <button type="button" class="material-symbols-outlined bg-gray-200" id="question_archive_btn" data-question-id="{{ $question->id }}" style="border: 2px solid black; border-radius: 2px; color: black;">archive</button>
                         <p class="tooltiptext">Archive</p>
@@ -74,7 +74,7 @@
 
 
         <div>
-            @if (Auth::check() && $question->user_id === auth()->user()->id || Auth::user()->isModerator())                          
+            @if (Auth::check() && ($question->user_id === auth()->user()->id || Auth::user()->isModerator()))                          
             <a id = "edit-question-btn" class="button bg-blue-500 text-white px-4 py-2 rounded mt-1 inline-block">Edit Question</a>
             <form action="{{ route('questions.delete', $question->id)}}" method="POST" class="inline-block">
                 @csrf

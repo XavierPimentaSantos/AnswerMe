@@ -5,7 +5,7 @@
 ?>
 
 @if ($question)
-    @if (Auth::user()->id !== $question->user_id)
+    @if (Auth::check() && Auth::user()->id !== $question->user_id)
         @if (Auth::user()->questionUpVotes()->where('question_id', $question->id)->exists())
         <button type="button" class="increase-question-score-btn" data-id="{{ $question->id }}" style="width: 3rem; height: 3rem; border-radius: 50%; text-align: center; line-height: 3rem; font-size: 1.5rem; padding: 0; margin: 0; background-color: green;">+</button>
         @else
