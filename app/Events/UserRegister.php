@@ -15,12 +15,14 @@ class UserRegister implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $username;
+    public $admin_id;
     /**
      * Create a new event instance.
      */
-    public function __construct($username)
+    public function __construct($username, $admin_id)
     {
         $this->username = $username;
+        $this->admin_id = $admin_id;
     }
 
     /**
@@ -30,7 +32,7 @@ class UserRegister implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('answerme-channel');
+        return new Channel('user-' . $this->admin_id);
     }
 
     public function broadcastAs(): string

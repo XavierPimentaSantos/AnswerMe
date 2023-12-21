@@ -11,11 +11,13 @@ console.log(userId);
 
 
 
-const channel = pusher.subscribe('answerme-channel');
-channel.bind('user-register', function(data) {
+const authorChannel = pusher.subscribe('user-' + userId);
+
+authorChannel.bind('user-register', function(data) {
   // Add the notification to the array
   notifications.push({
-    title: data.username + ' has joined AnswerMe!',
+    title: data.username + ' has joined AnswerMe :)',
+    text: '',
     icon: 'success'
   });
 
@@ -23,8 +25,6 @@ channel.bind('user-register', function(data) {
   updateNotificationsUI();
 });
 
-
-const authorChannel = pusher.subscribe('user-' + userId);
 authorChannel.bind('upvote-question', function(data) {
     // Add the upvote notification to the array
     notifications.push({
