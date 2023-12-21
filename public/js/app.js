@@ -1,3 +1,133 @@
+Pusher.logToConsole = true;
+
+var pusher = new Pusher('4fc151dc2ba70eed2c92', {
+  cluster: 'eu'
+});
+
+let notifications = [];
+
+let userId = document.getElementById('notifications_btn').dataset.userId;
+console.log(userId);
+
+
+
+const authorChannel = pusher.subscribe('user-' + userId);
+
+authorChannel.bind('user-register', function(data) {
+  // Add the notification to the array
+  notifications.push({
+    title: data.username + ' has joined AnswerMe :)',
+    text: '',
+    icon: 'success'
+  });
+
+  // Update the UI to display notifications
+  updateNotificationsUI();
+});
+
+authorChannel.bind('upvote-question', function(data) {
+    // Add the upvote notification to the array
+    notifications.push({
+        title: 'Your question has been upvoted!',
+        text: data.question_title,
+        icon: 'success'
+    });
+
+    // Update the UI to display notifications
+    updateNotificationsUI();
+});
+
+authorChannel.bind('downvote-question', function(data) {
+  // Add the downvote notification to the array
+  notifications.push({
+    title:'Your question has been downvoted!',
+    text: data.question_title,
+    icon: 'error'
+  });
+
+  // Update the UI to display notifications
+  updateNotificationsUI();
+});
+
+
+
+
+authorChannel.bind('upvote-answer', function(data) {
+  // Add the upvote notification to the array
+  notifications.push({
+    title: 'Your answer has been upvoted!',
+    text: data.answer_title,
+    icon: 'success'
+  });
+
+  // Update the UI to display notifications
+  updateNotificationsUI();
+});
+
+authorChannel.bind('downvote-answer', function(data) {
+  // Add the downvote notification to the array
+  notifications.push({
+    title:'Your answer has been downvoted!',
+    text: data.answer_title,
+    icon: 'error'
+  });
+
+  // Update the UI to display notifications
+  updateNotificationsUI();
+});
+
+authorChannel.bind('validate-answer', function(data) {
+  // Add the validate notification to the array
+  notifications.push({
+    title:'Your answer has been validated!',
+    text: data.answer_title,
+    icon: 'success'
+  });
+
+  // Update the UI to display notifications
+  updateNotificationsUI();
+});
+
+authorChannel.bind('answer-question', function(data) {
+  notifications.push({
+    title:'Your question has been answered by: ' + data.answer_author,
+    text: data.question_title,
+    icon: 'success'
+  });
+
+  // Update the UI to display notifications
+  updateNotificationsUI();
+});
+
+
+
+function updateNotificationsUI() {
+  let notificationsDropdown = document.getElementById('notifications-dropdown');
+  notificationsDropdown.innerHTML = '';
+  notifications.forEach(function(notification, index) {
+    let notificationElement = document.createElement('div');
+    notificationElement.innerHTML = `
+      <div class="notification">
+        <strong>${notification.title}</strong>
+        <p>${notification.text}</p>
+        <button class="close-btn" onclick="closeNotification(${index})">OK</button>  
+      </div>
+    `;
+    notificationsDropdown.appendChild(notificationElement);
+  });
+  }
+
+  function closeNotification(index) {
+    notifications.splice(index, 1);
+    updateNotificationsUI();
+  }
+
+
+  document.getElementById('notifications_btn').addEventListener('click', function() {
+    let notificationsDropdown = document.getElementById('notifications-dropdown');
+    notificationsDropdown.classList.toggle('hidden');
+  });
+    
   const edit_profile_btn = document.getElementById('edit-profile-btn');
   if(edit_profile_btn) {
     edit_profile_btn.addEventListener('click', function() {

@@ -7,6 +7,10 @@ use App\Models\Question;
 use App\Models\QuestionImage;
 use Illuminate\Support\Facades\View;
 use App\Models\User;
+use App\Events\UserRegister;
+use App\Events\UpvoteQuestion;
+use App\Events\DownvoteQuestion;
+use App\Events\DeleteQuestion;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -45,7 +49,7 @@ class QuestionController extends Controller
     {
         return view('pages.questions');
     }
-    
+
     public function store(Request $request)
     {
         $request->validate([
@@ -71,11 +75,11 @@ class QuestionController extends Controller
         
         $questionImagePath = 'question_images/' . $question->id . '/';
         foreach ($request->file('images') as $index => $image) {
-            $format = $index + 1; // 1.format, 2.format, etc.
+            $format = $index + 1; 
             $uploadedPath = $questionImagePath . $format . '.' . $image->getClientOriginalExtension();
             $image->move(public_path($questionImagePath), $format . '.' . $image->getClientOriginalExtension());
             QuestionImage::create([
-                'format' => $format, // '1', '2', '3
+                'format' => $format, 
                 'picture_path' => $uploadedPath,
                 'question_id' => $question->id,
             ]);
@@ -117,23 +121,19 @@ class QuestionController extends Controller
 
         dd($request->file('images'));
     
-        // Add new images
         foreach ($request->file('images') as $index => $image) {
-            $format = $index + 1; // 1.format, 2.format, etc.
-    
-            // If an image is provided, update or add it
-            if ($image) {
+            $format = $index + 1; 
+                if ($image) {
                 $uploadedPath = $questionImagePath . $format . '.' . $image->getClientOriginalExtension();
                 $image->move(public_path($questionImagePath), $format . '.' . $image->getClientOriginalExtension());
     
-                // Update existing image if it exists, otherwise create a new one
                 if ($existingImage = $question->images()->where('format', $format)->first()) {
                     $existingImage->update([
                         'picture_path' => $uploadedPath,
                     ]);
                 } else {
                     QuestionImage::create([
-                        'format' => $format, // '1', '2', '3
+                        'format' => $format, 
                         'picture_path' => $uploadedPath,
                         'question_id' => $question->id,
                         'format' => $format,
@@ -181,16 +181,13 @@ class QuestionController extends Controller
 
             $questionImagePath = 'question_images/' . $question->id . '/';
         
-            // Add new images
             foreach ($request->file('images') as $index => $image) {
-                $format = $index + 1; // 1.format, 2.format, etc.
+                $format = $index + 1; 
         
-                // If an image is provided, update or add it
                 if ($image) {
                     $uploadedPath = $questionImagePath . $format . '.' . $image->getClientOriginalExtension();
                     $image->move(public_path($questionImagePath), $format . '.' . $image->getClientOriginalExtension());
         
-                    // Update existing image if it exists, otherwise create a new one
                     if ($existingImage = $question->images()->where('format', $format)->first()) {
                         $existingImage->update([
                             'picture_path' => $uploadedPath,
@@ -252,6 +249,9 @@ class QuestionController extends Controller
             }
         }
 
+
+        event(new UpvoteQuestion($question->user_id, $question->title));
+
         return view('partials.question_score', ['question_id' => $question->id])->render();
     }
 
@@ -284,6 +284,9 @@ class QuestionController extends Controller
                 $question->save();
             }
         }
+
+        event(new DownvoteQuestion($question->user_id, $question->title));
+
 
         return view('partials.question_score', ['question_id' => $question->id])->render();
     }

@@ -7,7 +7,11 @@ use Illuminate\Http\Request;
 use App\Models\Answer;
 use App\Models\Question;  
 use App\Models\User;
-
+use App\Events\UpvoteAnswer;
+use App\Events\DownvoteAnswer;
+use App\Events\ValidateAnswer;
+use App\Events\DeleteAnswer;
+use App\Events\AnswerQuestion;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -44,6 +48,10 @@ class AnswerController extends Controller
         ]);
 
         $answer->save();
+
+        $answer_author = User::findOrFail($answer->user_id)->username;
+
+        event(new AnswerQuestion($question->user_id, $answer_author, $question->title));
 
         /* return redirect()->route('questions.show', $question->id)
             ->with('success', 'Answer created successfully'); */
@@ -105,6 +113,7 @@ class AnswerController extends Controller
     {
         $answer = Answer::findOrFail($request->input('answer_id'));
         $answer->correct = true;
+        event(new ValidateAnswer($answer->user_id, $answer->title));
         $answer->save();
     }
 
@@ -138,6 +147,8 @@ class AnswerController extends Controller
             }
         }
 
+        event(new UpvoteAnswer($answer->user_id, $answer->title));
+
         return view('partials.answer_score', ['answer_id' => $answer->id])->render();
     }
 
@@ -170,6 +181,8 @@ class AnswerController extends Controller
                 $answer->save();
             }
         }
+
+        event(new DownvoteAnswer($answer->user_id, $answer->title));
 
         return view('partials.answer_score', ['answer_id' => $answer->id])->render();
     }

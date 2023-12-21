@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Events\UserRegister;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -48,6 +49,8 @@ class RegisterController extends Controller
             'user_type' => 1,
         ]);
 
+        event(new UserRegister($request->username, 1));
+
         if ($request->input('admin_create')) {
             return redirect()->route('admin.show')->with('success', 'User created successfully');
         }
@@ -55,6 +58,7 @@ class RegisterController extends Controller
         $credentials = $request->only('email', 'password');
         Auth::attempt($credentials);
         $request->session()->regenerate();
+
         return redirect(url('/'))
             ->withSuccess('You have successfully registered & logged in!');
     }

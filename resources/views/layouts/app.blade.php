@@ -22,6 +22,10 @@
         <script type="text/javascript" src={{ url('js/app.js') }} defer>
             
         </script>
+        <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+        <script src=" https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.all.min.js "></script>
+        <link href=" https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.min.css " rel="stylesheet">
+        
     </head>
     <body class="flex flex-col min-h-screen">
         <main class="flex-grow">
@@ -32,6 +36,7 @@
                     @if (Auth::check() && Auth::user()->isModerator())
                     <a href="{{ route('admin.show') }}" class="button mr-2">Management</a>
                     @endif
+                    <button type="button" class="material-symbols-outlined" id="notifications_btn" data-user-id="{{ Auth::user()->id }}">notifications</button>
                     <div class="flex items-center">
                         <a class="button mr-2" href="{{ url('/logout') }}">Logout</a>
                         <a href="{{ route('profile.show')}}"><span class="text-white">{{ Auth::user()->name }}</span></a>
@@ -43,6 +48,7 @@
                 @endif
             </header>
             <section id="content">
+            <div id="notifications-dropdown"></div>
                 @yield('content')
             </section>
         </main>
@@ -52,3 +58,5 @@
         </footer>
     </body>
 </html>
+
+
