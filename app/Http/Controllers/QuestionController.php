@@ -45,7 +45,6 @@ class QuestionController extends Controller
 
     public function create()
     {
-        event(new UserRegister('lololol'));
         return view('pages.questions');
     }
 
@@ -248,6 +247,8 @@ class QuestionController extends Controller
             }
         }
 
+        event(new UpvoteQuestion($question->user_id));
+
         return view('partials.question_score', ['question_id' => $question->id])->render();
     }
 
@@ -281,7 +282,6 @@ class QuestionController extends Controller
             }
         }
 
-        event(new UserRegister('lololol'));
 
         return view('partials.question_score', ['question_id' => $question->id])->render();
     }

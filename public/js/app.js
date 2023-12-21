@@ -7,12 +7,11 @@ var pusher = new Pusher('4fc151dc2ba70eed2c92', {
 let notifications = [];
 
 let userId = document.getElementById('notifications_btn').dataset.userId;
+console.log(userId);
 
 
 
 const channel = pusher.subscribe('answerme-channel');
-
-const authorChannel = pusher.subscribe('user-' + userId);
 channel.bind('user-register', function(data) {
   // Add the notification to the array
   notifications.push({
@@ -25,15 +24,16 @@ channel.bind('user-register', function(data) {
 });
 
 
+const authorChannel = pusher.subscribe('user-' + userId);
 authorChannel.bind('upvote-question', function(data) {
-  // Add the upvote notification to the array
-  notifications.push({
-    title: 'Your question has been upvoted!',
-    icon: 'success'
-  });
+    // Add the upvote notification to the array
+    notifications.push({
+        title: 'Your question has been upvoted!',
+        icon: 'success'
+    });
 
-  // Update the UI to display notifications
-  updateNotificationsUI();
+    // Update the UI to display notifications
+    updateNotificationsUI();
 });
 /*
 channel.bind('question-downvote', function(data) {
