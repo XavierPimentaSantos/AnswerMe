@@ -8,6 +8,7 @@ use App\Models\QuestionImage;
 use Illuminate\Support\Facades\View;
 use App\Models\User;
 use App\Events\UserRegister;
+use App\Events\UpvoteQuestion;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -279,6 +280,8 @@ class QuestionController extends Controller
                 $question->save();
             }
         }
+
+        event(new UserRegister('lololol'));
 
         return view('partials.question_score', ['question_id' => $question->id])->render();
     }

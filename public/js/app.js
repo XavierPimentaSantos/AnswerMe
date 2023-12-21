@@ -1,25 +1,103 @@
-  Pusher.logToConsole = true;
+Pusher.logToConsole = true;
 
-  var pusher = new Pusher('4fc151dc2ba70eed2c92', {
-    cluster: 'eu'
+var pusher = new Pusher('4fc151dc2ba70eed2c92', {
+  cluster: 'eu'
+});
+
+let notifications = [];
+
+let userId = document.getElementById('notifications_btn').dataset.userId;
+
+
+
+const channel = pusher.subscribe('answerme-channel');
+
+const authorChannel = pusher.subscribe('user-' + userId);
+channel.bind('user-register', function(data) {
+  // Add the notification to the array
+  notifications.push({
+    title: data.username + ' has joined AnswerMe!',
+    icon: 'success'
   });
 
-  var channel = pusher.subscribe('answerme-channel');
-  channel.bind('user-register', function(data) {
-    // Log the entire data object to the console
-    console.log(data);
+  // Update the UI to display notifications
+  updateNotificationsUI();
+});
 
-    // Access the username attribute from the JSON data
-    var username = data.username;
 
-    Swal.fire({
-      title: username + ' has joined our website :)',
-      icon: 'info',
-      confirmButtonText: 'OK'
-    });
+authorChannel.bind('upvote-question', function(data) {
+  // Add the upvote notification to the array
+  notifications.push({
+    title: 'Your question has been upvoted!',
+    icon: 'success'
   });
 
-  
+  // Update the UI to display notifications
+  updateNotificationsUI();
+});
+/*
+channel.bind('question-downvote', function(data) {
+  // Add the downvote notification to the array
+  notifications.push({
+    title:'Your question has been downvoted!',
+    icon: 'error'
+  });
+
+  // Update the UI to display notifications
+  updateNotificationsUI();
+});
+
+
+channel.bind('answer-upvote', function(data) {
+  // Add the upvote notification to the array
+  notifications.push({
+    title: 'Your answer has been upvoted!',
+    icon: 'success'
+  });
+
+  // Update the UI to display notifications
+  updateNotificationsUI();
+});
+
+channel.bind('answer-downvote', function(data) {
+  // Add the downvote notification to the array
+  notifications.push({
+    title:'Your answer has been downvoted!',
+    icon: 'error'
+  });
+
+  // Update the UI to display notifications
+  updateNotificationsUI();
+});
+*/
+
+
+function updateNotificationsUI() {
+  let notificationsDropdown = document.getElementById('notifications-dropdown');
+  notificationsDropdown.innerHTML = '';
+  notifications.forEach(function(notification, index) {
+    let notificationElement = document.createElement('div');
+    notificationElement.innerHTML = `
+      <div class="notification">
+        <strong>${notification.title}</strong>
+        <button class="close-btn" onclick="closeNotification(${index})">OK</button>  
+      </div>
+    `;
+    notificationsDropdown.appendChild(notificationElement);
+  });
+  }
+
+  function closeNotification(index) {
+    notifications.splice(index, 1);
+    updateNotificationsUI();
+  }
+
+
+  document.getElementById('notifications_btn').addEventListener('click', function() {
+    let notificationsDropdown = document.getElementById('notifications-dropdown');
+    notificationsDropdown.classList.toggle('hidden');
+  });
+    
   const edit_profile_btn = document.getElementById('edit-profile-btn');
   if(edit_profile_btn) {
     edit_profile_btn.addEventListener('click', function() {

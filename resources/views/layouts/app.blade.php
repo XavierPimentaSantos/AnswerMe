@@ -36,6 +36,9 @@
                     @if (Auth::check() && Auth::user()->isAdmin())
                     <a href="{{ route('admin.show') }}" class="button mr-2">Admin Page</a>
                     @endif
+                    <button type="button" class="material-symbols-outlined" id="notifications_btn" data-user-id="{{ Auth::user()->id }}">notifications</button>
+                    <div id="notifications-dropdown">
+                    </div>
                     <div class="flex items-center">
                         <a class="button mr-2" href="{{ url('/logout') }}">Logout</a>
                         <a href="{{ route('profile.show')}}"><span class="text-white">{{ Auth::user()->name }}</span></a>
@@ -56,3 +59,5 @@
         </footer>
     </body>
 </html>
+
+
