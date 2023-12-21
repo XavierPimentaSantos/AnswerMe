@@ -8,7 +8,7 @@
     @endif
 </div>
 <div style="display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: space-between;">
-    <p style="margin: 0;">{{ $comment->user->name }} at {{ $comment->updated_at }} @if ($comment->edited == 1) (edited) @endif</p>
+    <p style="margin: 0;">{{ $comment->user ? $comment->user->name : '[deleted]' }} at {{ $comment->updated_at }} @if ($comment->edited == 1) (edited) @endif</p>
 </div>
 
 <div id="answer_comment_edit_form_{{ $comment->id }}" class="hidden">
