@@ -95,6 +95,8 @@ class ProfileController extends Controller
             'profile_picture' => $newFileName,
         ]);
         $user->save();
+
+        dd($user);
     
         return redirect()->route('profile.showUser', ['username' => $username])->with('success', 'Profile updated successfully');
     }

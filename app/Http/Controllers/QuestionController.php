@@ -109,19 +109,19 @@ class QuestionController extends Controller
         }
         
         $questionImagePath = 'question_images/' . $question->id . '/';
-        foreach ($request->file('images') as $index => $image) {
-            $format = $index + 1; 
-            $uploadedPath = $questionImagePath . $format . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path($questionImagePath), $format . '.' . $image->getClientOriginalExtension());
-            QuestionImage::create([
-                'format' => $format, 
-                'picture_path' => $uploadedPath,
-                'question_id' => $question->id,
-            ]);
-        }
-        
-        
+        if ($request->has('images')){
+            foreach ($request->file('images') as $index => $image) {
+                $format = $index + 1; 
+                $uploadedPath = $questionImagePath . $format . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path($questionImagePath), $format . '.' . $image->getClientOriginalExtension());
+                QuestionImage::create([
+                    'format' => $format, 
+                    'picture_path' => $uploadedPath,
+                    'question_id' => $question->id,
+                ]);
+            }
 
+        }
         return redirect()->route('questions.show', $question->id)
             ->with('success', 'Question created successfully');
     }
@@ -155,24 +155,26 @@ class QuestionController extends Controller
         $questionImagePath = 'question_images/' . $question->id . '/';
 
         dd($request->file('images'));
-    
-        foreach ($request->file('images') as $index => $image) {
-            $format = $index + 1; 
-                if ($image) {
-                $uploadedPath = $questionImagePath . $format . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path($questionImagePath), $format . '.' . $image->getClientOriginalExtension());
-    
-                if ($existingImage = $question->images()->where('format', $format)->first()) {
-                    $existingImage->update([
-                        'picture_path' => $uploadedPath,
-                    ]);
-                } else {
-                    QuestionImage::create([
-                        'format' => $format, 
-                        'picture_path' => $uploadedPath,
-                        'question_id' => $question->id,
-                        'format' => $format,
-                    ]);
+
+        if($request->has('images')){
+            foreach ($request->file('images') as $index => $image) {
+                $format = $index + 1; 
+                    if ($image) {
+                    $uploadedPath = $questionImagePath . $format . '.' . $image->getClientOriginalExtension();
+                    $image->move(public_path($questionImagePath), $format . '.' . $image->getClientOriginalExtension());
+        
+                    if ($existingImage = $question->images()->where('format', $format)->first()) {
+                        $existingImage->update([
+                            'picture_path' => $uploadedPath,
+                        ]);
+                    } else {
+                        QuestionImage::create([
+                            'format' => $format, 
+                            'picture_path' => $uploadedPath,
+                            'question_id' => $question->id,
+                            'format' => $format,
+                        ]);
+                    }
                 }
             }
         }

@@ -127,7 +127,7 @@ function updateNotificationsUI() {
     let notificationsDropdown = document.getElementById('notifications-dropdown');
     notificationsDropdown.classList.toggle('hidden');
   });
-    
+
   const edit_profile_btn = document.getElementById('edit-profile-btn');
   if(edit_profile_btn) {
     edit_profile_btn.addEventListener('click', function() {
@@ -665,10 +665,25 @@ document.addEventListener("DOMContentLoaded", function() {
   const imageInput1 = document.getElementById('image1');
   const imageInput2 = document.getElementById('image2');
   const imageInput3 = document.getElementById('image3');
+  const profilePictureInput = document.getElementById('profile-picture-input');
   const imagePreviewContainer1 = document.getElementById('image-1');
   const imagePreviewContainer2 = document.getElementById('image-2');
   const imagePreviewContainer3 = document.getElementById('image-3');
   const MAX_IMAGES = 3;
+
+  function previewProfilePicture(input) {
+    const profilePicture = document.getElementById('profile-picture').getElementsByTagName('img')[0];
+
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            profilePicture.src = e.target.result;
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
+  }
 
   function previewImage1(input) {
 
@@ -727,47 +742,31 @@ function previewImage3(input) {
   });
 }
 
+  if(profilePictureInput){
+    profilePictureInput.addEventListener('change', function() {
+      previewProfilePicture(profilePictureInput);
+    });
+  }
+  
 
-  // Initial setup for existing images and trigger preview
-  imageInput1.addEventListener('change', function() {
-      previewImage1(imageInput1);
-  });
-  imageInput2.addEventListener('change', function() {
-    previewImage2(imageInput2);
-  });
-  imageInput3.addEventListener('change', function() {
-    previewImage3(imageInput3);
-  });
+  if(imageInput1){
+    imageInput1.addEventListener('change', function() {
+        previewImage1(imageInput1);
+    });
+  }
+
+  if(imageInput2){
+    imageInput2.addEventListener('change', function() {
+      previewImage2(imageInput2);
+    });
+  }
+
+  if(imageInput3){
+    imageInput3.addEventListener('change', function() {
+      previewImage3(imageInput3);
+    });
+  }
 });
-
-/*
-
-function updateProfilePicture() {
-  let newProfilePicture = document.getElementById('newProfilePicture').files[0];
-
-  let data = {'newProfilePicture': newProfilePicture};
-
-  fetch('/profile/update-picture', {
-    method: 'POST',
-    body: data
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(data => {
-    // Update the profile picture on success
-    document.getElementById('profilePicture').src = data.profile_picture;
-    document.getElementById('message').innerHTML = '<div class="alert alert-success">Profile picture updated successfully</div>';
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    document.getElementById('message').innerHTML = '<div class="alert alert-danger">Error updating profile picture</div>';
-  });
-}*/
-
 
 
 // START SECTION: FUNCTIONS RELATED TO FOLLOWING A QUESTION
