@@ -31,7 +31,7 @@
                     <option value="{{ $author->id }}">{{ $author->name }}</option>
                 @endforeach
             </select>
-            <button id="applyFilter">Apply Filter</button>
+            <button id="applyFilter">Apply Filter(S)</button>
         </div>
         </form>
         <form action="{{ route('questions.search')}}" method="post">
