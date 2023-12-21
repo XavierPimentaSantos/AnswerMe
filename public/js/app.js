@@ -29,17 +29,19 @@ authorChannel.bind('upvote-question', function(data) {
     // Add the upvote notification to the array
     notifications.push({
         title: 'Your question has been upvoted!',
+        text: data.question_title,
         icon: 'success'
     });
 
     // Update the UI to display notifications
     updateNotificationsUI();
 });
-/*
-channel.bind('question-downvote', function(data) {
+
+authorChannel.bind('downvote-question', function(data) {
   // Add the downvote notification to the array
   notifications.push({
     title:'Your question has been downvoted!',
+    text: data.question_title,
     icon: 'error'
   });
 
@@ -48,10 +50,13 @@ channel.bind('question-downvote', function(data) {
 });
 
 
-channel.bind('answer-upvote', function(data) {
+
+
+authorChannel.bind('upvote-answer', function(data) {
   // Add the upvote notification to the array
   notifications.push({
     title: 'Your answer has been upvoted!',
+    text: data.answer_title,
     icon: 'success'
   });
 
@@ -59,17 +64,30 @@ channel.bind('answer-upvote', function(data) {
   updateNotificationsUI();
 });
 
-channel.bind('answer-downvote', function(data) {
+authorChannel.bind('downvote-answer', function(data) {
   // Add the downvote notification to the array
   notifications.push({
     title:'Your answer has been downvoted!',
+    text: data.answer_title,
     icon: 'error'
   });
 
   // Update the UI to display notifications
   updateNotificationsUI();
 });
-*/
+
+authorChannel.bind('validate-answer', function(data) {
+  // Add the validate notification to the array
+  notifications.push({
+    title:'Your answer has been validated!',
+    text: data.answer_title,
+    icon: 'success'
+  });
+
+  // Update the UI to display notifications
+  updateNotificationsUI();
+});
+
 
 
 function updateNotificationsUI() {
@@ -80,6 +98,7 @@ function updateNotificationsUI() {
     notificationElement.innerHTML = `
       <div class="notification">
         <strong>${notification.title}</strong>
+        <p>${notification.text}</p>
         <button class="close-btn" onclick="closeNotification(${index})">OK</button>  
       </div>
     `;
