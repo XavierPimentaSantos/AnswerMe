@@ -12,6 +12,13 @@ use Illuminate\Support\Facades\Validator;
 
 class QuestionCommentController extends Controller
 {
+    public function index($question_id)
+    {
+        $question = Question::find($question_id);
+
+        return view('partials.comment_section', ['questioncomments' => $question->comments()->latest()->paginate(4)])->render();
+    }
+    
     public function store(Request $request, $question_id)
     {
         // $question_id = $request->input('question_id');
@@ -31,7 +38,7 @@ class QuestionCommentController extends Controller
 
         $questionComment->save();
 
-        return view('partials.comment_section', ['comments' => $question->comments()->get()])->render();
+        return redirect()->route('questioncomment.index', $question_id); 
     }
 
     public function edit(Request $request, $question_id, $comment_id)

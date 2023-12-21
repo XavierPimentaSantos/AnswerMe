@@ -56,13 +56,22 @@ Route::controller(QuestionController::class)->group(function () {
     Route::post('/questions/{question_id}/toggle_follow', [QuestionController::class, 'toggleFollow'])->name('questions.toggleFollow');
     Route::post('/questions', [QuestionController::class, 'search'])->name('questions.search');
     Route::post('/', [QuestionController::class, 'filter'])->name('questions.filter');
+    // route for increasing a question's score
+    Route::post('/increase_score', [QuestionController::class, 'inc_score']);
+    // route for decreasing a question's score
+    Route::post('/decrease_score', [QuestionController::class, 'dec_score']);
 });
 
 Route::controller(AnswerController::class)->group(function () {
     Route::post('/questions/{question_id}/answer', [AnswerController::class, 'store'])->name('answers.store');
     Route::post('/questions/{question_id}/answer/{answer_id}/edit', [AnswerController::class, 'edit'])->name('answers.edit');
     Route::delete('/questions/{question_id}/answer/{answer_id}/delete', [AnswerController::class, 'delete'])->name('answers.delete');
-
+    // route for validating an answer
+    Route::post('/validate_answer', [AnswerController::class, 'validate_answer']);
+    // route for increasing an answer's score
+    Route::post('/increase_score_ans', [AnswerController::class, 'inc_score']);
+    // route for decreasing an answer's score
+    Route::post('/decrease_score_ans', [AnswerController::class, 'dec_score']);
 });
 
 Route::controller(ProfileController::class)->group(function () {
@@ -84,12 +93,14 @@ Route::controller(AdminController::class)->group(function () {
 });
 
 Route::controller(QuestionCommentController::class)->group(function () {
+    Route::get('/questions/{question_id}/comments', [QuestionCommentController::class, 'index'])->name('questioncomment.index');
     Route::post('/questions/{question_id}/comment', [QuestionCommentController::class, 'store'])->name('questioncomment.store');
     Route::put('/questions/{question_id}/comment/{comment_id}/edit', [QuestionCommentController::class, 'edit'])->name('questioncomment.edit');
     Route::delete('/questions/{question_id}/comment/{comment_id}/delete', [QuestionCommentController::class, 'delete'])->name('questioncomment.delete');
 });
 
 Route::controller(AnswerCommentController::class)->group(function () {
+    Route::get('/answers/{answer_id}/comments', [AnswerCommentController::class, 'index'])->name('answercomment.index');
     Route::post('/answers/{answer_id}/comment', [AnswerCommentController::class, 'store'])->name('answercomment.store');
     Route::put('/answers/{answer_id}/comment/{comment_id}/edit', [AnswerCommentController::class, 'edit'])->name('answercomment.edit');
     Route::delete('/answers/{answer_id}/comment/{comment_id}/delete', [AnswerCommentController::class, 'delete'])->name('answercomment.delete');
@@ -101,17 +112,6 @@ Route::put('/tag/{tag_id}', [TagController::class, 'edit'])->name('tag.edit');
 
 // route for updating a question's tags
 Route::post('/update_tags', [TagController::class, 'updateTags']);
-
-// route for validating an answer
-Route::post('/validate_answer', [AnswerController::class, 'validate_answer']);
-// route for increasing a question's score
-Route::post('/increase_score', [QuestionController::class, 'inc_score']);
-// route for decreasing a question's score
-Route::post('/decrease_score', [QuestionController::class, 'dec_score']);
-// route for increasing an answer's score
-Route::post('/increase_score_ans', [AnswerController::class, 'inc_score']);
-// route for decreasing an answer's score
-Route::post('/decrease_score_ans', [AnswerController::class, 'dec_score']);
 
 Route::get('/faq', [FAQController::class, 'show'])->name('faq.show');
 

@@ -6,23 +6,39 @@
 @foreach ($answers as $answer)
 <?php
     $question = Question::find($answer->question_id);
+
+    $answercomments = $answer->comments()->latest()->paginate(4);
 ?>
 <li>
     <div id="answer-view-{{ $answer->id }}"  class="answers bg-gray-100 mb-3 p-4">
         <div style="display: flex; flex-direcion: row; gap: 5px;">
-            <div id="answer_score_{{ $answer->id }}" data-id="{{ $answer->id }}" style="display: flex; flex-direction: column;">
+            <div id="answer_score_{{ $answer->id }}" data-id="{{ $answer->id }}" style="display: flex; flex-direction: column; width: 3rem; justify-content: space-around;">
                 @csrf
                 @include ('partials.answer_score', ['answer_id' => $answer->id])
             </div>
-            <h4 class="font-bold">{{ $answer->title }}</h4>
-            @if (Auth::user()->id === $question->user_id && $answer->correct === false)
-            <button type="button" id="validate-answer-btn-{{ $answer->id }}" class="validate_answer_btn" data-id="{{ $answer->id }}">Validate answer</button>
-            @endif
-            @if ($answer->correct === true)
-            <p id="valid_answer_{{ $answer->id }}">this answer has been marked as correct</p>
-            @else
-            <p id="valid_answer_{{ $answer->id }}" class="hidden">this answer has been marked as correct</p>
-            @endif
+
+            <div style="display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: space-between; width: -webkit-fill-available;">
+                <div style="display: flex; flex-direction: row;">
+                    <h4 class="font-bold">{{ $answer->title }}</h4>
+                    @if ($answer->correct === true)
+                    <h4 id="valid_answer_{{ $answer->id }}" class="material-symbols-outlined" style="color: green;">check</h4>
+                    @else
+                    <h4 id="valid_answer_{{ $answer->id }}" class="material-symbols-outlined" style="display: none; color: green;">check</h4>
+                    @endif
+                </div>
+                @if (Auth::user()->id === $question->user_id && $answer->correct === false)
+                <div class="tooltip">
+                    <button type="button" id="validate-answer-btn-{{ $answer->id }}" class="validate_answer_btn material-symbols-outlined bg-gray-200" data-id="{{ $answer->id }}" style="border: 2px solid black; border-radius: 2px; color: green;">check</button>
+                    <p class="tooltiptext">Validate</p>
+                </div>
+                @endif
+                @if (Auth::user()->id !== $answer->user_id)
+                <div class="tooltip">
+                    <button type="button" class="material-symbols-outlined bg-gray-200" id="question_report_btn" data-question-id="{{ $question->id }}" style="border: 2px solid black; border-radius: 2px; color: red;">report</button>
+                    <p class="tooltiptext">Report</p>
+                </div>
+                @endif
+            </div>
         </div>
         <p>{{ $answer->content }}</p>
         <div>
@@ -56,7 +72,7 @@
     </div>
 
     <div id="comment-section-{{ $answer->id }}">
-        @include ('partials.answer_comment_section', ['answer_id' => $answer->id])
+        @include ('partials.answer_comment_section', ['answercomments' => $answercomments])
     </div>
 </li>
 

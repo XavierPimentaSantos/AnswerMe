@@ -14,6 +14,7 @@ use Illuminate\View\View;
 use DateTime;
 
 use App\Models\User;
+use App\Models\Setting;
 
 class RegisterController extends Controller
 {
@@ -35,8 +36,17 @@ class RegisterController extends Controller
             'username' => 'required|string|max:250|unique:users',
             'email' => 'required|email|max:250|unique:users',
             'bio' => 'nullable',
+            'birthdate' => 'required',
             'nationality' => 'nullable',
             'password' => 'required|min:8|confirmed'
+        ]);
+
+        $settings = Setting::create([
+            'dark_mode' => 0,
+            'hide_nation' => 0,
+            'hide_birth_date' => 0,
+            'hide_email' => 0,
+            'hide_name' => 0,
         ]);
 
         User::create([
@@ -45,8 +55,10 @@ class RegisterController extends Controller
             'password' => Hash::make($request->password),
             'username' => $request->username,
             'bio' => $request->bio,
+            'birthdate' => $request->birthdate,
             'nationality' => $request->nationality,
             'user_type' => 1,
+            'preferences' => $settings->id,
         ]);
 
         event(new UserRegister($request->username, 1));

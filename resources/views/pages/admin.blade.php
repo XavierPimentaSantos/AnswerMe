@@ -46,7 +46,7 @@
     <input type="text" id="username" name="username" list="username_list">
     <datalist id="username_list">
         @foreach ($users as $user)
-            <option value="{{ $user->name }}">
+            <option value="{{ $user->username }}">{{ $user->name }}</option>
         @endforeach
     </datalist>
     <button type="submit">Search</button>

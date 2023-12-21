@@ -170,12 +170,7 @@ function updateNotificationsUI() {
     notificationsDropdown.classList.toggle('hidden');
   });
 
-  const edit_profile_btn = document.getElementById('edit-profile-btn');
-  if(edit_profile_btn) {
-    edit_profile_btn.addEventListener('click', function() {
-      toggleProfileSections(true);
-    });
-  }
+
 
   document.addEventListener('click', function(event) {
     if (event.target.classList.contains('button')) {
@@ -184,18 +179,25 @@ function updateNotificationsUI() {
     }
 });
 
+const edit_answer_btn = document.getElementById('edit-answer-btn');
+if(edit_answer_btn) {
+  edit_answer_btn.addEventListener('click', function () {
+    toggleAnswerSections(true);
+  });
+}
 
-  const edit_question_btn = document.getElementById('edit-question-btn');
-  if(edit_question_btn) {
-    edit_question_btn.addEventListener('click', function () {
-      toggleQuestionSections(true);
-    });
-  }
 
-  function toggleQuestionSections(editMode) {
-    document.getElementById('question-edit').style.display = editMode ? 'block' : 'none';
-    document.getElementById('question-view').style.display = editMode ? 'none' : 'block';
-  }
+const edit_question_btn = document.getElementById('edit-question-btn');
+if(edit_question_btn) {
+  edit_question_btn.addEventListener('click', function () {
+    toggleQuestionSections(true);
+  });
+}
+
+function toggleQuestionSections(editMode) {
+  document.getElementById('question-edit').style.display = editMode ? 'block' : 'none';
+  document.getElementById('question-view').style.display = editMode ? 'none' : 'block';
+}
 
   function toggleAnswerSections(answerId, editMode) {
     console.log(answerId);
@@ -229,27 +231,6 @@ function encodeForAjax(data) {
     return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])
   }).join('&');
 }
-
-const fname = document.getElementById("name");
-const email = document.getElementById("email");
-
-function updateProfileData(newName, newEmail) {
-  fname.textContent = newName;
-  email.textContent = newEmail;
-}
-
-function updateProfile() {
-  console.log('update profile');
-  const data = {
-    name: document.getElementById('name-input').value,
-    email: document.getElementById('email-input').value,
-  };
-  sendAjaxRequest('post', '/profile/edit', data, function () {
-    updateProfileData(data.name, data.email);
-    toggleProfileSections(false);
-  });
-}
-
 
 function updateQuestion() {
   titleInput = document.getElementById('title-input');
@@ -440,8 +421,8 @@ function validateAnswer(answer_id) {
   })
   .then(response => {
     if(response.ok) {
-      document.getElementById('validate-answer-btn-' + answer_id).classList.add('hidden');
-      document.getElementById('valid_answer_' + answer_id).classList.remove('hidden');
+      document.getElementById('validate-answer-btn-' + answer_id).style.display = 'none';
+      document.getElementById('valid_answer_' + answer_id).style.display = 'block';
     }
   })
   .catch(error => console.error('Error updating tags:', error));
@@ -834,9 +815,119 @@ function toggle_question_follow(question_id) {
   })
   .then(data => {
     document.getElementById('question_follow_btn').style.color = data.color;
+    document.getElementById('follow_btn_tooltip').innerText = data.tip;
     console.log('changed color');
   })
   .catch(error => console.error('Error following question:', error));
 }
 
 // END SECTION 
+
+// FUNCTIONS RELATED TO EDITING THE PROFILE
+
+const edit_profile_btn = document.getElementById('edit-profile-btn');
+if(edit_profile_btn) {
+  edit_profile_btn.addEventListener('click', function() {
+    toggleProfileSections();
+  });
+}
+
+const cancel_update_profile_btn = document.getElementById('cancel-update-profile-btn');
+if(cancel_update_profile_btn) {
+  cancel_update_profile_btn.addEventListener('click', function() {
+    document.getElementById('profile-view').style.display = 'grid';
+    document.getElementById('profile-edit').style.display = 'none';
+    document.getElementById('top-posts').style.display = 'block';
+  });
+}
+
+function toggleProfileSections() {
+  document.getElementById('profile-view').style.display = 'none';
+  document.getElementById('profile-edit').style.display = 'grid';
+  document.getElementById('top-posts').style.display = 'none';
+}
+
+const update_profile_btn = document.getElementById('update-profile-btn');
+if(update_profile_btn) {
+  update_profile_btn.addEventListener('click', function() {
+    console.log('pressed btn');
+    updateProfile(update_profile_btn.getAttribute('data-user'));
+  })
+}
+
+function updateProfile(username) {
+  const new_name = document.getElementById('name_input').value;
+  const new_username = document.getElementById('username_input').value;
+  const new_email = document.getElementById('email_input').value;
+  const new_bio = document.getElementById('bio_input').value;
+  
+  var profile_picture = document.getElementById('profile_picture_input').files[0];
+
+   /*  // Use FileReader to read the file
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+      // e.target.result contains the data URL representing the file
+      var imageDataUrl = e.target.result;
+
+      // You can use imageDataUrl as needed (e.g., display in an image tag)
+      console.log('Data URL:', imageDataUrl);
+    };
+
+    // Read the file as a data URL
+    reader.readAsDataURL(selectedFile); */
+
+  let show_birthdate, show_name, show_email, show_nation;
+  if(document.getElementById('name_opt').checked==true) {
+    show_name = true;
+  }
+  else {
+    show_name = false;
+  }
+  if(document.getElementById('email_opt').checked==true) {
+    show_email = true;
+  }
+  else {
+    show_email = false;
+  }
+  if(document.getElementById('birthdate_opt').checked==true) {
+    show_birthdate = true;
+  }
+  else {
+    show_birthdate = false;
+  }
+  if(document.getElementById('nationality_opt').checked==true) {
+    show_nation = true;
+  }
+  else {
+    show_nation = false;
+  }
+
+  fetch('/profile/' + username + '/edit' , {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+    },
+    body: JSON.stringify({
+      new_name : new_name,
+      new_username : new_username,
+      new_email : new_email,
+      new_bio : new_bio,
+      show_birthdate : show_birthdate,
+      show_name : show_name,
+      show_email : show_email,
+      show_nation : show_nation,
+      profile_picture : profile_picture
+    }),
+  })
+  .then(response => {
+    return response.text();
+  })
+  .then(data => {
+    window.location.href = "/profile/" + data;
+  })
+  .catch(error => console.error('Error following question:', error));
+}
+
+// END SECTION

@@ -20,14 +20,14 @@
     }
 
     $answers = $question->answers()->orderByDesc('score')->orderBy('correct', 'desc')->get();
-    $questioncomments = $question->comments()->latest()->get(); // paginate aqui?
+    $questioncomments = $question->comments()->latest()->paginate(4);
 ?>
 
 <article class="card" data-id="{{ $question->id }}">
     <div id = "question-view" class="questions bg-gray-200 m-6 p-4" style="display: block;">
         <div class="question-card-body">
             <div class="question-title" style="display: flex; flex-direction: row;">
-                <div id="question_score" style="display: flex; flex-direction: column;">
+                <div id="question_score" style="display: flex; flex-direction: column; width: 3rem; justify-content: space-around;">
                     @csrf
                     @include ('partials.question_score', ['question_id' => $question->id])
                 </div>
@@ -35,10 +35,19 @@
                 <div style="display: flex; flex-direction: row;">
                     <h2 style="margin: 0; margin-right: 5px;">{{ $question->title }}</h2>
                     @if ($question->user_id === Auth::user()->id)
-                    <button type="button" class="material-symbols-outlined" id="question_archive_btn">archive</button>
+                    <div class="tooltip">
+                        <button type="button" class="material-symbols-outlined bg-gray-200" id="question_archive_btn" data-question-id="{{ $question->id }}" style="border: 2px solid black; border-radius: 2px; color: black;">archive</button>
+                        <p class="tooltiptext">Archive</p>
+                    </div>
                     @else
-                    <button type="button" class="material-symbols-outlined" id="question_report_btn">report</button>
-                    <button type="button" class="material-symbols-outlined" id="question_follow_btn" data-question-id="{{ $question->id }}" style="@if ($followed) color: green; @else color: black; @endif">notifications</button>
+                    <div class="tooltip">
+                        <button type="button" class="material-symbols-outlined bg-gray-200" id="question_report_btn" data-question-id="{{ $question->id }}" style="border: 2px solid black; border-radius: 2px; color: red;">report</button>
+                        <p class="tooltiptext">Report</p>
+                    </div>
+                    <div class="tooltip">
+                        <button type="button" class="material-symbols-outlined bg-gray-200" id="question_follow_btn" data-question-id="{{ $question->id }}" style="border: 2px solid black; border-radius: 2px; @if ($followed) color: green; @else color: black; @endif">notifications</button>
+                        <p id="follow_btn_tooltip" class="tooltiptext">@if ($followed) Unfollow @else Follow @endif</p>
+                    </div>
                     @endif
                     @if ($question->edited == 1)
                         <h3 style= "margin: 0; align-self: center;">(edited)</h3>
@@ -136,7 +145,7 @@
 
 <div id="comment-section">
     @csrf
-    @include ('partials.comment_section', ['comments' => $questioncomments])
+    @include ('partials.comment_section', ['questioncomments' => $questioncomments])
 </div>
 
 @if (Auth::check())
@@ -146,7 +155,9 @@
     <input type="text" name="question_comment_body" id="question_comment_body" required>
     <button type="button" id="question-comment-post-btn" data-question-id="{{ $question->id }}">Post comment</button>
 </div>
+@endif
 
+@if (Auth::check() && Auth::user()->id!==$question->user_id)
 <form id="answer_post_form">
     @csrf
     <h3> Answer this question </h3>

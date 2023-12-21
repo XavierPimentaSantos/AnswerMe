@@ -28,13 +28,13 @@ class QuestionController extends Controller
         if(Auth::user()) {
             $followedQuestionIDs = Auth::user()->followedQuestions()->pluck('question_id');
 
-            $actualFollowedQuestions = Question::whereIn('id', $followedQuestionIDs)->get();
-            $otherQuestions = Question::whereNotIn('id', $followedQuestionIDs)->get();
+            $actualFollowedQuestions = Question::whereIn('id', $followedQuestionIDs)->orderBy('score', 'desc')->orderBy('created_at', 'desc')->get();
+            $otherQuestions = Question::whereNotIn('id', $followedQuestionIDs)->orderBy('score', 'desc')->orderBy('created_at', 'desc')->get();
 
             $questions = $actualFollowedQuestions->merge($otherQuestions);
         }
         else {
-            $questions = Question::orderByDesc('score')->orderBy('created_at', 'desc')->paginate(10);
+            $questions = Question::orderByDesc('score')->orderBy('created_at', 'desc')->paginate(6);
         }
 
         $perPage = 6;
@@ -260,10 +260,6 @@ class QuestionController extends Controller
 
         return redirect()->route('questions.show', $question_id)->with('success', 'Question updated successfully');
     }
-    
-    public function attach_tag() {
-        
-    }
 
     public function inc_score(Request $request)
     {
@@ -341,12 +337,11 @@ class QuestionController extends Controller
     {
         if(Auth::user()->followedQuestions()->where('question_id', $question_id)->exists()) {
             Auth::user()->followedQuestions()->detach($question_id);
-            return response()->json(['color' => 'black']);
+            return response()->json(['color' => 'black', 'tip' => 'Follow']);
         }
         else {
             Auth::user()->followedQuestions()->attach($question_id);
-            return response()->json(['color' => 'green']);
+            return response()->json(['color' => 'green', 'tip' => 'Unfollow']);
         }
-        // return response()->json(['message' => 'Toggled follow status successfully.']);
     }
 }

@@ -27,7 +27,7 @@ class AdminController extends Controller
     public function submit(Request $request)
     {
         $name = $request->input('username');
-        $user = User::where('name', $name)->first();
+        $user = User::where('username', $name)->first();
     
         if ($user) {
             return redirect()->route('profile.showUser', ['username' => $name]);
