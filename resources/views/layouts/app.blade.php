@@ -47,8 +47,8 @@
                     </div>
                 @endif
             </header>
-            <section id="content">
             <div id="notifications-dropdown"></div>
+            <section id="content">
                 @yield('content')
             </section>
         </main>
