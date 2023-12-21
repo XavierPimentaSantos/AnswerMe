@@ -27,7 +27,17 @@ authorChannel.bind('user-register', function(data) {
 
 authorChannel.bind('delete-question', function(data) {
   notifications.push({
-    title:'Your question has been removed by  a moderator',
+    title:'Your question has been removed by a moderator',
+    text: data.question_title,
+    icon: 'error'
+  });
+  // Update the UI to display notifications
+  updateNotificationsUI();
+});
+
+authorChannel.bind('edit-question', function(data) {
+  notifications.push({
+    title:'Your question has been edited by a moderator',
     text: data.question_title,
     icon: 'error'
   });
@@ -104,6 +114,27 @@ authorChannel.bind('answer-question', function(data) {
     title:'Your question has been answered by: ' + data.answer_author,
     text: data.question_title,
     icon: 'success'
+  });
+
+  // Update the UI to display notifications
+  updateNotificationsUI();
+});
+
+authorChannel.bind('delete-question', function(data) {
+  notifications.push({
+    title:'Your answer has been removed by a moderator',
+    text: data.answer_title,
+    icon: 'error'
+  });
+  // Update the UI to display notifications
+  updateNotificationsUI();
+});
+
+authorChannel.bind('edit-answer', function(data) {
+  notifications.push({
+    title:'Your answer has been edited by a moderator',
+    text: data.answer_title,
+    icon: 'error'
   });
 
   // Update the UI to display notifications
