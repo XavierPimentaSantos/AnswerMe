@@ -27,63 +27,63 @@
     <div id = "question-view" class="questions bg-gray-200 m-6 p-4" style="display: block;">
         <div class="question-card-body">
             <div class="question-title" style="display: flex; flex-direction: row;">
-                <div id="question_score" style="display: flex; flex-direction: column; width: 3rem; justify-content: space-around;">
+                <div id="question_score" style="display: flex; flex-direction: column; width: 5rem; justify-content: space-around;">
                     @csrf
                     @include ('partials.question_score', ['question_id' => $question->id])
                 </div>
                 
-                <div style="display: flex; flex-direction: row;">
-                    <h2 style="margin: 0; margin-right: 5px;">{{ $question->title }}</h2>
-                    @if ($question->user_id === Auth::user()->id)
-                    <div class="tooltip">
-                        <button type="button" class="material-symbols-outlined bg-gray-200" id="question_archive_btn" data-question-id="{{ $question->id }}" style="border: 2px solid black; border-radius: 2px; color: black;">archive</button>
-                        <p class="tooltiptext">Archive</p>
-                    </div>
-                    @else
-                    <div class="tooltip">
-                        <button type="button" class="material-symbols-outlined bg-gray-200" id="question_report_btn" data-question-id="{{ $question->id }}" style="border: 2px solid black; border-radius: 2px; color: red;">report</button>
-                        <p class="tooltiptext">Report</p>
-                    </div>
-                    <div class="tooltip">
-                        <button type="button" class="material-symbols-outlined bg-gray-200" id="question_follow_btn" data-question-id="{{ $question->id }}" style="border: 2px solid black; border-radius: 2px; @if ($followed) color: green; @else color: black; @endif">notifications</button>
-                        <p id="follow_btn_tooltip" class="tooltiptext">@if ($followed) Unfollow @else Follow @endif</p>
-                    </div>
-                    @endif
-                    @if ($question->edited == 1)
-                        <h3 style= "margin: 0; align-self: center;">(edited)</h3>
-                    @endif
-                    <div id="tag_bar" style="display: flex; flex-direction: row; gap: 4px; flex-wrap: wrap; align-content: center;">
-                        @if ($question->tags->count() > 0)
-                            @foreach ($question->tags as $tag)
-                                <div class="tag_item" style="border: 2px solid black; border-radius: 3px; padding: 2px 4px; height: fit-content; width: fit-content;">
-                                    {{ $tag->name }}
-                                </div>
-                            @endforeach
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; width: -webkit-fill-available;">
+                    <h2 style="margin: 0; margin-right: 5px;">{{ $question->title }}@if ($question->edited == 1) (edited) @endif</h2>
+
+                    <div style="display: flex; flex-direction: row;">
+                        @if ($question->user_id === Auth::user()->id)
+                        <div class="tooltip">
+                            <button type="button" id="edit-question-btn" class="material-symbols-outlined bg-gray-200" style="border: 2px solid black; border-radius: 2px; color: black;">edit</button>
+                            <p class="tooltiptext">Edit question</p>
+                        </div>
+                        <form action="{{ route('questions.delete', $question->id)}}" method="POST" class="inline-block tooltip" style="margin: 0;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="material-symbols-outlined bg-gray-200" style="border: 2px solid black; border-radius: 2px; color: black;">delete</button>
+                            <p class="tooltiptext">Delete question</p>
+                        </form>
+                        @else
+                        <div class="tooltip">
+                            <button type="button" class="material-symbols-outlined bg-gray-200" id="question_report_btn" data-question-id="{{ $question->id }}" style="border: 2px solid black; border-radius: 2px; color: red;">report</button>
+                            <p class="tooltiptext">Report</p>
+                        </div>
+                        <div class="tooltip">
+                            <button type="button" class="material-symbols-outlined bg-gray-200" id="question_follow_btn" data-question-id="{{ $question->id }}" style="border: 2px solid black; border-radius: 2px; @if ($followed) color: green; @else color: black; @endif">notifications</button>
+                            <p id="follow_btn_tooltip" class="tooltiptext">@if ($followed) Unfollow @else Follow @endif</p>
+                        </div>
                         @endif
                     </div>
+                    
                 </div>
-                <p class="card-content text-red-700">Asked by: {{ $question->user ? $question->user->name : '[deleted]' }}</p>
             </div>
-            <p class="card-content">{{ $question->content }}</p>
+            @if ($question->user)
+            <a href="{{ route('profile.showUser', $question->user->username) }}" class="card-content text-red-700" style="margin-left: 5rem; margin-top: -3rem;"><h5 style="margin-left: 5rem; margin-top: -3rem; margin-bottom: 0; width: fit-content;">{{ $question->user->username }}</h5></a>
+            @else
+            <h3 class="card-content text-red-700" style="margin-left: 5rem;">[deleted]</h3>
+            @endif
+            <p class="card-content" style="margin-bottom: 0.8rem;">{{ $question->content }}</p>
+
+            <div id="tag_bar" style="display: flex; flex-direction: row; gap: 4px; flex-wrap: wrap; align-content: center;">
+                @if ($question->tags->count() > 0)
+                    @foreach ($question->tags as $tag)
+                        <div class="tag_item" style="border: 2px solid black; border-radius: 2px; padding: 2px 4px; height: fit-content; width: fit-content;">
+                            {{ $tag->name }}
+                        </div>
+                    @endforeach
+                @endif
+            </div>
         </div>
+
         <div id="images-container" class="m-2 flex overflow-x-auto">
             @foreach($question->images as $image)
                 <img src="{{ asset($image->picture_path) }}" alt="Question Image"  style = "max-width: 15%;  padding: 5px">
             @endforeach
         </div>
-
-
-        <div>
-            @if (Auth::check() && $question->user_id === auth()->user()->id || Auth::user()->isModerator())                          
-            <a id = "edit-question-btn" class="button bg-blue-500 text-white px-4 py-2 rounded mt-1 inline-block">Edit Question</a>
-            <form action="{{ route('questions.delete', $question->id)}}" method="POST" class="inline-block">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="button bg-red-500 text-white px-4 py-2 rounded mt-1 inline-block">Delete Question</button>
-            </form>
-            @endif
-        </div>
-        
     </div>
     <div id="question-edit" class="questions bg-gray-200 mb-3 p-4" style="display: none;">
         <h2>Edit Question</h2>
@@ -143,19 +143,21 @@
     </div>
 </article>
 
+@if (Auth::check())
+<div id="question_comment_form">
+    @csrf
+    <input type="text" name="question_comment_body" id="question_comment_body" maxlength="250" required placeholder="Leave a comment...">
+    <div class="tooltip">
+        <button type="button" class="material-symbols-outlined bg-gray-200" id="question-comment-post-btn" data-question-id="{{ $question->id }}" style="border: 2px solid black; border-radius: 2px; color: black;">send</button>
+        <p class="tooltiptext">Comment</p>
+    </div>
+</div>
+@endif
+
 <div id="comment-section">
     @csrf
     @include ('partials.comment_section', ['questioncomments' => $questioncomments])
 </div>
-
-@if (Auth::check())
-<div id="question_comment_form">
-    @csrf
-    <h5>Leave a comment</h5>
-    <input type="text" name="question_comment_body" id="question_comment_body" required>
-    <button type="button" id="question-comment-post-btn" data-question-id="{{ $question->id }}">Post comment</button>
-</div>
-@endif
 
 @if (Auth::check() && Auth::user()->id!==$question->user_id)
 <form id="answer_post_form">

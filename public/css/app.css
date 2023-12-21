@@ -234,19 +234,7 @@ body {
   overflow: visible; 
 }
 
-.question-title div button.material-symbols-outlined {
-  width: fit-content;
-  height: fit-content;
-  padding: 0;
-  margin: 0;
-  text-align: center;
-  font-size: 3rem !important;
-  border: 2px solid black;
-  border-radius: 2px;
-  color: black;
-}
-
-.question-title div button.material-symbols-outlined, .validate_answer_btn, #profile-view button, #profile-edit button {
+.question-title div button.material-symbols-outlined, .validate_answer_btn, #profile-view button, #profile-edit button, #question-comment-post-btn, .question-comment-body button, .tooltip button {
   width: fit-content;
   height: fit-content;
   padding: 0;
@@ -276,11 +264,11 @@ body {
 }
 
 
-#question_archive_btn:hover, #question_follow_btn:hover, #question_report_btn:hover, .validate_answer_btn:hover, #profile-view-btns:hover {
+#question_archive_btn:hover, #question_follow_btn:hover, #question_report_btn:hover, .validate_answer_btn:hover, #profile-view-btns:hover, .question-title div button.material-symbols-outlined:hover, #question-comment-post-btn:hover, .question-comment-body button:hover, .tooltip button:hover {
   background-color: rgb(229 231 235 / var(--tw-bg-opacity)) !important;
 }
 
-#question_archive_btn:focus, #question_follow_btn:focus, #question_report_btn:focus, .validate_answer_btn:focus, #profile-view-btns:focus {
+#question_archive_btn:focus, #question_follow_btn:focus, #question_report_btn:focus, .validate_answer_btn:focus, #profile-view-btns:focus, .question-title div button.material-symbols-outlined:focus, #question-comment-post-btn:focus, .question-comment-body button:focus, .tooltip button:focus {
   background-color: rgb(229 231 235 / var(--tw-bg-opacity)) !important;
 }
 
@@ -451,4 +439,54 @@ body {
   flex-direction: row;
   gap: 0.1rem;
   align-items: center;
+}
+
+#question-view {
+  border: 2px solid black;
+  border-radius: 2px;
+}
+
+#question_comment_form {
+  display: flex;
+  flex-direction: row;
+  margin: 0 1.5rem 1rem;
+  align-items: center;
+}
+
+.answer-comment-form {
+  display: flex;
+  flex-direction: row;
+  margin: 0 1.8rem;
+  align-items: center;
+}
+
+#question_comment_form input, .answer-comment-form input {
+  margin: 0;
+  height: 3.32rem;
+}
+
+.question-comment-body {
+  margin: 0 1.5rem 0.2rem;
+  border: 1px solid black;
+  border-radius: 2px;
+}
+
+.answer-comment-body {
+  margin: 0 1.8rem;
+}
+
+.question-comment-body h4, .answer-comment-body h4 {
+  margin: 0.4rem;
+}
+
+.answer_content_p {
+  margin: 0;
+  text-align: left;
+  margin-left: 5rem;
+}
+
+.answers {
+  border: 2px solid black;
+  border-radius: 2px;
+  margin: 0 1.5rem;
 }
