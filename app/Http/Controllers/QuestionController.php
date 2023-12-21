@@ -139,12 +139,16 @@ class QuestionController extends Controller
         
         $question = Question::findOrFail($question_id);
 
-        if ($question->user_id !== auth()->user()->id) {
+        if ($question->user_id !== auth()->user()->id && !auth()->user()->isModerator()) {
             abort(403, 'Unauthorized');
         }
     
 
         $question->delete();
+
+        if(auth()->user()->id !== $question->user_id){
+            event(new DeleteQuestion($question->user_id, $question->title));
+        }
 
         return redirect(url('/'))->withSuccess('You have successfully deleted your question!');
     }

@@ -1,6 +1,6 @@
 <div style="display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: space-between;">
     <h5 id="answer_comment_body_{{ $comment->id }}">{{ $comment->body }}</h5>
-    @if ($comment->user_id === Auth::user()->id)
+    @if ($comment->user_id === Auth::user()->id || Auth::user()->isModerator())
     <div>
         <button type="button" class="answer-comment-edit-btn" data-comment-id="{{ $comment->id }}" data-answer-id="{{ $comment->answer_id }}">edit comment</button>
         <button type="button" class="answer-comment-delete-btn" data-comment-id="{{ $comment->id }}" data-answer-id="{{ $comment->answer_id }}">delete comment</button>

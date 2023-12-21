@@ -25,6 +25,17 @@ authorChannel.bind('user-register', function(data) {
   updateNotificationsUI();
 });
 
+authorChannel.bind('delete-question', function(data) {
+  notifications.push({
+    title:'Your question has been removed by  a moderator',
+    text: data.question_title,
+    icon: 'error'
+  });
+
+  // Update the UI to display notifications
+  updateNotificationsUI();
+});
+
 authorChannel.bind('upvote-question', function(data) {
     // Add the upvote notification to the array
     notifications.push({
