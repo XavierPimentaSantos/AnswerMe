@@ -58,6 +58,7 @@ class RegisterController extends Controller
         $request->session()->regenerate();
 
         event(new UserRegister($request->username));
+        
 
         return redirect(url('/'))
             ->withSuccess('You have successfully registered & logged in!');

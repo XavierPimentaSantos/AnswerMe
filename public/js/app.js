@@ -13,9 +13,8 @@
     var username = data.username;
 
     Swal.fire({
-      title: 'User Registered',
-      text: username + ' registered!',
-      icon: 'success',
+      title: username + ' has joined our website :)',
+      icon: 'info',
       confirmButtonText: 'OK'
     });
   });

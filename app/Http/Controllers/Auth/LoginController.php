@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Events\UserRegister;
 
+use App\Models\User;
+
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -39,12 +41,15 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
+        
+        event(new UserRegister($request->email));
  
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
  
             return redirect()->intended('/');
         }
+
  
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
