@@ -10,6 +10,8 @@ use App\Models\User;
 use App\Events\UpvoteAnswer;
 use App\Events\DownvoteAnswer;
 use App\Events\ValidateAnswer;
+use App\Events\DeleteAnswer;
+use App\Events\AnswerQuestion;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -46,6 +48,10 @@ class AnswerController extends Controller
         ]);
 
         $answer->save();
+
+        $answer_author = User::findOrFail($answer->user_id)->username;
+
+        event(new AnswerQuestion($question->user_id, $answer_author, $question->title));
 
         /* return redirect()->route('questions.show', $question->id)
             ->with('success', 'Answer created successfully'); */

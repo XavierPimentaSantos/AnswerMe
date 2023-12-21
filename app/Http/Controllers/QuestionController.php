@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Events\UserRegister;
 use App\Events\UpvoteQuestion;
 use App\Events\DownvoteQuestion;
+use App\Events\DeleteQuestion;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;

@@ -88,6 +88,17 @@ authorChannel.bind('validate-answer', function(data) {
   updateNotificationsUI();
 });
 
+authorChannel.bind('answer-question', function(data) {
+  notifications.push({
+    title:'Your question has been answered by: ' + data.answer_author,
+    text: data.question_title,
+    icon: 'success'
+  });
+
+  // Update the UI to display notifications
+  updateNotificationsUI();
+});
+
 
 
 function updateNotificationsUI() {
