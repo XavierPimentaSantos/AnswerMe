@@ -36,7 +36,7 @@
                     <h2 style="margin: 0; margin-right: 5px;">{{ $question->title }}@if ($question->edited == 1) (edited) @endif</h2>
 
                     <div style="display: flex; flex-direction: row;">
-                        @if ($question->user_id === Auth::user()->id)
+                        @if (Auth::check() && $question->user_id === Auth::user()->id)
                         <div class="tooltip">
                             <button type="button" id="edit-question-btn" class="material-symbols-outlined bg-gray-200" style="border: 2px solid black; border-radius: 2px; color: black;">edit</button>
                             <p class="tooltiptext">Edit question</p>
