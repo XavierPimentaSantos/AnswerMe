@@ -101,7 +101,6 @@ class AnswerController extends Controller
 
     public function delete(Request $request, $question_id, $answer_id)
     {
-        
         $answer = Answer::findOrFail($answer_id);
 
         if ($answer->user_id !== auth()->user()->id && !auth()->user()->isModerator()) {

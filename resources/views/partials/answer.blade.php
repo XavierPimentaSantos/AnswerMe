@@ -44,10 +44,11 @@
                         <button type="button" id="edit-answer-btn" class="material-symbols-outlined bg-gray-200" style="border: 2px solid black; border-radius: 2px; color: black;" data-id="{{ $answer->id }}">edit</button>
                         <p class="tooltiptext">Edit answer</p>
                     </div>
-                    <form action="{{ route('answers.delete', ['question_id' => $question->id, 'answer_id' => $answer->id]) }}" method="DELETE" class="inline-block tooltip" style="margin: 0;">
+                    <form action="{{ route('answers.delete', ['question_id' => $question->id, 'answer_id' => $answer->id]) }}" method="POST" class="inline-block tooltip" style="margin: 0;">
                         @csrf
+                        <input type="hidden" name="_method" value="DELETE">
                         <button type="submit" class="material-symbols-outlined bg-gray-200" style="border: 2px solid black; border-radius: 2px; color: black;">delete</button>
-                        <p class="tooltiptext">Delete question</p>
+                        <p class="tooltiptext">Delete answer</p>
                     </form>
                     @endif
                 </div>

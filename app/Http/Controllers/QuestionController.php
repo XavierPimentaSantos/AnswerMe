@@ -159,8 +159,6 @@ class QuestionController extends Controller
         
         $questionImagePath = 'question_images/' . $question->id . '/';
 
-        dd($request->file('images'));
-
         if($request->has('images')){
             foreach ($request->file('images') as $index => $image) {
                 $format = $index + 1; 
