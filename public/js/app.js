@@ -173,19 +173,11 @@ function updateNotificationsUI() {
 
 
   document.addEventListener('click', function(event) {
-    if (event.target.classList.contains('button')) {
+    if (event.target.id === 'edit-answer-btn') {
         const answerId = event.target.dataset.id;
         toggleAnswerSections(answerId, true);
     }
 });
-
-const edit_answer_btn = document.getElementById('edit-answer-btn');
-if(edit_answer_btn) {
-  edit_answer_btn.addEventListener('click', function () {
-    toggleAnswerSections(true);
-  });
-}
-
 
 const edit_question_btn = document.getElementById('edit-question-btn');
 if(edit_question_btn) {
